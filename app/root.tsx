@@ -19,7 +19,12 @@ export const links: Route.LinksFunction = () => [
   },
   {
     rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+    href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap",
+  },
+  // Clash Display via fontshare
+  {
+    rel: "stylesheet",
+    href: "https://api.fontshare.com/v2/css?f[]=clash-display@100,700,900&display=swap",
   },
 ];
 
@@ -32,7 +37,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="bg-[#0c0c0c] text-[#efefec]">
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -62,11 +67,11 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
-      <h1>{message}</h1>
-      <p>{details}</p>
+    <main className="container-site py-16">
+      <h1 className="font-display text-[#f5a020] text-4xl font-black mb-4">{message}</h1>
+      <p className="text-[#efefec]">{details}</p>
       {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
+        <pre className="w-full p-4 overflow-x-auto bg-[#141414] border border-[#222220] mt-4 text-sm">
           <code>{stack}</code>
         </pre>
       )}
