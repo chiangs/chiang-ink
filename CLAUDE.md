@@ -41,6 +41,7 @@ content/             # Content files (markdown or similar)
 - Named exports for all components (`export function Foo`)
 - Import types explicitly: `import type { Route } from "./+types/home"`
 - Use `~/` path alias for imports from `app/`
+- Prefer `type` over `interface` — use `interface` only when declaration merging is explicitly needed
 
 ### Components
 - One component per file, filename matches export name (PascalCase)
