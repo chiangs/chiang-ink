@@ -34,7 +34,7 @@ export function Hero() {
         scrollTrigger: {
           trigger: "[data-anim='hero-section']",
           start: "top top",
-          end: "bottom 15%",
+          end: "bottom 20%",
           scrub: true,
         },
       });
