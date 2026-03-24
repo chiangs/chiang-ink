@@ -10,6 +10,7 @@ import {
   Nav,
   StyleGuideDrawer,
 } from "~/components/layout";
+import { CursorFollower } from "~/components/CursorFollower";
 import { STYLEGUIDE_UNLOCK_KEY } from "~/lib/constants";
 
 export default function Layout() {
@@ -35,8 +36,7 @@ export default function Layout() {
         flexDirection: "column",
       }}
     >
-      {/* Cursor follower dot */}
-      <div id="cursor-dot" />
+      <CursorFollower />
 
       {/* Navigation */}
       <Nav onOpenStyleGuide={openStyleGuide} onOpenCurrently={openCurrently} />

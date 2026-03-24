@@ -83,7 +83,7 @@ html {
     position: fixed;
     width: 8px;
     height: 8px;
-    background: var(--color-accent);
+    background: var(--color-accent-deep);
     border-radius: 50% !important;
     pointer-events: none;
     z-index: 9999;
@@ -102,4 +102,28 @@ html {
     font-weight: 500;
     letter-spacing: 0.05em;
     color: var(--color-invert-text);
+}
+
+/* Cursor ripple */
+@keyframes cursor-ripple {
+    from {
+        width: 8px;
+        height: 8px;
+        opacity: 0.5;
+    }
+    to {
+        width: 56px;
+        height: 56px;
+        opacity: 0;
+    }
+}
+
+.cursor-ripple {
+    position: fixed;
+    border-radius: 50% !important;
+    background: var(--color-accent);
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    animation: cursor-ripple 0.5s ease-out forwards;
 }
