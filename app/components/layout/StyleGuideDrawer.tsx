@@ -4,14 +4,13 @@
 // On first open: persists a footer link via localStorage
 
 import { useEffect, useRef, useState } from "react";
+import { STYLEGUIDE_UNLOCK_KEY } from "~/lib/constants";
 
 interface StyleGuideDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   onFirstUnlock: () => void;
 }
-
-const UNLOCK_KEY = "sc-styleguide-unlocked";
 
 export function StyleGuideDrawer({
   isOpen,
@@ -24,10 +23,10 @@ export function StyleGuideDrawer({
   // Check if first time and trigger unlock
   useEffect(() => {
     if (isOpen) {
-      const alreadyUnlocked = localStorage.getItem(UNLOCK_KEY);
+      const alreadyUnlocked = localStorage.getItem(STYLEGUIDE_UNLOCK_KEY);
       if (!alreadyUnlocked) {
         setIsFirstTime(true);
-        localStorage.setItem(UNLOCK_KEY, "true");
+        localStorage.setItem(STYLEGUIDE_UNLOCK_KEY, "true");
         onFirstUnlock();
       }
     }
@@ -588,5 +587,5 @@ function Section({
 // Utility: check if style guide has been unlocked
 export function isStyleGuideUnlocked(): boolean {
   if (typeof window === "undefined") return false;
-  return !!localStorage.getItem(UNLOCK_KEY);
+  return !!localStorage.getItem(STYLEGUIDE_UNLOCK_KEY);
 }

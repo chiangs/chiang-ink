@@ -4,7 +4,9 @@
 // Time: opens Currently drawer
 
 import { useEffect, useState } from "react";
-import { useLocation, Link } from "react-router";
+import { Link, useLocation } from "react-router";
+import { NAV_LINKS } from "~/lib/constants";
+import { useScrolled, useStavTime } from "~/lib/hooks";
 
 // Copy constants
 const MONOGRAM_DESKTOP = "S.CHIANG";
@@ -14,11 +16,10 @@ const ARIA_CURRENTLY = "Open currently";
 const ARIA_OPEN_MENU = "Open menu";
 const ARIA_CLOSE_MENU = "Close menu";
 
-const NAV_LINKS = [
-  { label: "Work", to: "/work" },
-  { label: "Writing", to: "/writing" },
-  { label: "Contact", to: "/contact" },
-] as const;
+const MONOGRAM_CLASS =
+  "font-display font-bold text-accent text-base tracking-[0.05em] transition-opacity duration-200 hover:opacity-70";
+
+const ITEM_STAGGER_S = 0.07;
 
 type NavProps = {
   onOpenStyleGuide?: () => void;
@@ -28,38 +29,9 @@ type NavProps = {
 export function Nav({ onOpenStyleGuide, onOpenCurrently }: NavProps) {
   const location = useLocation();
   const isHomepage = location.pathname === "/";
-  const [time, setTime] = useState("");
-  const [scrolled, setScrolled] = useState(false);
+  const time = useStavTime();
+  const scrolled = useScrolled();
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  // Live time — Stavanger (Europe/Oslo)
-  useEffect(() => {
-    const update = () => {
-      const t = new Date().toLocaleTimeString("en-GB", {
-        timeZone: "Europe/Oslo",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-      const tz = new Date()
-        .toLocaleTimeString("en-GB", {
-          timeZone: "Europe/Oslo",
-          timeZoneName: "short",
-        })
-        .split(" ")
-        .pop();
-      setTime(`${t} ${tz}`);
-    };
-    update();
-    const id = setInterval(update, 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  // Scroll-triggered background
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   // Lock body scroll when mobile menu open
   useEffect(() => {
@@ -74,10 +46,6 @@ export function Nav({ onOpenStyleGuide, onOpenCurrently }: NavProps) {
     setMobileOpen(false);
   }, [location.pathname]);
 
-  const handleMonogramClick = () => {
-    if (isHomepage && onOpenStyleGuide) onOpenStyleGuide();
-  };
-
   const navStyle = {
     background: scrolled ? "rgba(19,19,19,0.8)" : "transparent",
     backdropFilter: scrolled ? "blur(20px)" : "none",
@@ -85,44 +53,27 @@ export function Nav({ onOpenStyleGuide, onOpenCurrently }: NavProps) {
     borderBottom: scrolled ? "1px solid var(--color-border)" : "none",
   };
 
-  const monogramClass =
-    "font-display font-bold text-accent text-base tracking-[0.05em] transition-opacity duration-200 hover:opacity-70";
-
-  const monogram = isHomepage ? (
-    <button
-      onClick={handleMonogramClick}
-      aria-label={ARIA_STYLEGUIDE}
-      className={`${monogramClass} bg-transparent border-0 cursor-pointer p-0`}
-    >
-      <span className="hidden md:inline">{MONOGRAM_DESKTOP}</span>
-      <span className="md:hidden">{MONOGRAM_MOBILE}</span>
-    </button>
-  ) : (
-    <Link to="/" className={`${monogramClass} no-underline`}>
-      <span className="hidden md:inline">{MONOGRAM_DESKTOP}</span>
-      <span className="md:hidden">{MONOGRAM_MOBILE}</span>
-    </Link>
-  );
+  const navLinks = NAV_LINKS.map((link) => (
+    <NavLink
+      key={link.to}
+      to={link.to}
+      label={link.label}
+      active={location.pathname.startsWith(link.to)}
+    />
+  ));
 
   return (
     <>
       <nav
         data-anim="nav"
-        className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between h-16 px-margin-mob md:px-margin transition-[background,border-color] duration-300"
+        className="fixed top-0 left-0 right-0 z-100 flex items-center justify-between h-16 px-margin-mob md:px-margin transition-[background,border-color] duration-300"
         style={navStyle}
       >
-        {monogram}
+        <Monogram isHomepage={isHomepage} onOpenStyleGuide={onOpenStyleGuide} />
 
         {/* Desktop: nav links + time */}
         <div className="hidden md:flex items-center gap-10">
-          {NAV_LINKS.map((link) => (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              label={link.label}
-              active={location.pathname.startsWith(link.to)}
-            />
-          ))}
+          {navLinks}
           <button
             onClick={onOpenCurrently}
             aria-label={ARIA_CURRENTLY}
@@ -138,18 +89,29 @@ export function Nav({ onOpenStyleGuide, onOpenCurrently }: NavProps) {
           aria-label={mobileOpen ? ARIA_CLOSE_MENU : ARIA_OPEN_MENU}
           className="md:hidden flex items-center justify-center bg-transparent border-0 cursor-pointer p-2"
         >
-          <span className="relative block w-5 h-[11px]">
+          <span className="relative block w-5 h-2.75">
             <span
               className="absolute left-0 w-5 h-px bg-accent transition-all duration-300 origin-center"
-              style={{ top: mobileOpen ? "5px" : "0px", transform: mobileOpen ? "rotate(45deg)" : "none" }}
+              style={{
+                top: mobileOpen ? "5px" : "0px",
+                transform: mobileOpen ? "rotate(45deg)" : "none",
+              }}
             />
             <span
               className="absolute left-0 w-5 h-px bg-accent transition-all duration-300"
-              style={{ top: "5px", opacity: mobileOpen ? 0 : 1, transform: mobileOpen ? "scaleX(0)" : "none" }}
+              style={{
+                top: "5px",
+                opacity: mobileOpen ? 0 : 1,
+                transform: mobileOpen ? "scaleX(0)" : "none",
+              }}
             />
             <span
               className="absolute left-0 h-px bg-accent transition-all duration-300 origin-center"
-              style={{ top: mobileOpen ? "5px" : "10px", width: mobileOpen ? "20px" : "12px", transform: mobileOpen ? "rotate(-45deg)" : "none" }}
+              style={{
+                top: mobileOpen ? "5px" : "10px",
+                width: mobileOpen ? "20px" : "12px",
+                transform: mobileOpen ? "rotate(-45deg)" : "none",
+              }}
             />
           </span>
         </button>
@@ -163,6 +125,39 @@ export function Nav({ onOpenStyleGuide, onOpenCurrently }: NavProps) {
         time={time}
       />
     </>
+  );
+}
+
+// SC / S.CHIANG monogram — button on homepage, Link elsewhere
+type MonogramProps = {
+  isHomepage: boolean;
+  onOpenStyleGuide?: () => void;
+};
+
+function Monogram({ isHomepage, onOpenStyleGuide }: MonogramProps) {
+  const inner = (
+    <>
+      <span className="hidden md:inline">{MONOGRAM_DESKTOP}</span>
+      <span className="md:hidden">{MONOGRAM_MOBILE}</span>
+    </>
+  );
+
+  if (isHomepage) {
+    return (
+      <button
+        onClick={() => onOpenStyleGuide?.()}
+        aria-label={ARIA_STYLEGUIDE}
+        className={`${MONOGRAM_CLASS} bg-transparent border-0 cursor-pointer p-0`}
+      >
+        {inner}
+      </button>
+    );
+  }
+
+  return (
+    <Link to="/" className={`${MONOGRAM_CLASS} no-underline`}>
+      {inner}
+    </Link>
   );
 }
 
@@ -188,7 +183,7 @@ function NavLink({
     <Link
       to={to}
       data-anim="nav-link"
-      className={`group relative font-body text-[11px] font-medium uppercase tracking-[0.15em] no-underline pb-[2px] transition-colors duration-200 ${colorClass}`}
+      className={`group relative font-body text-[11px] font-medium uppercase tracking-[0.15em] no-underline pb-0.5 transition-colors duration-200 ${colorClass}`}
     >
       {label}
       <span
@@ -198,22 +193,8 @@ function NavLink({
   );
 }
 
-// Mobile drop-down menu
-type MobileMenuProps = {
-  isOpen: boolean;
-  onClose: () => void;
-  pathname: string;
-  onOpenCurrently?: () => void;
-  time: string;
-};
-
-function MobileMenu({
-  isOpen,
-  onClose,
-  pathname,
-  onOpenCurrently,
-  time,
-}: MobileMenuProps) {
+// Manages the three-phase open/close animation for the mobile menu
+function useMobileMenuAnimation(isOpen: boolean) {
   const [containerVisible, setContainerVisible] = useState(false);
   const [containerSlide, setContainerSlide] = useState(false);
   const [itemsIn, setItemsIn] = useState(false);
@@ -245,14 +226,63 @@ function MobileMenu({
     }
   }, [isOpen]);
 
+  return { containerVisible, containerSlide, itemsIn };
+}
+
+// Mobile drop-down menu
+type MobileMenuProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  pathname: string;
+  onOpenCurrently?: () => void;
+  time: string;
+};
+
+function MobileMenu({
+  isOpen,
+  onClose,
+  pathname,
+  onOpenCurrently,
+  time,
+}: MobileMenuProps) {
+  const { containerVisible, containerSlide, itemsIn } =
+    useMobileMenuAnimation(isOpen);
+
   const handleCurrently = () => {
     onClose();
     onOpenCurrently?.();
   };
 
+  const navLinks = NAV_LINKS.map((link, i) => {
+    const isActive = pathname.startsWith(link.to);
+    const linkColor = isActive
+      ? "text-accent"
+      : "text-text-primary hover:text-accent";
+    const delay = `${i * ITEM_STAGGER_S}s`;
+    return (
+      <Link
+        key={link.to}
+        to={link.to}
+        onClick={onClose}
+        className={`font-display font-bold text-[32px] no-underline transition-colors duration-200 ${linkColor}`}
+        style={{
+          opacity: itemsIn ? 1 : 0,
+          transform: itemsIn ? "translateY(0)" : "translateY(-10px)",
+          transition: itemsIn
+            ? `opacity 0.3s ease ${delay}, transform 0.35s cubic-bezier(0.16,1,0.3,1) ${delay}, color 0.2s ease`
+            : "opacity 0.15s ease, transform 0.15s ease, color 0.2s ease",
+        }}
+      >
+        {link.label}
+      </Link>
+    );
+  });
+
+  const timeDelay = `${NAV_LINKS.length * ITEM_STAGGER_S}s`;
+
   return (
     <div
-      className="fixed top-16 left-0 right-0 bottom-0 z-[99] bg-bg flex flex-col md:hidden"
+      className="fixed top-16 left-0 right-0 bottom-0 z-99 bg-bg flex flex-col md:hidden"
       style={{
         transform: containerSlide ? "translateY(0)" : "translateY(-8px)",
         opacity: containerVisible ? 1 : 0,
@@ -264,41 +294,16 @@ function MobileMenu({
       aria-hidden={!isOpen}
     >
       {/* Nav links — staggered slide + fade */}
-      <div className="flex flex-col px-margin-mob pt-12 gap-8">
-        {NAV_LINKS.map((link, i) => {
-          const isActive = pathname.startsWith(link.to);
-          const linkColor = isActive
-            ? "text-accent"
-            : "text-text-primary hover:text-accent";
-          const delay = `${i * 0.07}s`;
-          return (
-            <Link
-              key={link.to}
-              to={link.to}
-              onClick={onClose}
-              className={`font-display font-bold text-[32px] no-underline transition-colors duration-200 ${linkColor}`}
-              style={{
-                opacity: itemsIn ? 1 : 0,
-                transform: itemsIn ? "translateY(0)" : "translateY(-10px)",
-                transition: itemsIn
-                  ? `opacity 0.3s ease ${delay}, transform 0.35s cubic-bezier(0.16,1,0.3,1) ${delay}, color 0.2s ease`
-                  : "opacity 0.15s ease, transform 0.15s ease, color 0.2s ease",
-              }}
-            >
-              {link.label}
-            </Link>
-          );
-        })}
-      </div>
+      <div className="flex flex-col px-margin-mob pt-12 gap-8">{navLinks}</div>
 
-      {/* Time / Currently — pinned to bottom */}
+      {/* Time / Currently — pinned to bottom, follows last link in stagger */}
       <div
         className="mt-auto px-margin-mob pb-12"
         style={{
           opacity: itemsIn ? 1 : 0,
           transform: itemsIn ? "translateY(0)" : "translateY(-10px)",
           transition: itemsIn
-            ? `opacity 0.3s ease ${NAV_LINKS.length * 0.07}s, transform 0.35s cubic-bezier(0.16,1,0.3,1) ${NAV_LINKS.length * 0.07}s`
+            ? `opacity 0.3s ease ${timeDelay}, transform 0.35s cubic-bezier(0.16,1,0.3,1) ${timeDelay}`
             : "opacity 0.15s ease, transform 0.15s ease",
         }}
       >

@@ -5,6 +5,12 @@
 
 import { useEffect, useState } from "react";
 import { isStyleGuideUnlocked } from "./StyleGuideDrawer";
+import {
+  STYLEGUIDE_UNLOCK_KEY,
+  SITE_OWNER,
+  LINKEDIN_URL,
+  X_URL,
+} from "~/lib/constants";
 
 interface FooterProps {
   onOpenStyleGuide?: () => void;
@@ -21,9 +27,9 @@ export function Footer({ onOpenStyleGuide }: FooterProps) {
   // Listen for unlock event from StyleGuideDrawer
   useEffect(() => {
     const handleUnlock = () => setUnlocked(true);
-    window.addEventListener("sc-styleguide-unlocked", handleUnlock);
+    window.addEventListener(STYLEGUIDE_UNLOCK_KEY, handleUnlock);
     return () =>
-      window.removeEventListener("sc-styleguide-unlocked", handleUnlock);
+      window.removeEventListener(STYLEGUIDE_UNLOCK_KEY, handleUnlock);
   }, []);
 
   return (
@@ -51,7 +57,7 @@ export function Footer({ onOpenStyleGuide }: FooterProps) {
           margin: 0,
         }}
       >
-        Stephen Chiang{" "}
+        {SITE_OWNER}{" "}
         <span style={{ color: "#333330" }}>{new Date().getFullYear()}</span>
       </p>
 
@@ -104,11 +110,8 @@ export function Footer({ onOpenStyleGuide }: FooterProps) {
           </button>
         )}
 
-        <FooterLink
-          href="https://linkedin.com/in/stephenchiang"
-          label="LinkedIn"
-        />
-        <FooterLink href="https://x.com/stephenchiang" label="X" />
+        <FooterLink href={LINKEDIN_URL} label="LinkedIn" />
+        <FooterLink href={X_URL} label="X" />
       </div>
     </footer>
   );

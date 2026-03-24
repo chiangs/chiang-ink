@@ -10,6 +10,7 @@ import {
   Nav,
   StyleGuideDrawer,
 } from "~/components/layout";
+import { STYLEGUIDE_UNLOCK_KEY } from "~/lib/constants";
 
 export default function Layout() {
   const [currentlyOpen, setCurrentlyOpen] = useState(false);
@@ -22,7 +23,7 @@ export default function Layout() {
 
   // Fire event so Footer can detect unlock
   const handleFirstUnlock = () => {
-    window.dispatchEvent(new Event("sc-styleguide-unlocked"));
+    window.dispatchEvent(new Event(STYLEGUIDE_UNLOCK_KEY));
   };
 
   return (
