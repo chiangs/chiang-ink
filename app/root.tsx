@@ -10,6 +10,14 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 
+const SW_REGISTRATION_SCRIPT = `
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+`;
+
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
@@ -21,6 +29,15 @@ export const links: Route.LinksFunction = () => [
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap",
   },
+  {
+    rel: "stylesheet",
+    href: "https://api.fontshare.com/v2/css?f[]=clash-display@100,700,900&display=swap",
+  },
+  { rel: "manifest", href: "/manifest.json" },
+  { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+  { rel: "icon", href: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+  { rel: "icon", href: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+  { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -29,6 +46,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#0c0c0c" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="SC" />
         <Meta />
         <Links />
       </head>
@@ -36,6 +57,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
         <ScrollRestoration />
         <Scripts />
+        <script dangerouslySetInnerHTML={{ __html: SW_REGISTRATION_SCRIPT }} />
       </body>
     </html>
   );
