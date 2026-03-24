@@ -7,7 +7,6 @@ const HEADING_LINE_4 = "products get";
 const HEADING_LINE_5 = "built.";
 const SUBTEXT = "Based in Stavanger, Norway — working across product, design, and engineering to build things that matter.";
 const LABEL_PORTRAIT = "PORTRAIT";
-const LABEL_TIMEZONE = "CET";
 const COPYRIGHT = "STEPHEN CHIANG © 2026";
 
 export function Hero() {
@@ -38,13 +37,6 @@ export function Hero() {
           {/* Portrait image goes here — duotone treatment applied via CSS */}
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">{LABEL_PORTRAIT}</span>
-          </div>
-
-          {/* Live time */}
-          <div className="absolute top-6 right-6">
-            <span className="font-body text-[11px] text-text-primary/60 tracking-widest">
-              {LABEL_TIMEZONE}
-            </span>
           </div>
 
           {/* Vertical text */}
