@@ -9,7 +9,6 @@ import {
   STYLEGUIDE_UNLOCK_KEY,
   SITE_OWNER,
   LINKEDIN_URL,
-  X_URL,
 } from "~/lib/constants";
 
 interface FooterProps {
@@ -111,7 +110,6 @@ export function Footer({ onOpenStyleGuide }: FooterProps) {
         )}
 
         <FooterLink href={LINKEDIN_URL} label="LinkedIn" />
-        <FooterLink href={X_URL} label="X" />
       </div>
     </footer>
   );

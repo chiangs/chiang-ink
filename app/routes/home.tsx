@@ -1,5 +1,4 @@
 import type { Route } from "./+types/home";
-import { Nav, Footer } from "~/components";
 import { Hero, WorkRows, AboutStrip, WritingList, ContactStrip } from "~/components/home";
 
 export function meta({}: Route.MetaArgs) {
@@ -15,16 +14,12 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   return (
-    <>
-      <Nav />
-      <main>
-        <Hero />
-        <WorkRows />
-        <AboutStrip />
-        <WritingList />
-        <ContactStrip />
-      </main>
-      <Footer />
-    </>
+    <main>
+      <Hero />
+      <WorkRows />
+      <AboutStrip />
+      <WritingList />
+      <ContactStrip />
+    </main>
   );
 }

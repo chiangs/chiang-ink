@@ -18,5 +18,4 @@ export const STYLEGUIDE_UNLOCK_KEY = "sc-styleguide-unlocked";
 
 // Identity
 export const SITE_OWNER = "Stephen Chiang";
-export const LINKEDIN_URL = "https://linkedin.com/in/stephenchiang";
-export const X_URL = "https://x.com/stephenchiang";
+export const LINKEDIN_URL = "https://linkedin.com/in/chiangs";

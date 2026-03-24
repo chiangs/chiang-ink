@@ -1,10 +1,23 @@
 // StyleGuideDrawer.tsx
-// Triggered by clicking SC monogram when already on homepage
-// Slides in from right, reveals the full design system
-// On first open: persists a footer link via localStorage
+// Triggered by clicking SC monogram when already on homepage.
+// Slides in from right, reveals the full design system.
+// On first open: persists a footer link via localStorage.
+// Content is sourced from app/lib/styleguide.ts — edit there, not here.
 
 import { useEffect, useRef, useState } from "react";
 import { STYLEGUIDE_UNLOCK_KEY } from "~/lib/constants";
+import {
+  STYLEGUIDE_LABEL,
+  STYLEGUIDE_OWNER,
+  STYLEGUIDE_SUBTITLE,
+  UNLOCK_HEADING,
+  UNLOCK_BODY,
+  STYLEGUIDE_COLORS,
+  STYLEGUIDE_TYPE,
+  STYLEGUIDE_SPACING,
+  STYLEGUIDE_MOTION,
+  STYLEGUIDE_FOOTER,
+} from "~/lib/styleguide";
 
 interface StyleGuideDrawerProps {
   isOpen: boolean;
@@ -139,26 +152,25 @@ export function StyleGuideDrawer({
           >
             <p
               style={{
-                fontFamily: "Clash Display, sans-serif",
+                fontFamily: "Space Grotesk, sans-serif",
                 fontSize: "24px",
                 fontWeight: 900,
                 color: "#f5a020",
                 margin: "0 0 8px",
               }}
             >
-              You found it.
+              {UNLOCK_HEADING}
             </p>
             <p
               style={{
-                fontFamily: "Inter, sans-serif",
+                fontFamily: "Manrope, sans-serif",
                 fontSize: "14px",
                 color: "#5a5a58",
                 margin: 0,
                 lineHeight: 1.6,
               }}
             >
-              The design system behind this site. A link has been added to the
-              footer so you can return whenever you like.
+              {UNLOCK_BODY}
             </p>
           </div>
         )}
@@ -167,7 +179,7 @@ export function StyleGuideDrawer({
         <div>
           <p
             style={{
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Manrope, sans-serif",
               fontSize: "11px",
               fontWeight: 500,
               letterSpacing: "0.18em",
@@ -176,11 +188,11 @@ export function StyleGuideDrawer({
               marginBottom: "8px",
             }}
           >
-            Design System
+            {STYLEGUIDE_LABEL}
           </p>
           <h2
             style={{
-              fontFamily: "Clash Display, sans-serif",
+              fontFamily: "Space Grotesk, sans-serif",
               fontSize: "40px",
               fontWeight: 900,
               color: "#efefec",
@@ -188,78 +200,27 @@ export function StyleGuideDrawer({
               lineHeight: 1.1,
             }}
           >
-            Stephen Chiang
+            {STYLEGUIDE_OWNER}
           </h2>
           <p
             style={{
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "Manrope, sans-serif",
               fontSize: "14px",
               color: "#5a5a58",
               margin: 0,
             }}
           >
-            Personal site — design tokens and principles
+            {STYLEGUIDE_SUBTITLE}
           </p>
         </div>
 
         {/* Color Palette */}
         <Section label="Color Palette">
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "8px",
-            }}
-          >
-            {[
-              {
-                token: "--color-bg",
-                hex: "#0c0c0c",
-                name: "Background",
-              },
-              {
-                token: "--color-surface",
-                hex: "#141414",
-                name: "Surface",
-              },
-              {
-                token: "--color-card",
-                hex: "#1a1a1a",
-                name: "Card",
-              },
-              {
-                token: "--color-accent",
-                hex: "#f5a020",
-                name: "Accent",
-              },
-              {
-                token: "--color-text-primary",
-                hex: "#efefec",
-                name: "Text Primary",
-              },
-              {
-                token: "--color-text-muted",
-                hex: "#5a5a58",
-                name: "Text Muted",
-              },
-              {
-                token: "--color-border",
-                hex: "#222220",
-                name: "Border",
-              },
-              {
-                token: "--color-invert-bg",
-                hex: "#f5a020",
-                name: "Invert Background",
-              },
-            ].map((color) => (
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            {STYLEGUIDE_COLORS.map((color) => (
               <div
                 key={color.token}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "16px",
-                }}
+                style={{ display: "flex", alignItems: "center", gap: "16px" }}
               >
                 <div
                   style={{
@@ -273,7 +234,7 @@ export function StyleGuideDrawer({
                 <div>
                   <p
                     style={{
-                      fontFamily: "Inter, sans-serif",
+                      fontFamily: "Manrope, sans-serif",
                       fontSize: "13px",
                       color: "#efefec",
                       margin: "0 0 2px",
@@ -300,72 +261,11 @@ export function StyleGuideDrawer({
 
         {/* Typography Scale */}
         <Section label="Typography Scale">
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "20px",
-            }}
-          >
-            {[
-              {
-                name: "Display",
-                size: "64px",
-                weight: 900,
-                font: "Clash Display",
-                sample: "Engineering",
-              },
-              {
-                name: "Display Light",
-                size: "48px",
-                weight: 100,
-                font: "Clash Display",
-                sample: "Engineering",
-              },
-              {
-                name: "H1",
-                size: "40px",
-                weight: 700,
-                font: "Clash Display",
-                sample: "Section Title",
-              },
-              {
-                name: "H2",
-                size: "32px",
-                weight: 700,
-                font: "Clash Display",
-                sample: "Article Heading",
-              },
-              {
-                name: "Body Large",
-                size: "18px",
-                weight: 400,
-                font: "Inter",
-                sample: "Body copy at reading size, comfortable for long-form",
-              },
-              {
-                name: "Body",
-                size: "16px",
-                weight: 400,
-                font: "Inter",
-                sample: "Standard body text and UI copy",
-              },
-              {
-                name: "Label",
-                size: "11px",
-                weight: 500,
-                font: "Inter",
-                sample: "UPPERCASE LABEL · LETTER SPACED",
-                uppercase: true,
-                letterSpacing: "0.15em",
-              },
-            ].map((type) => (
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            {STYLEGUIDE_TYPE.map((type) => (
               <div
                 key={type.name}
-                style={{
-                  borderBottom: "1px solid #1e1e1e",
-                  paddingBottom: "16px",
-                }}
+                style={{ borderBottom: "1px solid #1e1e1e", paddingBottom: "16px" }}
               >
                 <p
                   style={{
@@ -398,21 +298,8 @@ export function StyleGuideDrawer({
 
         {/* Spacing System */}
         <Section label="Spacing System">
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "12px",
-            }}
-          >
-            {[
-              { name: "Base unit", value: "8px" },
-              { name: "Card padding", value: "40px" },
-              { name: "Row padding", value: "32px" },
-              { name: "Side margins", value: "80px desktop / 24px mobile" },
-              { name: "Section padding", value: "120px desktop / 72px mobile" },
-              { name: "Container max", value: "1280px" },
-            ].map((s) => (
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            {STYLEGUIDE_SPACING.map((s) => (
               <div
                 key={s.name}
                 style={{
@@ -423,22 +310,10 @@ export function StyleGuideDrawer({
                   paddingBottom: "8px",
                 }}
               >
-                <span
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontSize: "13px",
-                    color: "#5a5a58",
-                  }}
-                >
+                <span style={{ fontFamily: "Manrope, sans-serif", fontSize: "13px", color: "#5a5a58" }}>
                   {s.name}
                 </span>
-                <span
-                  style={{
-                    fontFamily: "monospace",
-                    fontSize: "12px",
-                    color: "#f5a020",
-                  }}
-                >
+                <span style={{ fontFamily: "monospace", fontSize: "12px", color: "#f5a020" }}>
                   {s.value}
                 </span>
               </div>
@@ -448,53 +323,15 @@ export function StyleGuideDrawer({
 
         {/* Motion Principles */}
         <Section label="Motion Principles">
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "16px",
-            }}
-          >
-            {[
-              {
-                name: "Load sequence",
-                value: "Staggered fade + slide up, 0.6s ease-out",
-              },
-              {
-                name: "Scroll reveals",
-                value: "translateY(30px) → 0, opacity 0 → 1",
-              },
-              {
-                name: "Hover transitions",
-                value: "0.2s ease — color, background",
-              },
-              {
-                name: "Drawer open",
-                value: "0.45s cubic-bezier(0.16,1,0.3,1)",
-              },
-              {
-                name: "Cursor follower",
-                value: "8px dot, 60ms lag, expands on hover",
-              },
-              {
-                name: "Portrait parallax",
-                value: "0.6x scroll rate via GSAP ScrollTrigger",
-              },
-              {
-                name: "About strip reveal",
-                value: "Color wipe left → right, 0.6s",
-              },
-            ].map((m) => (
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            {STYLEGUIDE_MOTION.map((m) => (
               <div
                 key={m.name}
-                style={{
-                  borderLeft: "2px solid #222220",
-                  paddingLeft: "16px",
-                }}
+                style={{ borderLeft: "2px solid #222220", paddingLeft: "16px" }}
               >
                 <p
                   style={{
-                    fontFamily: "Inter, sans-serif",
+                    fontFamily: "Manrope, sans-serif",
                     fontSize: "12px",
                     fontWeight: 500,
                     color: "#efefec",
@@ -521,7 +358,7 @@ export function StyleGuideDrawer({
         {/* Footer */}
         <p
           style={{
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Manrope, sans-serif",
             fontSize: "11px",
             color: "#5a5a58",
             letterSpacing: "0.05em",
@@ -531,8 +368,7 @@ export function StyleGuideDrawer({
             marginTop: "auto",
           }}
         >
-          Built with React Router v7 · Tailwind CSS v4 · GSAP · Clash Display ·
-          Inter · Deployed on Vercel
+          {STYLEGUIDE_FOOTER}
         </p>
       </div>
     </>
@@ -559,7 +395,7 @@ function Section({
       >
         <p
           style={{
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Manrope, sans-serif",
             fontSize: "11px",
             fontWeight: 500,
             letterSpacing: "0.18em",
@@ -571,13 +407,7 @@ function Section({
         >
           {label}
         </p>
-        <div
-          style={{
-            flex: 1,
-            height: "1px",
-            background: "#222220",
-          }}
-        />
+        <div style={{ flex: 1, height: "1px", background: "#222220" }} />
       </div>
       {children}
     </div>

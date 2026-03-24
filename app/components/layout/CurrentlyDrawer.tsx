@@ -1,49 +1,65 @@
 // CurrentlyDrawer.tsx
-// Triggered by clicking the live time display in the hero
-// Slides in from the right as a personal "currently" snapshot
+// Triggered by clicking the live time display in the nav.
+// Slides in from the right as a personal "currently" snapshot.
+// Content is sourced from app/lib/currently.ts — edit there, not here.
 
 import { useEffect, useRef } from "react";
+import {
+  CURRENTLY_ITEMS,
+  CURRENTLY_TITLE,
+  CURRENTLY_FOOTER,
+  type CurrentlyItem,
+} from "~/lib/currently";
 
-interface CurrentlyDrawerProps {
+const ARIA_CLOSE = "Close currently drawer";
+const LABEL_CLOSE = "ESC ✕";
+
+type CurrentlyDrawerProps = {
   isOpen: boolean;
   onClose: () => void;
-}
+};
 
 export function CurrentlyDrawer({ isOpen, onClose }: CurrentlyDrawerProps) {
   const drawerRef = useRef<HTMLDivElement>(null);
 
   // Close on ESC
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
+    const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  // Close on outside click
+  // Close on outside click — deferred so the opening click doesn't immediately close
   useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
+    if (!isOpen) return;
+    const onPointer = (e: MouseEvent) => {
       if (drawerRef.current && !drawerRef.current.contains(e.target as Node)) {
         onClose();
       }
     };
-    if (isOpen) {
-      setTimeout(
-        () => document.addEventListener("mousedown", handleClick),
-        100,
-      );
-    }
-    return () => document.removeEventListener("mousedown", handleClick);
+    const id = setTimeout(
+      () => document.addEventListener("mousedown", onPointer),
+      100,
+    );
+    return () => {
+      clearTimeout(id);
+      document.removeEventListener("mousedown", onPointer);
+    };
   }, [isOpen, onClose]);
 
-  // Prevent body scroll when open
+  // Prevent body scroll while open
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [isOpen]);
+
+  const blocks = CURRENTLY_ITEMS.map((item) => (
+    <CurrentlyBlock key={`currently-block-${item.label}`} item={item} />
+  ));
 
   return (
     <>
@@ -53,7 +69,7 @@ export function CurrentlyDrawer({ isOpen, onClose }: CurrentlyDrawerProps) {
         style={{
           position: "fixed",
           inset: 0,
-          background: "rgba(12,12,12,0.7)",
+          background: "rgba(13,13,13,0.7)",
           zIndex: 998,
           opacity: isOpen ? 1 : 0,
           pointerEvents: isOpen ? "all" : "none",
@@ -70,11 +86,11 @@ export function CurrentlyDrawer({ isOpen, onClose }: CurrentlyDrawerProps) {
           right: 0,
           bottom: 0,
           width: "min(420px, 90vw)",
-          background: "#141414",
-          borderLeft: "1px solid #f5a020",
+          background: "var(--color-card)",
+          borderLeft: "1px solid var(--color-accent)",
           zIndex: 999,
           transform: isOpen ? "translateX(0)" : "translateX(100%)",
-          transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1)",
+          transition: "transform 0.45s cubic-bezier(0.16,1,0.3,1)",
           overflowY: "auto",
           padding: "48px 40px",
           display: "flex",
@@ -85,171 +101,76 @@ export function CurrentlyDrawer({ isOpen, onClose }: CurrentlyDrawerProps) {
         {/* Close button */}
         <button
           onClick={onClose}
-          style={{
-            position: "absolute",
-            top: "24px",
-            right: "24px",
-            background: "none",
-            border: "none",
-            color: "#5a5a58",
-            fontSize: "11px",
-            fontFamily: "Inter, sans-serif",
-            fontWeight: 500,
-            letterSpacing: "0.15em",
-            textTransform: "uppercase",
-            cursor: "pointer",
-            padding: "4px 8px",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#f5a020")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "#5a5a58")}
+          aria-label={ARIA_CLOSE}
+          className="absolute top-6 right-6 bg-transparent border-0 font-body text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted cursor-pointer p-1 transition-colors duration-200 hover:text-accent"
         >
-          ESC ✕
+          {LABEL_CLOSE}
         </button>
 
         {/* Header */}
         <div>
-          <p
-            style={{
-              fontFamily: "Inter, sans-serif",
-              fontSize: "11px",
-              fontWeight: 500,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "#f5a020",
-              marginBottom: "16px",
-            }}
-          >
-            Currently
+          <p className="font-body text-[11px] font-medium uppercase tracking-[0.18em] text-accent-deep mb-4">
+            {CURRENTLY_TITLE}
           </p>
-          <div
-            style={{
-              width: "40px",
-              height: "1px",
-              background: "#f5a020",
-            }}
-          />
+          <div className="w-10 h-px bg-accent" />
         </div>
 
-        {/* Training */}
-        <CurrentlyBlock
-          label="Training"
-          content={
-            <>
-              Strength, Muay Thai, and hiking.
-              <br />
-              <br />
-              Currently trying to get lost in as many Norwegian fjords as
-              possible.
-            </>
-          }
-        />
+        {/* Content blocks */}
+        {blocks}
 
-        {/* Reading */}
-        <CurrentlyBlock
-          label="Reading"
-          content={
-            <>
-              <em
-                style={{
-                  fontStyle: "italic",
-                  color: "#efefec",
-                }}
-              >
-                The UX of AI
-              </em>{" "}
-              — Greg Nudelman.
-              <br />
-              <br />
-              Mid-way through the chapter on Digital Twins. The overlap with my
-              current project work is uncomfortably well-timed.
-            </>
-          }
-        />
-
-        {/* Life */}
-        <CurrentlyBlock
-          label="Life"
-          content={
-            <>
-              Single father of three.
-              <br />
-              <br />
-              Everything else fits around that.
-            </>
-          }
-        />
-
-        {/* On my mind */}
-        <CurrentlyBlock
-          label="On my mind"
-          content={
-            <>
-              How AI changes the role of the designer — not whether it will, but
-              how fast, and whether the discipline is ready for it.
-            </>
-          }
-        />
-
-        {/* Footer note */}
+        {/* Footer */}
         <p
-          style={{
-            fontFamily: "Inter, sans-serif",
-            fontSize: "11px",
-            color: "#5a5a58",
-            letterSpacing: "0.05em",
-            lineHeight: 1.6,
-            borderTop: "1px solid #222220",
-            paddingTop: "24px",
-            marginTop: "auto",
-          }}
+          className="font-body text-[11px] text-text-muted tracking-[0.05em] leading-relaxed pt-6 mt-auto"
+          style={{ borderTop: "1px solid var(--color-border)" }}
         >
-          Updated periodically. Last updated March 2026.
+          {CURRENTLY_FOOTER}
         </p>
       </div>
     </>
   );
 }
 
-// Reusable block inside the drawer
-function CurrentlyBlock({
-  label,
-  content,
-}: {
-  label: string;
-  content: React.ReactNode;
-}) {
-  return (
-    <div
-      style={{
-        borderLeft: "4px solid #f5a020",
-        paddingLeft: "20px",
-      }}
-    >
+// Individual content block — label + paragraphs, with optional book title italicised
+function CurrentlyBlock({ item }: { item: CurrentlyItem }) {
+  const { label, paragraphs, bookTitle } = item;
+
+  const renderedParagraphs = paragraphs.map((text, i) => {
+    const content =
+      bookTitle && i === 0 ? renderWithBookTitle(text, bookTitle) : text;
+    return (
       <p
-        style={{
-          fontFamily: "Inter, sans-serif",
-          fontSize: "10px",
-          fontWeight: 500,
-          letterSpacing: "0.15em",
-          textTransform: "uppercase",
-          color: "#5a5a58",
-          marginBottom: "12px",
-        }}
-      >
-        {label}
-      </p>
-      <p
-        style={{
-          fontFamily: "Inter, sans-serif",
-          fontSize: "16px",
-          fontWeight: 400,
-          color: "#efefec",
-          lineHeight: 1.75,
-          margin: 0,
-        }}
+        key={i}
+        className="font-body text-[16px] font-normal text-text-primary leading-[1.75] m-0"
+        style={{ marginTop: i > 0 ? "16px" : 0 }}
       >
         {content}
       </p>
+    );
+  });
+
+  return (
+    <div
+      style={{
+        borderLeft: "4px solid var(--color-accent)",
+        paddingLeft: "20px",
+      }}
+    >
+      <p className="font-body text-[10px] font-medium uppercase tracking-[0.15em] text-text-muted mb-3">
+        {label}
+      </p>
+      {renderedParagraphs}
     </div>
+  );
+}
+
+// Splits the paragraph at bookTitle and wraps it in <em>
+function renderWithBookTitle(text: string, bookTitle: string) {
+  const idx = text.indexOf(bookTitle);
+  if (idx === -1) return text;
+  return (
+    <>
+      <em className="italic text-text-primary">{bookTitle}</em>
+      {text.slice(idx + bookTitle.length)}
+    </>
   );
 }

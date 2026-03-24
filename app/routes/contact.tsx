@@ -1,5 +1,3 @@
-import { Nav, Footer } from "~/components";
-
 const PAGE_TITLE = "Contact — Stephen Chiang";
 const SECTION_LABEL = "Contact";
 const HEADING = "Let's talk.";
@@ -21,9 +19,7 @@ export function meta() {
 
 export default function Contact() {
   return (
-    <>
-      <Nav />
-      <main className="py-section-mob md:py-section">
+    <main className="py-section-mob md:py-section">
         <div className="max-w-container mx-auto px-margin-mob md:px-margin">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-start">
             {/* Left */}
@@ -87,8 +83,6 @@ export default function Contact() {
             </form>
           </div>
         </div>
-      </main>
-      <Footer />
-    </>
+    </main>
   );
 }
