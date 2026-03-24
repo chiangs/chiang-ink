@@ -1,10 +1,19 @@
 import { NavLink } from "react-router";
 
-const links = [
+const LABEL_OPEN_MENU = "Open menu";
+
+const NAV_LINKS = [
   { to: "/work", label: "Work" },
   { to: "/writing", label: "Writing" },
   { to: "/contact", label: "Contact" },
 ];
+
+function getNavLinkClass({ isActive }: { isActive: boolean }) {
+  return [
+    "text-label text-[#efefec] relative group transition-colors duration-200",
+    isActive ? "text-[#f5a020]" : "hover:text-[#f5a020]",
+  ].join(" ");
+}
 
 export function Nav() {
   return (
@@ -20,17 +29,9 @@ export function Nav() {
 
         {/* Desktop links */}
         <ul className="hidden md:flex items-center gap-8">
-          {links.map(({ to, label }) => (
+          {NAV_LINKS.map(({ to, label }) => (
             <li key={to}>
-              <NavLink
-                to={to}
-                className={({ isActive }) =>
-                  [
-                    "text-label text-[#efefec] relative group transition-colors duration-200",
-                    isActive ? "text-[#f5a020]" : "hover:text-[#f5a020]",
-                  ].join(" ")
-                }
-              >
+              <NavLink to={to} className={getNavLinkClass}>
                 {label}
                 {/* Underline slide-in */}
                 <span className="absolute -bottom-0.5 left-0 h-px w-full bg-[#f5a020] scale-x-0 group-hover:scale-x-100 transition-transform duration-[250ms] ease-out origin-left" />
@@ -40,10 +41,7 @@ export function Nav() {
         </ul>
 
         {/* Mobile hamburger — stub */}
-        <button
-          aria-label="Open menu"
-          className="md:hidden text-[#efefec] p-2"
-        >
+        <button aria-label={LABEL_OPEN_MENU} className="md:hidden text-[#efefec] p-2">
           <span className="block w-5 h-px bg-current mb-1.5" />
           <span className="block w-5 h-px bg-current mb-1.5" />
           <span className="block w-5 h-px bg-current" />

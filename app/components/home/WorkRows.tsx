@@ -1,5 +1,7 @@
 import { Link } from "react-router";
 
+const SECTION_LABEL = "Selected Work";
+
 // Stub data — replace with MDX/CMS content
 const projects = [
   {
@@ -32,7 +34,7 @@ export function WorkRows() {
   return (
     <section className="section-padding border-b border-[#222220]">
       <div className="container-site">
-        <p className="text-label text-[#5a5a58] mb-16">Selected Work</p>
+        <p className="text-label text-[#5a5a58] mb-16">{SECTION_LABEL}</p>
         <div>
           {projects.map((project) => (
             <WorkRow key={project.slug} {...project} />
@@ -51,33 +53,26 @@ function WorkRow({
   outcome,
   featured,
 }: (typeof projects)[0]) {
+  const rowClass = [
+    "group relative flex items-center justify-between py-8 border-b border-[#222220] transition-colors duration-200",
+    featured
+      ? "bg-[#141414] border-y border-y-[#f5a020] -mx-4 px-4 md:-mx-20 md:px-20"
+      : "hover:bg-[#1e1e1e]",
+  ].join(" ");
+
   return (
-    <Link
-      to={`/work/${slug}`}
-      className={[
-        "group relative flex items-center justify-between py-8 border-b border-[#222220] transition-colors duration-200",
-        featured
-          ? "bg-[#141414] border-y border-y-[#f5a020] -mx-4 px-4 md:-mx-20 md:px-20"
-          : "hover:bg-[#1e1e1e]",
-      ].join(" ")}
-    >
+    <Link to={`/work/${slug}`} className={rowClass}>
       {/* Ghost number */}
       <span
         className="font-display font-black text-[#f5a020] select-none pointer-events-none absolute left-0 transition-opacity duration-200"
-        style={{
-          fontSize: "160px",
-          lineHeight: 1,
-          opacity: 0.08,
-        }}
+        style={{ fontSize: "160px", lineHeight: 1, opacity: 0.08 }}
         aria-hidden
       >
         {number}
       </span>
 
       {/* Project name */}
-      <span
-        className="font-display font-bold text-[36px] text-[#efefec] group-hover:text-[#f5a020] transition-colors duration-200 relative z-10 ml-4"
-      >
+      <span className="font-display font-bold text-[36px] text-[#efefec] group-hover:text-[#f5a020] transition-colors duration-200 relative z-10 ml-4">
         {name}
       </span>
 

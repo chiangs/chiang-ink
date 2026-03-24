@@ -1,5 +1,9 @@
 import { Link } from "react-router";
 
+const SECTION_LABEL = "Writing";
+const LABEL_ALL_POSTS = "All posts →";
+const HREF_WRITING = "/writing";
+
 // Stub data — replace with MDX content
 const posts = [
   {
@@ -30,12 +34,12 @@ export function WritingList() {
     <section className="section-padding border-b border-[#222220]">
       <div className="container-site">
         <div className="flex items-baseline justify-between mb-16">
-          <p className="text-label text-[#5a5a58]">Writing</p>
+          <p className="text-label text-[#5a5a58]">{SECTION_LABEL}</p>
           <Link
-            to="/writing"
+            to={HREF_WRITING}
             className="text-label text-[#f5a020] hover:opacity-60 transition-opacity duration-200"
           >
-            All posts →
+            {LABEL_ALL_POSTS}
           </Link>
         </div>
 
