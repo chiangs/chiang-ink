@@ -7,6 +7,7 @@
 //   data-cursor (no value) → "VIEW →"
 
 import { useEffect, useState } from "react";
+import { CURSOR_LAG } from "~/lib/constants";
 
 const CURSOR_LABEL_VIEW = "VIEW →";
 const CURSOR_LABEL_READ = "READ →";
@@ -59,8 +60,8 @@ export function CursorFollower() {
     };
 
     const animate = () => {
-      dotX += (mouseX - dotX) * 0.15;
-      dotY += (mouseY - dotY) * 0.15;
+      dotX += (mouseX - dotX) * CURSOR_LAG;
+      dotY += (mouseY - dotY) * CURSOR_LAG;
       dot.style.left = `${dotX}px`;
       dot.style.top = `${dotY}px`;
       rafId = requestAnimationFrame(animate);

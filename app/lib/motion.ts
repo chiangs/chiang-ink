@@ -2,9 +2,15 @@
 // Import gsap in components that use these configs
 // All animations are client-side only
 
+import type { default as GSAPType } from "gsap";
+import type { ScrollTrigger as ScrollTriggerType } from "gsap/ScrollTrigger";
+
+type GSAP = typeof GSAPType;
+type ST = typeof ScrollTriggerType;
+
 // Hero load sequence
 // Call from Hero.tsx useEffect after mount
-export const heroLoadSequence = (gsap: any) => {
+export const heroLoadSequence = (gsap: GSAP) => {
   const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
 
   tl.fromTo(
@@ -55,16 +61,17 @@ export const heroLoadSequence = (gsap: any) => {
 
 // Scroll reveal — attach to any element
 // Usage: scrollReveal(gsap, ScrollTrigger, ".my-element")
+// Returns the tween so callers can kill it on unmount
 export const scrollReveal = (
-  gsap: any,
-  ScrollTrigger: any,
+  gsap: GSAP,
+  _ScrollTrigger: ST,
   selector: string,
   options?: {
     stagger?: number;
     delay?: number;
   },
 ) => {
-  gsap.fromTo(
+  return gsap.fromTo(
     selector,
     { opacity: 0, y: 30 },
     {
@@ -84,7 +91,7 @@ export const scrollReveal = (
 };
 
 // About section color wipe
-export const aboutWipe = (gsap: any, ScrollTrigger: any, element: string) => {
+export const aboutWipe = (gsap: GSAP, _ScrollTrigger: ST, element: string) => {
   gsap.fromTo(
     element,
     { clipPath: "inset(0 100% 0 0)" },
@@ -103,8 +110,8 @@ export const aboutWipe = (gsap: any, ScrollTrigger: any, element: string) => {
 
 // Portrait parallax
 export const portraitParallax = (
-  gsap: any,
-  ScrollTrigger: any,
+  gsap: GSAP,
+  _ScrollTrigger: ST,
   element: string,
 ) => {
   gsap.to(element, {
@@ -117,40 +124,4 @@ export const portraitParallax = (
       scrub: true,
     },
   });
-};
-
-// Cursor follower
-// Call once from root.tsx or CursorFollower.tsx
-export const initCursorFollower = () => {
-  if (typeof window === "undefined") return;
-
-  const dot = document.getElementById("cursor-dot");
-  if (!dot) return;
-
-  let mouseX = 0;
-  let mouseY = 0;
-  let dotX = 0;
-  let dotY = 0;
-  const lag = 0.15;
-
-  document.addEventListener("mousemove", (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-  });
-
-  // Expand on hoverable elements
-  const hoverTargets = document.querySelectorAll("[data-cursor-expand]");
-  hoverTargets.forEach((el) => {
-    el.addEventListener("mouseenter", () => dot.classList.add("expanded"));
-    el.addEventListener("mouseleave", () => dot.classList.remove("expanded"));
-  });
-
-  const animate = () => {
-    dotX += (mouseX - dotX) * lag;
-    dotY += (mouseY - dotY) * lag;
-    dot.style.left = `${dotX}px`;
-    dot.style.top = `${dotY}px`;
-    requestAnimationFrame(animate);
-  };
-  animate();
 };

@@ -19,3 +19,7 @@ export const STYLEGUIDE_UNLOCK_KEY = "sc-styleguide-unlocked";
 // Identity
 export const SITE_OWNER = "Stephen Chiang";
 export const LINKEDIN_URL = "https://linkedin.com/in/chiangs";
+
+// Animation timing
+export const ITEM_STAGGER_S = 0.07;
+export const CURSOR_LAG = 0.15;

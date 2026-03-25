@@ -39,12 +39,12 @@ export function CurrentlyDrawer({ isOpen, onClose }: CurrentlyDrawerProps) {
         onClose();
       }
     };
-    const id = setTimeout(
+    const timerId = setTimeout(
       () => document.addEventListener("mousedown", onPointer),
       100,
     );
     return () => {
-      clearTimeout(id);
+      clearTimeout(timerId);
       document.removeEventListener("mousedown", onPointer);
     };
   }, [isOpen, onClose]);

@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
-import { NAV_LINKS } from "~/lib/constants";
+import { NAV_LINKS, ITEM_STAGGER_S } from "~/lib/constants";
 import { useScrolled, useStavTime } from "~/lib/hooks";
 
 // Copy constants
@@ -18,8 +18,6 @@ const ARIA_CLOSE_MENU = "Close menu";
 
 const MONOGRAM_CLASS =
   "font-display font-bold text-accent text-base tracking-[0.05em] transition-opacity duration-200 hover:opacity-70";
-
-const ITEM_STAGGER_S = 0.07;
 
 type NavProps = {
   onOpenStyleGuide?: () => void;

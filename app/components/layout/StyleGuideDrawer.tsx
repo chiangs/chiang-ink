@@ -54,20 +54,22 @@ export function StyleGuideDrawer({
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose]);
 
-  // Close on outside click
+  // Close on outside click — deferred so the opening click doesn't immediately close
   useEffect(() => {
+    if (!isOpen) return;
     const handleClick = (e: MouseEvent) => {
       if (drawerRef.current && !drawerRef.current.contains(e.target as Node)) {
         onClose();
       }
     };
-    if (isOpen) {
-      setTimeout(
-        () => document.addEventListener("mousedown", handleClick),
-        100,
-      );
-    }
-    return () => document.removeEventListener("mousedown", handleClick);
+    const timerId = setTimeout(
+      () => document.addEventListener("mousedown", handleClick),
+      100,
+    );
+    return () => {
+      clearTimeout(timerId);
+      document.removeEventListener("mousedown", handleClick);
+    };
   }, [isOpen, onClose]);
 
   // Prevent body scroll

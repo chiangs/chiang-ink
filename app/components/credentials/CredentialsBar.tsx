@@ -43,32 +43,47 @@ const STAT_CLASS_STEP_3_LAST = `md:bg-surface-highest ${STAT_CLASS_COMMON}`;
 
 export function CredentialsBar() {
   useEffect(() => {
+    const tweens: { kill(): void }[] = [];
+    let isMounted = true;
+
     const init = async () => {
       const { default: gsap } = await import("gsap");
       const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+      if (!isMounted) return;
       gsap.registerPlugin(ScrollTrigger);
-      scrollReveal(gsap, ScrollTrigger, "[data-anim='cred-col']", {
-        stagger: 0.1,
-      });
 
-      gsap.fromTo(
-        "[data-anim='identity-line']",
-        { opacity: 0, x: -28 },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.65,
-          ease: "back.out(1.8)",
-          stagger: 0.13,
-          scrollTrigger: {
-            trigger: "[data-anim='identity-line']",
-            start: "top 85%",
-            once: true,
+      tweens.push(
+        scrollReveal(gsap, ScrollTrigger, "[data-anim='cred-col']", {
+          stagger: 0.1,
+        }),
+      );
+
+      tweens.push(
+        gsap.fromTo(
+          "[data-anim='identity-line']",
+          { opacity: 0, x: -28 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.65,
+            ease: "back.out(1.8)",
+            stagger: 0.13,
+            scrollTrigger: {
+              trigger: "[data-anim='identity-line']",
+              start: "top 85%",
+              once: true,
+            },
           },
-        },
+        ),
       );
     };
+
     init();
+
+    return () => {
+      isMounted = false;
+      tweens.forEach((t) => t.kill());
+    };
   }, []);
 
   return (

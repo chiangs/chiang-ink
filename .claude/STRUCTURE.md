@@ -1,77 +1,82 @@
-stephen-chiang-site/
+chiangs-ink/
 │
-├── DESIGN.md                     ← Feed into every Claude session
-├── README.md
+├── CLAUDE.md                         ← Auto-loaded by Claude Code (must stay in root)
+├── .claude/
+│   ├── DESIGN.md
+│   ├── STRUCTURE.md                  ← This file
+│   └── README.md
+│
 ├── react-router.config.ts
 ├── vite.config.ts
-├── tailwind.config.ts
 ├── tsconfig.json
 ├── package.json
-├── .env
-├── .gitignore
 │
 ├── public/
-│   ├── favicon.svg                   ← Primary favicon (SVG, all sizes)
-│   ├── favicon-32.png                ← PNG fallback (generate from SVG)
-│   ├── apple-touch-icon.png          ← 180×180 iOS home screen icon
-│   ├── icon-192.png                  ← PWA Android icon
-│   ├── icon-512.png                  ← PWA Android icon (large)
-│   ├── manifest.json                 ← PWA web manifest (create in IDE)
 │   └── images/
 │       ├── portrait/
-│       │   └── stephen-chiang.jpg    ← B&W cropped portrait (chest-up)
+│       │   └── stephen-chiang.jpg
 │       └── work/
-│           ├── maritime-intelligence.jpg
-│           ├── data-governance.jpg
-│           └── maritime-dashboard.jpg
+│           └── *.jpg
 │
-├── content/                          ← All MDX content lives here
+├── content/
 │   ├── writing/
-│   │   ├── _template.mdx
-│   │   ├── dashboards-are-not-for-overview.mdx
-│   │   └── design-is-creation-with-researched-intent.mdx
+│   │   └── *.mdx
 │   └── work/
-│       ├── _template.mdx
-│       ├── maritime-intelligence-platform.mdx
-│       ├── enterprise-data-governance-ai-readiness.mdx
-│       └── maritime-operations-financial-intelligence.mdx
+│       └── *.mdx
 │
 └── app/
-    ├── app.css                       ← Design tokens + base styles
-    ├── root.tsx                      ← HTML shell, fonts, cursor
+    ├── app.css                       ← Design tokens (@theme) + base styles + component CSS
+    ├── root.tsx                      ← HTML shell, fonts, CursorFollower mount
+    ├── routes.ts                     ← File-based route definitions
     │
     ├── routes/
-    │   ├── _layout.tsx               ← Nav + Footer wrapper
-    │   ├── _index.tsx                ← Homepage
-    │   ├── work._index.tsx           ← Work index
-    │   ├── work.$slug.tsx            ← Project page template
-    │   ├── writing._index.tsx        ← Writing index
-    │   ├── writing.$slug.tsx         ← Article page template
-    │   └── contact.tsx               ← Contact page
+    │   ├── _layout.tsx               ← Nav + Footer + drawer state wrapper
+    │   ├── home.tsx                  ← Homepage (composes home section components)
+    │   ├── contact.tsx               ← Contact page
+    │   ├── work/
+    │   │   ├── index.tsx             ← Work index
+    │   │   └── $slug.tsx             ← Project page template
+    │   └── writing/
+    │       ├── index.tsx             ← Writing index
+    │       └── $slug.tsx             ← Article page template
     │
     ├── components/
-    │   ├── Nav.tsx                   ← SC monogram + live time + easter egg triggers
-    │   ├── Footer.tsx                ← Easter egg hint + conditional style guide link
-    │   ├── CursorFollower.tsx
-    │   ├── CurrentlyDrawer.tsx       ← Easter egg — personal snapshot drawer
-    │   ├── StyleGuideDrawer.tsx      ← Easter egg — design system drawer
+    │   ├── index.ts                  ← Barrel: re-exports CursorFollower + layout/*
+    │   ├── CursorFollower.tsx        ← RAF-driven cursor dot + ripple (desktop only)
     │   │
-    │   ├── ui/                       ← Reusable UI primitives
-    │   │   ├── PullQuote.tsx
-    │   │   ├── Challenge.tsx
-    │   │   ├── MetricsStrip.tsx
-    │   │   ├── WorkRow.tsx
-    │   │   └── Label.tsx
+    │   ├── layout/
+    │   │   ├── index.ts              ← Barrel re-export
+    │   │   ├── Nav.tsx               ← Sticky nav: monogram + links + Stavanger time
+    │   │   ├── Footer.tsx            ← Footer: easter egg + conditional style guide link
+    │   │   ├── CurrentlyDrawer.tsx   ← Right-side drawer: personal snapshot
+    │   │   └── StyleGuideDrawer.tsx  ← Right-side drawer: design system (easter egg)
     │   │
-    │   └── sections/                 ← Full page sections
-    │       ├── Hero.tsx
-    │       ├── AboutStrip.tsx
-    │       ├── WritingList.tsx
-    │       └── ContactStrip.tsx
+    │   ├── home/
+    │   │   ├── index.ts              ← Barrel re-export
+    │   │   ├── Hero.tsx              ← Split desktop / stacked mobile hero
+    │   │   ├── WorkRows.tsx          ← Selected work list with hover effects
+    │   │   ├── WritingList.tsx       ← Latest writing rows
+    │   │   ├── AboutStrip.tsx        ← Bio strip with scroll animation
+    │   │   └── ContactStrip.tsx      ← Contact CTA strip
+    │   │
+    │   ├── credentials/
+    │   │   ├── index.ts              ← Barrel re-export
+    │   │   ├── CredentialsBar.tsx    ← Identity + stats + status strip
+    │   │   └── CredentialStatColumn.tsx ← Individual stat cell
+    │   │
+    │   └── icons/
+    │       ├── index.ts              ← Barrel re-export
+    │       └── TerminalIcon.tsx
     │
     ├── lib/
-    │   ├── mdx.server.ts             ← MDX loader utilities
-    │   └── motion.ts                 ← GSAP animation configs
+    │   ├── constants.ts              ← Shared literals: nav links, keys, timing constants
+    │   ├── utils.ts                  ← Pure utilities: formatDate, etc.
+    │   ├── hooks.ts                  ← Custom hooks: useScrolled, useStavTime
+    │   ├── motion.ts                 ← GSAP animation functions (typed, return tweens)
+    │   ├── ripple.ts                 ← Touch ripple effect for interactive rows
+    │   ├── currently.ts              ← Currently drawer content data
+    │   ├── styleguide.ts             ← Style guide drawer content data
+    │   └── mdx.server.ts             ← MDX loader utilities (server-only)
     │
     └── types/
         └── content.ts                ← Frontmatter type definitions

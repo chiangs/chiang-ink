@@ -126,6 +126,45 @@ export function Nav() {
 ### Animations
 - Use GSAP for all animations; avoid CSS transitions for complex sequences
 - Simple hover transitions (color, opacity, transform) are fine in Tailwind/CSS
+- **GSAP cleanup**: always capture tween/timeline references and kill them in the `useEffect` cleanup. Use an `isMounted` flag to guard against async GSAP imports resolving after unmount.
+
+```tsx
+// ✅ correct
+useEffect(() => {
+  let tl: { kill(): void } | null = null;
+  let isMounted = true;
+  const init = async () => {
+    const { default: gsap } = await import("gsap");
+    if (!isMounted) return;
+    tl = gsap.timeline({ ... });
+  };
+  init();
+  return () => { isMounted = false; tl?.kill(); };
+}, []);
+
+// ❌ avoid — no cleanup, leaks ScrollTrigger instances on unmount
+useEffect(() => {
+  import("gsap").then(({ default: gsap }) => { gsap.timeline({ ... }); });
+}, []);
+```
+
+- **Style objects as module-level constants**: objects used in JSX `style` props must be declared as `const` at module scope (above the component), not inside the render function. This avoids a new object being allocated on every render.
+
+```tsx
+// ✅ correct — defined once at module scope
+const gradientTextStyle = { background: "var(--gradient-accent)", ... };
+export function Hero() { return <span style={gradientTextStyle}>...</span>; }
+
+// ❌ avoid — recreated on every render
+export function Hero() {
+  const gradientTextStyle = { background: "var(--gradient-accent)", ... };
+  return <span style={gradientTextStyle}>...</span>;
+}
+```
+
+### Utilities
+- Pure functions shared across components live in `~/lib/utils.ts` (e.g. `formatDate`)
+- Shared timing constants live in `~/lib/constants.ts` (e.g. `ITEM_STAGGER_S`, `CURSOR_LAG`)
 
 ## Project Docs
 
@@ -134,9 +173,9 @@ export function Nav() {
 ```
 CLAUDE.md        # auto-loaded by Claude Code — must stay in root
 .claude/
-  DESIGN.md
-  ARCHITECTURE.md
-  ...
+  DESIGN.md      # Visual design decisions, tokens, component patterns
+  STRUCTURE.md   # Actual file tree with annotations
+  README.md      # Project overview and setup
 ```
 
 ## Commands

@@ -5,6 +5,25 @@
 import { useEffect } from "react";
 import { heroLoadSequence } from "~/lib/motion";
 
+const gradientTextStyle = {
+  fontSize: "clamp(72px, 11vw, 120px)",
+  background: "var(--gradient-accent)",
+  WebkitBackgroundClip: "text" as const,
+  WebkitTextFillColor: "transparent" as const,
+  backgroundClip: "text" as const,
+  paddingBottom: "0.1em",
+};
+
+const mobileGradientTextStyle = {
+  fontSize: "clamp(48px, 11vw, 72px)",
+  lineHeight: 1.0,
+  background: "var(--gradient-accent)",
+  WebkitBackgroundClip: "text" as const,
+  WebkitTextFillColor: "transparent" as const,
+  backgroundClip: "text" as const,
+  paddingBottom: "0.1em",
+};
+
 // Desktop copy
 const EYEBROW = "STEPHEN CHIANG // PORTFOLIO 2026";
 const HEADLINE_1 = "Engineering";
@@ -26,14 +45,19 @@ const SCROLL_LABEL_MOBILE = "SCROLL";
 
 export function Hero() {
   useEffect(() => {
+    let tl: { kill(): void } | null = null;
+    let scrollTween: { kill(): void } | null = null;
+    let isMounted = true;
+
     const init = async () => {
       const { default: gsap } = await import("gsap");
       const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+      if (!isMounted) return;
       gsap.registerPlugin(ScrollTrigger);
-      heroLoadSequence(gsap);
+      tl = heroLoadSequence(gsap);
 
       // Fade the entire hero out as user scrolls away
-      gsap.to("[data-anim='hero-section']", {
+      scrollTween = gsap.to("[data-anim='hero-section']", {
         opacity: 0,
         ease: "none",
         scrollTrigger: {
@@ -44,27 +68,15 @@ export function Hero() {
         },
       });
     };
+
     init();
+
+    return () => {
+      isMounted = false;
+      tl?.kill();
+      scrollTween?.kill();
+    };
   }, []);
-
-  const gradientTextStyle = {
-    fontSize: "clamp(72px, 11vw, 120px)",
-    background: "linear-gradient(135deg, #FFB77D 0%, #D97707 50%)",
-    WebkitBackgroundClip: "text" as const,
-    WebkitTextFillColor: "transparent" as const,
-    backgroundClip: "text" as const,
-    paddingBottom: "0.1em",
-  };
-
-  const mobileGradientTextStyle = {
-    fontSize: "clamp(48px, 11vw, 72px)",
-    lineHeight: 1.0,
-    background: "linear-gradient(135deg, #FFB77D 0%, #D97707 50%)",
-    WebkitBackgroundClip: "text" as const,
-    WebkitTextFillColor: "transparent" as const,
-    backgroundClip: "text" as const,
-    paddingBottom: "0.1em",
-  };
 
   return (
     <section

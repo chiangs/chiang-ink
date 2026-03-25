@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import type { ArticleFrontmatter } from "~/types/content";
 import { createRipple } from "~/lib/ripple";
+import { formatDate } from "~/lib/utils";
 
 const SECTION_LABEL = "Writing";
 const LABEL_ALL_POSTS = "All posts →";
@@ -18,13 +19,6 @@ type WritingRowData = {
   readTime: string;
   category: string;
 };
-
-const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"] as const;
-
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr);
-  return `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
-}
 
 export function WritingList({ articles }: Props) {
   const rows: WritingRowData[] = articles.map((a, i) => ({
