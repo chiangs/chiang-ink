@@ -1,33 +1,115 @@
+import { useEffect, useRef } from "react";
 import { Link } from "react-router";
+import { LINKEDIN_URL } from "~/lib/constants";
+
+const HEADING_1_PREFIX = "The right ";
+const HEADING_1_WORD = "problem.";
+const HEADING_2_PREFIX = "The right ";
+const HEADING_2_WORD = "partnership.";
+const BODY =
+  "Open to the right full-time leadership roles and consulting partnerships. If the problem sits at the intersection of design, data, and technology — let's talk.";
+const LABEL_CONTACT = "Contact form →";
+const LABEL_LINKEDIN = "LinkedIn →";
+const HREF_CONTACT = "/contact";
+
+const headlineStyle = {
+  fontFamily: "var(--font-display)",
+  fontWeight: 700,
+  fontSize: "clamp(32px, 5vw, 64px)",
+  color: "#E5E2E1",
+  lineHeight: 0.95,
+  display: "block",
+};
+
+const bodyStyle = {
+  fontFamily: "var(--font-body)",
+  fontWeight: 400,
+  fontSize: "16px",
+  color: "#5a5a58",
+  maxWidth: "480px",
+  lineHeight: 1.75,
+  marginTop: "16px",
+};
+
+const contactLinkStyle = {
+  fontFamily: "var(--font-body)",
+  fontWeight: 500,
+  fontSize: "14px",
+  color: "#FFB77D",
+  textDecoration: "none",
+};
+
+const linkedinLinkStyle = {
+  fontFamily: "var(--font-body)",
+  fontWeight: 500,
+  fontSize: "14px",
+  color: "#5a5a58",
+  textDecoration: "none",
+};
 
 export function ContactStrip() {
-  return (
-    <section className="section-padding bg-[#0c0c0c]">
-      <div className="container-site flex flex-col md:flex-row items-start md:items-end justify-between gap-12">
-        <div>
-          <p className="text-label text-[#5a5a58] mb-6">Get in touch</p>
-          <h2 className="font-display font-black text-[clamp(32px,5vw,64px)] text-[#efefec] leading-[0.95]">
-            Let&apos;s build
-            <br />
-            <span className="text-[#f5a020]">something</span>
-            <br />
-            together.
-          </h2>
-        </div>
+  const sectionRef = useRef<HTMLElement>(null);
 
-        <div className="flex flex-col items-start gap-4">
-          <a
-            href="mailto:stephen@chiang.studio"
-            className="text-label text-[#f5a020] border-b border-[#f5a020] pb-0.5 hover:opacity-60 transition-opacity duration-200"
-          >
-            stephen@chiang.studio
-          </a>
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          section.classList.add("contact-in-view");
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      style={{ paddingTop: "120px", paddingBottom: "120px" }}
+      className="bg-bg"
+    >
+      <div className="max-w-container mx-auto px-margin-mob md:px-margin">
+        <p style={headlineStyle}>
+          {HEADING_1_PREFIX}
+          <span className="contact-highlight contact-highlight--accent">{HEADING_1_WORD}</span>
+        </p>
+        <p style={headlineStyle}>
+          {HEADING_2_PREFIX}
+          <span className="contact-highlight contact-highlight--deep">{HEADING_2_WORD}</span>
+        </p>
+
+        <p style={bodyStyle}>{BODY}</p>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "32px",
+            marginTop: "40px",
+          }}
+        >
           <Link
-            to="/contact"
-            className="text-label bg-[#f5a020] text-[#0c0c0c] px-8 py-4 font-bold hover:bg-[#0c0c0c] hover:text-[#f5a020] border border-[#f5a020] transition-colors duration-200"
+            to={HREF_CONTACT}
+            style={contactLinkStyle}
+            className="contact-strip-link contact-strip-link--accent contact-cta-link"
           >
-            OPEN CONTACT FORM →
+            {LABEL_CONTACT}
           </Link>
+          <a
+            href={LINKEDIN_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={linkedinLinkStyle}
+            className="contact-strip-link contact-strip-link--muted contact-cta-link"
+          >
+            {LABEL_LINKEDIN}
+          </a>
         </div>
       </div>
     </section>

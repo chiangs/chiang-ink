@@ -1,47 +1,53 @@
 import { Link } from "react-router";
+import type { ArticleFrontmatter } from "~/types/content";
+import { createRipple } from "~/lib/ripple";
+import { formatDate } from "~/lib/utils";
 
-// Stub data — replace with MDX content
-const posts = [
-  {
-    slug: "post-one",
-    number: "01",
-    title: "On building product teams that ship",
-    date: "Mar 2026",
-    readTime: "6 min read",
-  },
-  {
-    slug: "post-two",
-    number: "02",
-    title: "Design systems as organisational strategy",
-    date: "Feb 2026",
-    readTime: "8 min read",
-  },
-  {
-    slug: "post-three",
-    number: "03",
-    title: "Why engineers should care about typography",
-    date: "Jan 2026",
-    readTime: "4 min read",
-  },
-];
+const SECTION_LABEL = "Writing";
+const LABEL_ALL_POSTS = "All posts →";
+const HREF_WRITING = "/writing";
 
-export function WritingList() {
+type Props = {
+  articles: ArticleFrontmatter[];
+};
+
+type WritingRowData = {
+  slug: string;
+  number: string;
+  title: string;
+  date: string;
+  readTime: string;
+  category: string;
+};
+
+export function WritingList({ articles }: Props) {
+  const rows: WritingRowData[] = articles.map((a, i) => ({
+    slug: a.slug ?? "",
+    number: String(i + 1).padStart(2, "0"),
+    title: a.title,
+    date: formatDate(a.date),
+    readTime: a.readTime,
+    category: a.category,
+  }));
+
   return (
-    <section className="section-padding border-b border-[#222220]">
-      <div className="container-site">
+    <section className="py-section-mob md:py-section border-b border-border">
+      <div className="max-w-container mx-auto px-margin-mob md:px-margin">
         <div className="flex items-baseline justify-between mb-16">
-          <p className="text-label text-[#5a5a58]">Writing</p>
+          <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">
+            {SECTION_LABEL}
+          </p>
           <Link
-            to="/writing"
-            className="text-label text-[#f5a020] hover:opacity-60 transition-opacity duration-200"
+            to={HREF_WRITING}
+            className="text-[11px] font-medium uppercase tracking-[0.15em] text-accent hover:opacity-60 transition-opacity duration-200"
           >
-            All posts →
+            {LABEL_ALL_POSTS}
           </Link>
         </div>
 
         <div>
-          {posts.map((post) => (
-            <WritingRow key={post.slug} {...post} />
+          {rows.map((row) => (
+            <WritingRow key={row.slug} {...row} />
           ))}
         </div>
       </div>
@@ -49,39 +55,53 @@ export function WritingList() {
   );
 }
 
-function WritingRow({
-  slug,
-  number,
-  title,
-  date,
-  readTime,
-}: (typeof posts)[0]) {
+function WritingRow({ slug, number, title, date, readTime, category }: WritingRowData) {
   return (
     <Link
       to={`/writing/${slug}`}
-      className="group relative flex items-center justify-between py-8 border-b border-[#222220] overflow-hidden"
+      className="writing-row group relative flex flex-wrap md:flex-nowrap items-center md:justify-between py-6 md:py-8 border-b border-border overflow-hidden"
+      data-cursor="read"
+      onTouchStart={createRipple}
     >
       {/* Hover bar slides in from left */}
-      <span className="absolute left-0 top-0 bottom-0 w-1 bg-[#f5a020] scale-y-0 group-hover:scale-y-100 transition-transform duration-200 origin-top" />
+      <span className="left-bar absolute left-0 top-0 bottom-0 w-1 bg-accent scale-y-0 group-hover:scale-y-100 transition-transform duration-200 origin-top" />
 
       {/* Ghost number */}
       <span
-        className="font-display font-black text-[#f5a020] select-none pointer-events-none absolute left-0 transition-opacity duration-200 group-hover:opacity-[0.6]"
-        style={{ fontSize: "48px", lineHeight: 1, opacity: 0.2 }}
+        className="writing-ghost-number font-display font-black text-accent select-none pointer-events-none absolute left-0 transition-opacity duration-200 group-hover:opacity-[0.6]"
+        style={{ lineHeight: 1, opacity: 0.2, position: "absolute", zIndex: 0 }}
         aria-hidden
       >
         {number}
       </span>
 
       {/* Title */}
-      <span className="font-display font-bold text-[28px] md:text-[32px] text-[#efefec] group-hover:text-[#f5a020] transition-colors duration-200 relative z-10 ml-12">
+      <span
+        className="font-display font-bold text-[clamp(18px,4.5vw,24px)] md:text-[32px] text-text-primary group-hover:text-accent transition-colors duration-200 ml-12 w-full md:w-auto"
+        style={{ position: "relative", zIndex: 1 }}
+      >
         {title}
       </span>
 
-      {/* Meta */}
-      <div className="flex items-center gap-4 relative z-10 shrink-0 ml-8">
-        <span className="text-label text-[#5a5a58]">{date}</span>
-        <span className="text-label text-[#5a5a58]">{readTime}</span>
+      {/* Mobile meta — single condensed line below title */}
+      <span
+        className="md:hidden font-body font-medium uppercase text-text-muted ml-12 w-full"
+        style={{ fontSize: "10px", letterSpacing: "0.12em", marginTop: "8px", position: "relative", zIndex: 1 }}
+      >
+        {category} · {date} · {readTime}
+      </span>
+
+      {/* Desktop meta — three separate spans */}
+      <div className="hidden md:flex items-center gap-4 relative z-10 shrink-0 ml-8">
+        <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">
+          {category}
+        </span>
+        <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">
+          {date}
+        </span>
+        <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">
+          {readTime}
+        </span>
       </div>
     </Link>
   );

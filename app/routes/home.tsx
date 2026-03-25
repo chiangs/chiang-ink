@@ -1,11 +1,22 @@
 import type { Route } from "./+types/home";
-import { Nav } from "~/components/Nav";
-import { Footer } from "~/components/Footer";
-import { Hero } from "~/components/home/Hero";
-import { WorkRows } from "~/components/home/WorkRows";
-import { AboutStrip } from "~/components/home/AboutStrip";
-import { WritingList } from "~/components/home/WritingList";
-import { ContactStrip } from "~/components/home/ContactStrip";
+import { useLoaderData } from "react-router";
+import { getFeaturedProjects, getFeaturedArticles } from "~/lib/mdx.server";
+import {
+  Hero,
+  CredentialsBar,
+  WorkRows,
+  AboutStrip,
+  WritingList,
+  ContactStrip,
+} from "~/components/home";
+
+export async function loader() {
+  const [projects, articles] = await Promise.all([
+    getFeaturedProjects(),
+    getFeaturedArticles(),
+  ]);
+  return { projects, articles };
+}
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -19,17 +30,16 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
+  const { projects, articles } = useLoaderData<typeof loader>();
+
   return (
-    <>
-      <Nav />
-      <main>
-        <Hero />
-        <WorkRows />
-        <AboutStrip />
-        <WritingList />
-        <ContactStrip />
-      </main>
-      <Footer />
-    </>
+    <main>
+      <Hero />
+      <CredentialsBar />
+      <WorkRows projects={projects} />
+      <AboutStrip />
+      <WritingList articles={articles} />
+      <ContactStrip />
+    </main>
   );
 }

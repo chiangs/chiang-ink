@@ -1,41 +1,41 @@
 import { Link } from "react-router";
+import type { ProjectFrontmatter } from "~/types/content";
+import { createRipple } from "~/lib/ripple";
 
-// Stub data — replace with MDX/CMS content
-const projects = [
-  {
-    slug: "project-one",
-    number: "01",
-    name: "Project One",
-    category: "Product Strategy",
-    outcome: "Reduced time-to-ship by 40%",
-    featured: false,
-  },
-  {
-    slug: "project-two",
-    number: "02",
-    name: "Project Two",
-    category: "Design Systems",
-    outcome: "Unified design language across 6 products",
-    featured: true,
-  },
-  {
-    slug: "project-three",
-    number: "03",
-    name: "Project Three",
-    category: "Engineering",
-    outcome: "Scaled platform to 2M users",
-    featured: false,
-  },
-];
+const SECTION_LABEL = "Selected Work";
 
-export function WorkRows() {
+type Props = {
+  projects: ProjectFrontmatter[];
+};
+
+type WorkRowData = {
+  slug: string;
+  number: string;
+  name: string;
+  category: string;
+  outcome: string;
+  featured: boolean;
+};
+
+export function WorkRows({ projects }: Props) {
+  const rows: WorkRowData[] = projects.map((p, i) => ({
+    slug: p.slug ?? "",
+    number: String(i + 1).padStart(2, "0"),
+    name: p.title,
+    category: p.tags[0] ?? "",
+    outcome: p.metrics[0] ? `${p.metrics[0].value} ${p.metrics[0].label}` : "",
+    featured: p.featured,
+  }));
+
   return (
-    <section className="section-padding border-b border-[#222220]">
-      <div className="container-site">
-        <p className="text-label text-[#5a5a58] mb-16">Selected Work</p>
+    <section className="py-section-mob md:py-section">
+      <div className="max-w-container mx-auto px-margin-mob md:px-margin">
+        <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted mb-16">
+          {SECTION_LABEL}
+        </p>
         <div>
-          {projects.map((project) => (
-            <WorkRow key={project.slug} {...project} />
+          {rows.map((row) => (
+            <WorkRow key={row.slug} {...row} />
           ))}
         </div>
       </div>
@@ -43,48 +43,33 @@ export function WorkRows() {
   );
 }
 
-function WorkRow({
-  slug,
-  number,
-  name,
-  category,
-  outcome,
-  featured,
-}: (typeof projects)[0]) {
+function WorkRow({ slug, number, name, category, outcome, featured }: WorkRowData) {
+  const featuredClass = featured
+    ? "bg-surface border-y border-y-accent -mx-margin-mob px-margin-mob md:-mx-margin md:px-margin"
+    : "";
+  const rowClass = `work-row relative flex flex-wrap md:flex-nowrap items-center md:justify-between py-6 md:py-8 ${featuredClass}`;
+
   return (
-    <Link
-      to={`/work/${slug}`}
-      className={[
-        "group relative flex items-center justify-between py-8 border-b border-[#222220] transition-colors duration-200",
-        featured
-          ? "bg-[#141414] border-y border-y-[#f5a020] -mx-4 px-4 md:-mx-20 md:px-20"
-          : "hover:bg-[#1e1e1e]",
-      ].join(" ")}
-    >
+    <Link to={`/work/${slug}`} className={rowClass} data-cursor="view" onTouchStart={createRipple}>
       {/* Ghost number */}
       <span
-        className="font-display font-black text-[#f5a020] select-none pointer-events-none absolute left-0 transition-opacity duration-200"
-        style={{
-          fontSize: "160px",
-          lineHeight: 1,
-          opacity: 0.08,
-        }}
+        className="ghost-number font-display font-black text-accent select-none pointer-events-none absolute left-0"
         aria-hidden
       >
         {number}
       </span>
 
       {/* Project name */}
-      <span
-        className="font-display font-bold text-[36px] text-[#efefec] group-hover:text-[#f5a020] transition-colors duration-200 relative z-10 ml-4"
-      >
+      <span className="project-title font-display font-bold text-[clamp(20px,5vw,28px)] md:text-[36px] relative z-10 ml-4 w-full md:w-auto">
         {name}
       </span>
 
-      {/* Right side */}
-      <div className="flex flex-col items-end gap-1 relative z-10">
-        <span className="text-label text-[#5a5a58]">{category}</span>
-        <span className="text-[14px] text-[#5a5a58]">{outcome}</span>
+      {/* Meta — stacked below title on mobile, right-aligned column on desktop */}
+      <div className="flex flex-row justify-between md:flex-col md:items-end gap-1 relative z-10 w-full md:w-auto mt-2 md:mt-0 max-w-full overflow-hidden">
+        <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">
+          {category}
+        </span>
+        <span className="outcome-text text-[14px] text-text-muted">{outcome}</span>
       </div>
     </Link>
   );
