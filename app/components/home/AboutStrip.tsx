@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { LINKEDIN_URL } from "~/lib/constants";
 
 const SECTION_LABEL = "About";
-const GHOST_NUMBER = "001";
+const GHOST_NUMBER = `020`;
 const BIO_1 =
   "Most organisations don't hire a Design Technologist. They hire a CTO, a Tech Lead, a Head of Product, or a Strategy Consultant — and they get someone who only speaks one language.";
 const BIO_2 = "I speak all of them.";
@@ -36,7 +36,7 @@ export function AboutStrip() {
           observer.disconnect();
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
 
     observer.observe(section);
@@ -44,7 +44,10 @@ export function AboutStrip() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden bg-accent py-section-mob md:py-section">
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-accent py-section-mob md:py-section"
+    >
       {/* Ghost number clips left — unchanged */}
       <span
         className="font-display font-black text-invert-text select-none pointer-events-none absolute -left-8 top-1/2 -translate-y-1/2"
