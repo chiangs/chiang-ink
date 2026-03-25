@@ -30,9 +30,13 @@ export function CursorFollower() {
   const [label, setLabel] = useState<string | null>(null);
   const [ripples, setRipples] = useState<Ripple[]>([]);
 
-  // Step 1 — detect environment; skip touch devices
+  // Step 1 — detect environment; skip touch/hybrid devices
   useEffect(() => {
-    if (window.matchMedia("(pointer: coarse)").matches) return;
+    const isTouchDevice =
+      window.matchMedia("(pointer: coarse)").matches ||
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0;
+    if (isTouchDevice) return;
     setMounted(true);
   }, []);
 

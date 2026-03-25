@@ -114,6 +114,12 @@ html {
     overflow: hidden;
 }
 
+@media (pointer: coarse) {
+    #cursor-dot {
+        display: none !important;
+    }
+}
+
 /* Cursor ripple */
 @keyframes cursor-ripple {
     from {
@@ -310,6 +316,14 @@ html {
     z-index: 5;
     text-align: right;
     line-height: 1.6;
+}
+
+/* ── Ripple effect ── */
+@keyframes ripple-expand {
+    to {
+        transform: scale(2.5);
+        opacity: 0;
+    }
 }
 
 /* ── Work rows — CSS hover (more reliable than Tailwind group-hover) ── */

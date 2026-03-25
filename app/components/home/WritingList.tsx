@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import type { ArticleFrontmatter } from "~/types/content";
+import { createRipple } from "~/lib/ripple";
 
 const SECTION_LABEL = "Writing";
 const LABEL_ALL_POSTS = "All posts →";
@@ -66,6 +67,7 @@ function WritingRow({ slug, number, title, date, readTime, category }: WritingRo
       to={`/writing/${slug}`}
       className="writing-row group relative flex flex-wrap md:flex-nowrap items-center md:justify-between py-6 md:py-8 border-b border-border overflow-hidden"
       data-cursor="read"
+      onTouchStart={createRipple}
     >
       {/* Hover bar slides in from left */}
       <span className="left-bar absolute left-0 top-0 bottom-0 w-1 bg-accent scale-y-0 group-hover:scale-y-100 transition-transform duration-200 origin-top" />

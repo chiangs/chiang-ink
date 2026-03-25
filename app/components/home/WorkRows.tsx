@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import type { ProjectFrontmatter } from "~/types/content";
+import { createRipple } from "~/lib/ripple";
 
 const SECTION_LABEL = "Selected Work";
 
@@ -49,7 +50,7 @@ function WorkRow({ slug, number, name, category, outcome, featured }: WorkRowDat
   const rowClass = `work-row relative flex flex-wrap md:flex-nowrap items-center md:justify-between py-6 md:py-8 ${featuredClass}`;
 
   return (
-    <Link to={`/work/${slug}`} className={rowClass} data-cursor="view">
+    <Link to={`/work/${slug}`} className={rowClass} data-cursor="view" onTouchStart={createRipple}>
       {/* Ghost number */}
       <span
         className="ghost-number font-display font-black text-accent select-none pointer-events-none absolute left-0"
