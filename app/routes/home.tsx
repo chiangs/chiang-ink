@@ -18,7 +18,7 @@ export async function loader() {
   return { projects, articles };
 }
 
-export function meta({}: Route.MetaArgs) {
+export function meta(_: Route.MetaArgs) {
   return [
     { title: "Stephen Chiang — Design Technologist" },
     {

@@ -1,1 +1,1 @@
-# pre-commit hook — add checks here (e.g. lint-staged)
+npx lint-staged

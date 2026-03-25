@@ -1,5 +1,7 @@
 // Industries — Industries & sectors section for About page
 import { useEffect, useRef } from "react";
+import type { Feature, FeatureCollection, Geometry } from "geojson";
+import type { Topology, GeometryCollection } from "topojson-specification";
 
 const IND_ORG_LABEL = "ORGANISATION TYPES";
 
@@ -99,12 +101,10 @@ function WorldMap({ className = "" }: { className?: string }) {
 
       const pathGen = d3.geoPath().projection(projection);
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const topo = (await d3.json(MAP_TOPO_URL)) as any;
+      const topo = (await d3.json(MAP_TOPO_URL)) as Topology<{ countries: GeometryCollection }>;
       if (!isMounted) return;
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const countries = feature(topo, topo.objects.countries) as any;
+      const countries = feature(topo, topo.objects.countries) as FeatureCollection<Geometry>;
 
       svg
         .append("rect")
@@ -112,13 +112,12 @@ function WorldMap({ className = "" }: { className?: string }) {
         .attr("height", MAP_H)
         .attr("fill", MAP_COLOR_OCEAN);
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       svg
-        .selectAll<SVGPathElement, any>("path")
+        .selectAll<SVGPathElement, Feature<Geometry>>("path")
         .data(countries.features)
         .join("path")
-        .attr("d", (d: any) => pathGen(d) ?? "")
-        .attr("fill", (d: any) =>
+        .attr("d", (d: Feature<Geometry>) => pathGen(d) ?? "")
+        .attr("fill", (d: Feature<Geometry>) =>
           MAP_HIGHLIGHTED.has(Number(d.id))
             ? MAP_COLOR_HIGHLIGHT
             : MAP_COLOR_BASE,
@@ -127,14 +126,15 @@ function WorldMap({ className = "" }: { className?: string }) {
         .style("cursor", "default")
         .on(
           "mouseenter",
-          function (this: SVGPathElement, _: MouseEvent, d: any) {
+          // eslint-disable-next-line react-hooks/unsupported-syntax -- D3 requires `this` binding for DOM element access
+          function (this: SVGPathElement, _: MouseEvent, d: Feature<Geometry>) {
             if (MAP_HIGHLIGHTED.has(Number(d.id)))
               d3.select(this).attr("fill", MAP_COLOR_HOVER);
           },
         )
         .on(
           "mouseleave",
-          function (this: SVGPathElement, _: MouseEvent, d: any) {
+          function (this: SVGPathElement, _: MouseEvent, d: Feature<Geometry>) {
             if (MAP_HIGHLIGHTED.has(Number(d.id)))
               d3.select(this).attr("fill", MAP_COLOR_HIGHLIGHT);
           },
