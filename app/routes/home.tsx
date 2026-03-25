@@ -1,14 +1,14 @@
-import type { Route } from "./+types/home";
 import { useLoaderData } from "react-router";
-import { getFeaturedProjects, getFeaturedArticles } from "~/lib/mdx.server";
+import { ContactStrip } from "~/components/common";
 import {
-  Hero,
-  CredentialsBar,
-  WorkRows,
   AboutStrip,
+  CredentialsBar,
+  Hero,
+  WorkRows,
   WritingList,
-  ContactStrip,
 } from "~/components/home";
+import { getFeaturedArticles, getFeaturedProjects } from "~/lib/mdx.server";
+import type { Route } from "./+types/home";
 
 export async function loader() {
   const [projects, articles] = await Promise.all([
@@ -18,7 +18,7 @@ export async function loader() {
   return { projects, articles };
 }
 
-export function meta({}: Route.MetaArgs) {
+export function meta(_: Route.MetaArgs) {
   return [
     { title: "Stephen Chiang — Design Technologist" },
     {

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router";
-import { LINKEDIN_URL } from "~/lib/constants";
+import { LINKEDIN_URL, HREF_CONTACT } from "~/lib/constants";
 
 const HEADING_1_PREFIX = "The right ";
 const HEADING_1_WORD = "problem.";
@@ -10,7 +10,6 @@ const BODY =
   "Open to the right full-time leadership roles and consulting partnerships. If the problem sits at the intersection of design, data, and technology — let's talk.";
 const LABEL_CONTACT = "Contact form →";
 const LABEL_LINKEDIN = "LinkedIn →";
-const HREF_CONTACT = "/contact";
 
 const headlineStyle = {
   fontFamily: "var(--font-display)",

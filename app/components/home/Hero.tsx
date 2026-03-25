@@ -4,6 +4,7 @@
 
 import { useEffect } from "react";
 import { heroLoadSequence } from "~/lib/motion";
+import { SITE_OWNER } from "~/lib/constants";
 
 const gradientTextStyle = {
   fontSize: "clamp(72px, 11vw, 120px)",
@@ -33,7 +34,7 @@ const DESCRIPTOR = "DESIGN TECHNOLOGIST · PRODUCT LEAD · UX ENGINEER";
 const SCROLL_CTA = "SCROLL TO EXPLORE";
 const SCROLL_ARROW = "↓";
 const PORTRAIT_SRC = "/images/portrait/stephen-chiang.jpg";
-const PORTRAIT_ALT = "Stephen Chiang";
+const PORTRAIT_ALT = SITE_OWNER;
 const CAPTION_REF = "REF_016 // PORTRAIT";
 const CAPTION_ISO = "ISO 400 // 85MM";
 const VERTICAL_TEXT = "STEPHEN CHIANG © 2026";

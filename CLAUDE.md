@@ -63,6 +63,7 @@ import { Hero } from "~/components/home/Hero";
 ### Styling
 - TailwindCSS v4 — no `tailwind.config` file; tokens defined in `app/app.css` under `@theme`
 - Use design tokens from `@theme` when available — never use raw hex values
+- **Tailwind over inline styles**: always prefer Tailwind classes over `style` props. Use `style` only for values that cannot be expressed as a Tailwind class (e.g. `clamp()`, `calc()`, CSS variables, dynamic JS-computed values, or one-off values with no token equivalent). Responsive variants (`md:`), state variants (`hover:`), and arbitrary values (`text-[11px]`, `w-[76%]`) cover most cases.
 - **No border-radius** — `* { border-radius: 0 !important }` is a global rule; never add `rounded-*` classes
 - Responsive breakpoint: `md` (768px) for desktop/mobile splits
 - No custom utility classes — use token-based Tailwind classes directly:

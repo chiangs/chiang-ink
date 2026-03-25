@@ -17,7 +17,7 @@ const STAT_2_NUM = "14";
 const STAT_2_LABEL = "YEARS IN US DEPT. OF DEFENSE";
 const STAT_3_NUM = "9";
 const STAT_3_LABEL = "INDUSTRIES";
-const STAT_4_NUM = "6";
+const STAT_4_NUM = "8";
 const STAT_4_LABEL = "COUNTRIES";
 const STAT_5_NUM = "5+";
 const STAT_5_LABEL = "ORGANISATION TYPES";
@@ -34,7 +34,8 @@ const STATUS_BODY_2 =
   "Available for senior technology and product leadership roles.";
 
 // Stat column classNames — mobile: plain cells; desktop: bg steps + borders + padding
-const STAT_CLASS_COMMON = "flex flex-col gap-3 md:flex-1 md:px-5 md:pb-8 md:pt-20";
+const STAT_CLASS_COMMON =
+  "flex flex-col gap-3 md:flex-1 md:px-5 md:pb-8 md:pt-20";
 const STAT_CLASS_STEP_COMMON = "md:border-r md:border-border";
 const STAT_CLASS_STEP_1_BORDER = `md:bg-hover-surface ${STAT_CLASS_COMMON} ${STAT_CLASS_STEP_COMMON}`;
 const STAT_CLASS_STEP_2_BORDER = `md:bg-surface-high ${STAT_CLASS_COMMON} ${STAT_CLASS_STEP_COMMON}`;
@@ -112,7 +113,7 @@ export function CredentialsBar() {
         </div>
 
         {/* ── Cols 2–7 — Stats band ── */}
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 p-card md:flex md:flex-row md:flex-1 md:p-0">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 p-card md:flex md:flex-row md:flex-1 md:p-0 md:gap-0">
           <CredentialStatColumn
             num={STAT_1_NUM}
             label={STAT_1_LABEL}
