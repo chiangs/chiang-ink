@@ -4,6 +4,7 @@
 
 // Navigation
 export const NAV_LINKS = [
+  { label: "About", to: "/about" },
   { label: "Work", to: "/work" },
   { label: "Writing", to: "/writing" },
   { label: "Contact", to: "/contact" },
@@ -18,7 +19,12 @@ export const STYLEGUIDE_UNLOCK_KEY = "sc-styleguide-unlocked";
 
 // Identity
 export const SITE_OWNER = "Stephen Chiang";
+export const SITE_LOCATION = "Stavanger, Norway";
 export const LINKEDIN_URL = "https://linkedin.com/in/chiangs";
+
+// Routes
+export const HREF_CONTACT = "/contact";
+export const HREF_WRITING = "/writing";
 
 // Animation timing
 export const ITEM_STAGGER_S = 0.07;

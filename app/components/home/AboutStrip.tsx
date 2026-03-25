@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { LINKEDIN_URL } from "~/lib/constants";
+import { LINKEDIN_URL, SITE_LOCATION } from "~/lib/constants";
 
 const SECTION_LABEL = "About";
 const GHOST_NUMBER = `020`;
@@ -10,7 +10,7 @@ const BIO_3 =
   "20+ years leading product development at the critical intersection of people, process, and technology. Currently building the next generation of data and AI-driven digital experiences at enterprise scale.";
 const BIO_4 =
   "The rare hire who closes the gap between what technology can do and what a business needs to deliver.";
-const LOCATION = "Stavanger, Norway";
+const LOCATION = SITE_LOCATION;
 const LABEL_LINKEDIN = "LinkedIn";
 
 const bio2Style = {

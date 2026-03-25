@@ -48,6 +48,11 @@
     box-sizing: border-box;
 }
 
+/* Circular elements — overrides the global border-radius: 0 !important */
+.circle {
+    border-radius: 50% !important;
+}
+
 html {
     background-color: var(--color-bg);
     color: var(--color-text-primary);
@@ -519,6 +524,12 @@ html {
 
 .contact-strip-link--muted:hover {
     color: #FFB77D;
+}
+
+/* ─── About circular portrait ───────────────────── */
+
+.portrait-circle-img {
+    filter: grayscale(1);
 }
 
 /* ─── Scroll arrow pulse ─────────────────────────── */

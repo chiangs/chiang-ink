@@ -2,10 +2,10 @@ import { Link } from "react-router";
 import type { ArticleFrontmatter } from "~/types/content";
 import { createRipple } from "~/lib/ripple";
 import { formatDate } from "~/lib/utils";
+import { HREF_WRITING } from "~/lib/constants";
 
 const SECTION_LABEL = "Writing";
 const LABEL_ALL_POSTS = "All posts →";
-const HREF_WRITING = "/writing";
 
 type Props = {
   articles: ArticleFrontmatter[];

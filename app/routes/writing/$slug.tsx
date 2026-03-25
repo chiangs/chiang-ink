@@ -1,8 +1,9 @@
 import type { Route } from "./+types/$slug";
+import { SITE_OWNER, HREF_WRITING } from "~/lib/constants";
 
-const SITE_SUFFIX = "— Stephen Chiang";
+const SITE_SUFFIX = `— ${SITE_OWNER}`;
 const BREADCRUMB_LABEL = "Writing";
-const BREADCRUMB_HREF = "/writing";
+const BREADCRUMB_HREF = HREF_WRITING;
 const BREADCRUMB_SEPARATOR = " / ";
 const HEADING = "Article title";
 const CONTENT_PLACEHOLDER = "Content coming soon.";
