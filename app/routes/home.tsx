@@ -1,4 +1,6 @@
 import type { Route } from "./+types/home";
+import { useLoaderData } from "react-router";
+import { getFeaturedProjects, getFeaturedArticles } from "~/lib/mdx.server";
 import {
   Hero,
   CredentialsBar,
@@ -7,6 +9,14 @@ import {
   WritingList,
   ContactStrip,
 } from "~/components/home";
+
+export async function loader() {
+  const [projects, articles] = await Promise.all([
+    getFeaturedProjects(),
+    getFeaturedArticles(),
+  ]);
+  return { projects, articles };
+}
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -20,13 +30,15 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
+  const { projects, articles } = useLoaderData<typeof loader>();
+
   return (
     <main>
       <Hero />
       <CredentialsBar />
-      <WorkRows />
+      <WorkRows projects={projects} />
       <AboutStrip />
-      <WritingList />
+      <WritingList articles={articles} />
       <ContactStrip />
     </main>
   );

@@ -1,40 +1,47 @@
 import { Link } from "react-router";
+import type { ArticleFrontmatter } from "~/types/content";
 
 const SECTION_LABEL = "Writing";
 const LABEL_ALL_POSTS = "All posts →";
 const HREF_WRITING = "/writing";
 
-// Stub data — replace with MDX content
-const posts = [
-  {
-    slug: "post-one",
-    number: "01",
-    title: "On building product teams that ship",
-    date: "Mar 2026",
-    readTime: "6 min read",
-  },
-  {
-    slug: "post-two",
-    number: "02",
-    title: "Design systems as organisational strategy",
-    date: "Feb 2026",
-    readTime: "8 min read",
-  },
-  {
-    slug: "post-three",
-    number: "03",
-    title: "Why engineers should care about typography",
-    date: "Jan 2026",
-    readTime: "4 min read",
-  },
-];
+type Props = {
+  articles: ArticleFrontmatter[];
+};
 
-export function WritingList() {
+type WritingRowData = {
+  slug: string;
+  number: string;
+  title: string;
+  date: string;
+  readTime: string;
+  category: string;
+};
+
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"] as const;
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  return `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+}
+
+export function WritingList({ articles }: Props) {
+  const rows: WritingRowData[] = articles.map((a, i) => ({
+    slug: a.slug ?? "",
+    number: String(i + 1).padStart(2, "0"),
+    title: a.title,
+    date: formatDate(a.date),
+    readTime: a.readTime,
+    category: a.category,
+  }));
+
   return (
     <section className="py-section-mob md:py-section border-b border-border">
       <div className="max-w-container mx-auto px-margin-mob md:px-margin">
         <div className="flex items-baseline justify-between mb-16">
-          <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">{SECTION_LABEL}</p>
+          <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">
+            {SECTION_LABEL}
+          </p>
           <Link
             to={HREF_WRITING}
             className="text-[11px] font-medium uppercase tracking-[0.15em] text-accent hover:opacity-60 transition-opacity duration-200"
@@ -44,8 +51,8 @@ export function WritingList() {
         </div>
 
         <div>
-          {posts.map((post) => (
-            <WritingRow key={post.slug} {...post} />
+          {rows.map((row) => (
+            <WritingRow key={row.slug} {...row} />
           ))}
         </div>
       </div>
@@ -53,13 +60,7 @@ export function WritingList() {
   );
 }
 
-function WritingRow({
-  slug,
-  number,
-  title,
-  date,
-  readTime,
-}: (typeof posts)[0]) {
+function WritingRow({ slug, number, title, date, readTime, category }: WritingRowData) {
   return (
     <Link
       to={`/writing/${slug}`}
@@ -84,8 +85,15 @@ function WritingRow({
 
       {/* Meta */}
       <div className="flex items-center gap-4 relative z-10 shrink-0 ml-8">
-        <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">{date}</span>
-        <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">{readTime}</span>
+        <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">
+          {category}
+        </span>
+        <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">
+          {date}
+        </span>
+        <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">
+          {readTime}
+        </span>
       </div>
     </Link>
   );

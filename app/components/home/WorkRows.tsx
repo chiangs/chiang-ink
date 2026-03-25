@@ -1,43 +1,40 @@
 import { Link } from "react-router";
+import type { ProjectFrontmatter } from "~/types/content";
 
 const SECTION_LABEL = "Selected Work";
 
-// Stub data — replace with MDX/CMS content
-const projects = [
-  {
-    slug: "project-one",
-    number: "01",
-    name: "Project One",
-    category: "Product Strategy",
-    outcome: "Reduced time-to-ship by 40%",
-    featured: false,
-  },
-  {
-    slug: "project-two",
-    number: "02",
-    name: "Project Two",
-    category: "Design Systems",
-    outcome: "Unified design language across 6 products",
-    featured: true,
-  },
-  {
-    slug: "project-three",
-    number: "03",
-    name: "Project Three",
-    category: "Engineering",
-    outcome: "Scaled platform to 2M users",
-    featured: false,
-  },
-];
+type Props = {
+  projects: ProjectFrontmatter[];
+};
 
-export function WorkRows() {
+type WorkRowData = {
+  slug: string;
+  number: string;
+  name: string;
+  category: string;
+  outcome: string;
+  featured: boolean;
+};
+
+export function WorkRows({ projects }: Props) {
+  const rows: WorkRowData[] = projects.map((p, i) => ({
+    slug: p.slug ?? "",
+    number: String(i + 1).padStart(2, "0"),
+    name: p.title,
+    category: p.tags[0] ?? "",
+    outcome: p.metrics[0] ? `${p.metrics[0].value} ${p.metrics[0].label}` : "",
+    featured: p.featured,
+  }));
+
   return (
-    <section className="py-section-mob md:py-section border-b border-border">
+    <section className="py-section-mob md:py-section">
       <div className="max-w-container mx-auto px-margin-mob md:px-margin">
-        <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted mb-16">{SECTION_LABEL}</p>
+        <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted mb-16">
+          {SECTION_LABEL}
+        </p>
         <div>
-          {projects.map((project) => (
-            <WorkRow key={project.slug} {...project} />
+          {rows.map((row) => (
+            <WorkRow key={row.slug} {...row} />
           ))}
         </div>
       </div>
@@ -45,41 +42,34 @@ export function WorkRows() {
   );
 }
 
-function WorkRow({
-  slug,
-  number,
-  name,
-  category,
-  outcome,
-  featured,
-}: (typeof projects)[0]) {
-  const rowClass = [
-    "group relative flex items-center justify-between py-8 border-b border-border transition-colors duration-200",
-    featured
-      ? "bg-surface border-y border-y-accent -mx-margin-mob px-margin-mob md:-mx-margin md:px-margin"
-      : "hover:bg-hover-surface",
-  ].join(" ");
+function WorkRow({ slug, number, name, category, outcome, featured }: WorkRowData) {
+  const featuredClass = featured
+    ? "bg-surface border-y border-y-accent -mx-margin-mob px-margin-mob md:-mx-margin md:px-margin"
+    : "";
+  const rowClass = `work-row relative flex items-center justify-between py-8 ${featuredClass}`;
 
   return (
-    <Link to={`/work/${slug}`} className={rowClass}>
+    <Link to={`/work/${slug}`} className={rowClass} data-cursor-expand>
       {/* Ghost number */}
       <span
-        className="font-display font-black text-accent select-none pointer-events-none absolute left-0 transition-opacity duration-200"
-        style={{ fontSize: "160px", lineHeight: 1, opacity: 0.08 }}
+        className="ghost-number font-display font-black text-accent select-none pointer-events-none absolute left-0"
+        style={{ fontSize: "160px", lineHeight: 1 }}
         aria-hidden
       >
         {number}
       </span>
 
       {/* Project name */}
-      <span className="font-display font-bold text-[36px] text-text-primary group-hover:text-accent transition-colors duration-200 relative z-10 ml-4">
+      <span className="project-title font-display font-bold text-[36px] relative z-10 ml-4">
         {name}
       </span>
 
       {/* Right side */}
       <div className="flex flex-col items-end gap-1 relative z-10">
-        <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">{category}</span>
-        <span className="text-[14px] text-text-muted">{outcome}</span>
+        <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">
+          {category}
+        </span>
+        <span className="outcome-text text-[14px] text-text-muted">{outcome}</span>
       </div>
     </Link>
   );

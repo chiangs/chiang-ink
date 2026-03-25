@@ -5,6 +5,7 @@ export type ArticleFrontmatter = {
   readTime: string;
   category: string;
   featured: boolean;
+  order: number;
   slug?: string;
 };
 
@@ -24,5 +25,6 @@ export type ProjectFrontmatter = {
   metrics: ProjectMetric[];
   heroImage: string;
   featured: boolean;
+  order: number;
   slug?: string;
 };

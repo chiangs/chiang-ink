@@ -43,7 +43,7 @@ export async function getArticle(slug: string) {
   };
 }
 
-// Get all projects sorted by year descending
+// Get all projects sorted by order ascending
 export async function getAllProjects(): Promise<ProjectFrontmatter[]> {
   const dir = path.join(CONTENT_DIR, "work");
   const files = await fs.readdir(dir);
@@ -61,7 +61,7 @@ export async function getAllProjects(): Promise<ProjectFrontmatter[]> {
       }),
   );
 
-  return projects.sort((a, b) => b.year.localeCompare(a.year));
+  return projects.sort((a, b) => a.order - b.order);
 }
 
 // Get single project by slug

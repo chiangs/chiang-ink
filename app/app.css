@@ -197,6 +197,48 @@ html {
     }
 }
 
+/* ── Work rows — CSS hover (more reliable than Tailwind group-hover) ── */
+.work-row {
+    display: flex;
+    align-items: center;
+    min-height: 110px;
+    background: transparent;
+    transition: background 0.2s ease;
+}
+
+.work-row + .work-row {
+    border-top: 1px solid #222220;
+}
+
+.work-row .outcome-text {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.work-row:hover {
+    background: #1e1e1e;
+}
+
+.work-row .project-title {
+    color: #E5E2E1;
+    transition: color 0.2s ease;
+}
+
+.work-row:hover .project-title {
+    color: #FFB77D;
+}
+
+.work-row .ghost-number {
+    opacity: 0.08;
+    transition: opacity 0.2s ease;
+}
+
+.work-row:hover .ghost-number {
+    opacity: 0.18;
+}
+
 /* ─── Scroll arrow pulse ─────────────────────────── */
 
 @keyframes arrow-pulse {
