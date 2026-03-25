@@ -247,6 +247,68 @@ html {
     opacity: 0.18;
 }
 
+/* ─── Contact strip highlight sweep ────────────── */
+
+.contact-highlight {
+    background-size: 200% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.contact-highlight--accent {
+    background-image: linear-gradient(to right, #FFB77D 50%, #E5E2E1 50%);
+}
+
+.contact-highlight--deep {
+    background-image: linear-gradient(to right, #D97707 50%, #E5E2E1 50%);
+}
+
+@keyframes contact-text-sweep {
+    to { background-position: 0% 0; }
+}
+
+@keyframes contact-fade-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.contact-in-view .contact-highlight--accent {
+    animation: contact-text-sweep 1.0s ease forwards;
+}
+
+.contact-in-view .contact-highlight--deep {
+    animation: contact-text-sweep 1.0s ease 1.2s forwards;
+}
+
+.contact-cta-link {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.contact-in-view .contact-cta-link:nth-child(1) {
+    animation: contact-fade-up 0.5s ease 2.6s forwards;
+}
+
+.contact-in-view .contact-cta-link:nth-child(2) {
+    animation: contact-fade-up 0.5s ease 2.85s forwards;
+}
+
+/* ─── Contact strip links ───────────────────────── */
+
+.contact-strip-link {
+    text-underline-offset: 3px;
+}
+
+.contact-strip-link:hover {
+    text-decoration: underline;
+}
+
+.contact-strip-link--muted:hover {
+    color: #FFB77D;
+}
+
 /* ─── Scroll arrow pulse ─────────────────────────── */
 
 @keyframes arrow-pulse {
