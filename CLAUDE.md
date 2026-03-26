@@ -7,6 +7,14 @@ GSAP, Space Grotesk + Manrope, deployed on Vercel.
 
 ---
 
+## Backlog
+
+Before starting any task, check `.claude/BACKLOG.md`
+to see if the task is listed there. If it is, ask
+whether it should be checked off once complete.
+
+---
+
 ## Design System
 
 The single source of truth for all design decisions

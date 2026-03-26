@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useReducer, useRef } from "react";
-import { Link, useLoaderData } from "react-router";
+import { useLoaderData } from "react-router";
 import { Fuse } from "~/lib/fuse";
 import type { Route } from "./+types/index";
 import type { ProjectFrontmatter } from "~/types/content";
 import { getAllProjects } from "~/lib/mdx.server";
-import { createRipple } from "~/lib/ripple";
 import { ITEM_STAGGER_S } from "~/lib/constants";
 import { InsightsPanel } from "~/components/work";
+import { WorkRow } from "~/components/common";
 import { PatternWaves, PatternLines, PatternCircles } from "~/lib/visx";
 
 // ─── Page copy ───────────────────────────────────────────────────────────────
@@ -17,8 +17,8 @@ const PAGE_DESCRIPTION =
 const SECTION_LABEL = "SELECTED WORK";
 const HEADLINE = "Work.";
 const PLACEHOLDER_SEARCH = "What are you interested in?";
-const LABEL_ALL_INDUSTRIES = "All Industries";
-const LABEL_ALL_SOLUTION_TYPES = "All Solution Types";
+const LABEL_ALL_INDUSTRIES = "Industries";
+const LABEL_ALL_SOLUTION_TYPES = "Solution Types";
 const LABEL_INDUSTRY = "Industry";
 const LABEL_SOLUTION_TYPE = "Solution Type";
 const LABEL_CLEAR_ALL = "Clear all →";
@@ -62,7 +62,6 @@ const waveOverlayStyle = {
   zIndex: 0,
 };
 const headerContentStyle = { position: "relative" as const, zIndex: 1 };
-const controlBarStyle = { paddingTop: "24px", paddingBottom: "24px" };
 const activeTagsBarStyle = { paddingTop: "12px", paddingBottom: "12px" };
 const emptyStateStyle = { margin: "80px auto" };
 
@@ -77,9 +76,6 @@ const FUSE_OPTIONS = {
   threshold: 0.3,
   includeScore: true,
 };
-
-const MAX_TAGS = 3;
-const MAX_METRICS = 3;
 
 // ─── Reducer ──────────────────────────────────────────────────────────────────
 
@@ -282,9 +278,34 @@ export default function WorkIndex() {
       tl = gsap.timeline({ delay: 0.2 });
       (tl as ReturnType<typeof gsap.timeline>)
         // All three animate simultaneously
-        .to("#cover-chaos", { scaleX: 0, scaleY: 0, opacity: 0, transformOrigin: "0% 0%", duration: 0.7, ease: "power2.out" }, 0)
-        .to("#cover-waves", { scaleX: 0, opacity: 0, transformOrigin: "100% 50%", duration: 0.55, ease: "power1.inOut" }, 0)
-        .to("#dots-pattern", { y: 0, opacity: 1, duration: 0.55, ease: "power2.out" }, 0);
+        .to(
+          "#cover-chaos",
+          {
+            scaleX: 0,
+            scaleY: 0,
+            opacity: 0,
+            transformOrigin: "0% 0%",
+            duration: 0.7,
+            ease: "power2.out",
+          },
+          0,
+        )
+        .to(
+          "#cover-waves",
+          {
+            scaleX: 0,
+            opacity: 0,
+            transformOrigin: "100% 50%",
+            duration: 0.55,
+            ease: "power1.inOut",
+          },
+          0,
+        )
+        .to(
+          "#dots-pattern",
+          { y: 0, opacity: 1, duration: 0.55, ease: "power2.out" },
+          0,
+        );
     };
     init();
     return () => {
@@ -342,7 +363,7 @@ export default function WorkIndex() {
   const projectsList =
     filteredProjects.length > 0 ? (
       filteredProjects.map((project, i) => (
-        <ProjectRow key={project.slug} project={project} index={i} />
+        <WorkRow key={project.slug} project={project} index={i} />
       ))
     ) : (
       <EmptyState onClear={handleClearAll} />
@@ -391,15 +412,54 @@ export default function WorkIndex() {
             />
           </defs>
           {/* LEFT: Chaos — crosshatch */}
-          <rect x="0" y="0" width="33.33%" height="100%" fill="url(#chaos-lines-1)" />
-          <rect x="0" y="0" width="33.33%" height="100%" fill="url(#chaos-lines-2)" />
+          <rect
+            x="0"
+            y="0"
+            width="33.33%"
+            height="100%"
+            fill="url(#chaos-lines-1)"
+          />
+          <rect
+            x="0"
+            y="0"
+            width="33.33%"
+            height="100%"
+            fill="url(#chaos-lines-2)"
+          />
           {/* MIDDLE: Transition — waves */}
-          <rect x="33.33%" y="0" width="33.33%" height="100%" fill="url(#wave-pattern)" />
+          <rect
+            x="33.33%"
+            y="0"
+            width="33.33%"
+            height="100%"
+            fill="url(#wave-pattern)"
+          />
           {/* RIGHT: Order — dot grid */}
-          <rect id="dots-pattern" x="66.66%" y="0" width="33.34%" height="100%" fill="url(#dot-grid)" />
+          <rect
+            id="dots-pattern"
+            x="66.66%"
+            y="0"
+            width="33.34%"
+            height="100%"
+            fill="url(#dot-grid)"
+          />
           {/* Reveal covers — GSAP animates these away on load */}
-          <rect id="cover-chaos" x="0" y="0" width="33.33%" height="100%" fill="#131313" />
-          <rect id="cover-waves" x="33.33%" y="0" width="33.33%" height="100%" fill="#131313" />
+          <rect
+            id="cover-chaos"
+            x="0"
+            y="0"
+            width="33.33%"
+            height="100%"
+            fill="#131313"
+          />
+          <rect
+            id="cover-waves"
+            x="33.33%"
+            y="0"
+            width="33.33%"
+            height="100%"
+            fill="#131313"
+          />
         </svg>
         <div
           className="max-w-container mx-auto px-margin-mob md:px-margin pt-section-mob md:pt-section pb-12 md:pb-16"
@@ -422,8 +482,8 @@ export default function WorkIndex() {
 
       {/* Control bar + active tags */}
       <div ref={controlBarRef}>
-        <div className="bg-surface" style={controlBarStyle}>
-          <div className="max-w-container mx-auto px-margin-mob md:px-margin flex flex-col md:flex-row md:items-center gap-4 md:gap-0">
+        <div className="bg-surface py-4 md:py-6">
+          <div className="max-w-container mx-auto px-margin-mob md:px-margin flex flex-col md:flex-row md:items-center gap-2 md:gap-0">
             {/* Search input */}
             <div className="relative flex items-center w-full md:w-70">
               <SearchIcon />
@@ -445,7 +505,7 @@ export default function WorkIndex() {
             </div>
 
             {/* Filter dropdowns */}
-            <div className="flex gap-3 md:ml-8">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-3 md:ml-8">
               <FilterDropdown
                 label={LABEL_INDUSTRY}
                 defaultLabel={LABEL_ALL_INDUSTRIES}
@@ -473,7 +533,7 @@ export default function WorkIndex() {
             </div>
 
             {/* Results count + clear */}
-            <div className="flex items-center md:ml-auto">
+            <div className="flex items-center mt-1 md:mt-0 md:ml-auto">
               <span className="font-body font-normal text-[12px] text-text-muted">
                 {resultsLabel}
               </span>
@@ -522,7 +582,10 @@ export default function WorkIndex() {
       </div>
 
       {/* Project list */}
-      <div ref={rowsContainerRef} className="max-w-container mx-auto px-margin-mob md:px-margin">
+      <div
+        ref={rowsContainerRef}
+        className="max-w-container mx-auto md:px-margin"
+      >
         {projectsList}
       </div>
     </main>
@@ -552,14 +615,14 @@ function FilterDropdown({
 }: FilterDropdownProps) {
   const buttonLabel =
     selected.length > 0 ? `${label} (${selected.length})` : defaultLabel;
-  const chevronClass = `ml-2 inline-block ${isOpen ? "rotate-180" : "rotate-0"}`;
+  const chevronClass = `ml-auto pl-4 inline-block ${isOpen ? "rotate-180" : "rotate-0"}`;
   const chevronStyle = { transition: "transform var(--transition-fast)" };
 
   return (
     <div className="relative" data-dropdown>
       <button
         onClick={onToggleOpen}
-        className="flex items-center bg-bg border-b border-border font-body font-medium text-[12px] text-text-muted uppercase tracking-[0.1em] px-3 whitespace-nowrap"
+        className="flex items-center justify-between w-full md:w-auto bg-bg border-b border-border font-body font-medium text-[12px] text-text-muted uppercase tracking-[0.1em] px-3 whitespace-nowrap"
         style={{ height: "40px", transition: "color var(--transition-fast)" }}
       >
         {buttonLabel}
@@ -568,7 +631,7 @@ function FilterDropdown({
         </span>
       </button>
       {isOpen && (
-        <div className="absolute top-full left-0 z-50 bg-hover-surface border border-border min-w-[220px] mt-1">
+        <div className="absolute top-full left-0 z-50 bg-hover-surface border border-border w-full md:w-auto md:min-w-[220px] mt-1">
           {options.map((option) => {
             const isSelected = selected.includes(option);
             const optionClass = `flex items-center justify-between w-full text-left font-body font-normal text-[13px] px-4 py-[10px] ${
@@ -592,106 +655,6 @@ function FilterDropdown({
   );
 }
 
-type ProjectRowProps = {
-  project: ProjectFrontmatter;
-  index: number;
-};
-
-const ghostNumberStyle = { fontSize: "120px", opacity: 0.08 };
-const ghostNumberMobStyle = { fontSize: "72px", opacity: 0.08 };
-
-function ProjectRow({ project, index }: ProjectRowProps) {
-  const number = String(index + 1).padStart(2, "0");
-  const displayTags = project.tags.slice(0, MAX_TAGS);
-  const displayMetrics = project.metrics.slice(0, MAX_METRICS);
-  const industryLabel = project.industry?.[0] ?? "";
-
-  return (
-    <Link
-      to={`/work/${project.slug}`}
-      className="work-row group relative flex items-center min-h-[120px] border-b border-border overflow-hidden"
-      style={{
-        padding: "0 24px",
-        transition: "background var(--transition-fast)",
-      }}
-      data-cursor="view"
-      onTouchStart={createRipple}
-    >
-      {/* Ghost number */}
-      <span
-        className="hidden md:block absolute left-[-10px] font-display font-bold text-accent select-none pointer-events-none leading-none group-hover:opacity-[0.16]"
-        style={{
-          ...ghostNumberStyle,
-          transition: "opacity var(--transition-fast)",
-        }}
-        aria-hidden
-      >
-        {number}
-      </span>
-      <span
-        className="md:hidden absolute left-0 font-display font-bold text-accent select-none pointer-events-none leading-none"
-        style={ghostNumberMobStyle}
-        aria-hidden
-      >
-        {number}
-      </span>
-
-      {/* Zone 2: Title + tags */}
-      <div className="flex-1 pl-[72px] md:pl-20 py-6">
-        <span
-          className="font-display font-bold text-text-primary group-hover:text-accent block"
-          style={{
-            fontSize: "clamp(18px, 4.5vw, 22px)",
-            transition: "color var(--transition-fast)",
-          }}
-        >
-          {project.title}
-        </span>
-        <div className="flex flex-wrap gap-[6px] mt-2">
-          {displayTags.map((tag) => (
-            <span
-              key={tag}
-              className="font-body font-medium text-[10px] text-text-muted uppercase tracking-[0.1em] border border-border px-2 py-[2px]"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Zone 3: Metrics — desktop only */}
-      {displayMetrics.length > 0 && (
-        <div className="hidden md:flex flex-col gap-1 w-[280px] py-6">
-          {displayMetrics.map((m) => (
-            <div key={m.label} className="flex items-baseline gap-2">
-              <span className="font-display font-bold text-[16px] text-accent">
-                {m.value}
-              </span>
-              <span className="font-body font-normal text-[11px] text-text-muted">
-                {m.label}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Zone 4: Meta */}
-      <div className="text-right min-w-[120px] py-6">
-        <span className="font-display font-bold text-[13px] text-text-primary block">
-          {project.year}
-        </span>
-        <span className="font-body font-medium text-[10px] text-text-muted uppercase tracking-[0.1em] block mt-1">
-          {project.status}
-        </span>
-        {industryLabel && (
-          <span className="hidden md:block font-body font-medium text-[10px] text-accent uppercase tracking-[0.1em] mt-1">
-            {industryLabel}
-          </span>
-        )}
-      </div>
-    </Link>
-  );
-}
 
 function EmptyState({ onClear }: { onClear: () => void }) {
   return (

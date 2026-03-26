@@ -14,7 +14,7 @@ export async function loadD3() {
 // Async loader for d3-force.
 // Call loadD3Force() to get force simulation utilities.
 export async function loadD3Force() {
-  const { forceSimulation, forceLink, forceManyBody, forceCenter } =
+  const { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide } =
     await import("d3-force");
-  return { forceSimulation, forceLink, forceManyBody, forceCenter };
+  return { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide };
 }

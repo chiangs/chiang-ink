@@ -1,8 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { hierarchy, Treemap, treemapSquarify } from "~/lib/visx";
-import { HeatmapRect } from "~/lib/visx";
-import { Graph } from "~/lib/visx";
-import { useParentSize } from "~/lib/visx";
+import { hierarchy, Treemap, treemapSquarify, Group, useParentSize } from "~/lib/visx";
 import { loadD3Force } from "~/lib/d3";
 import type { ProjectFrontmatter } from "~/types/content";
 
@@ -12,11 +9,20 @@ const LABEL_WORK_INSIGHTS = "WORK INSIGHTS";
 const LABEL_HIDE = "Hide ↑";
 const LABEL_SHOW = "Show ↓";
 const LABEL_INDUSTRY_PROPORTION = "INDUSTRY PROPORTION";
-const LABEL_PROJECT_ACTIVITY = "PROJECT ACTIVITY";
+const LABEL_INDUSTRY_PROPORTION_SUB = "Proportion of work by sector";
+const LABEL_CAPABILITY_SPREAD = "CAPABILITY SPREAD";
+const LABEL_CAPABILITY_SPREAD_SUB = "Solution type depth across all work";
+const LABEL_RADAR_EMPTY = "Add more projects to generate capability spread.";
 const LABEL_WORK_CONNECTIONS = "WORK CONNECTIONS";
+const LABEL_WORK_CONNECTIONS_SUB =
+  "Solution types and roles connected through project work";
 const LABEL_TECH_STACK = "TECH STACK";
+const LABEL_TECH_STACK_SUB =
+  "Sized by frequency · Copper = used across multiple projects";
 const LABEL_AVG_MVP = "AVG. TIME TO MVP";
 const LABEL_MONTHS_TO_MVP = "months to MVP";
+const LABEL_NETWORK_EMPTY =
+  "Add more projects to reveal work connections.";
 
 // ─── Industry colour map ──────────────────────────────────────────────────────
 
@@ -40,24 +46,17 @@ const WAFFLE_GAP = 2;
 const WAFFLE_TOTAL = WAFFLE_COLS * WAFFLE_ROWS;
 const WAFFLE_SVG = WAFFLE_COLS * (WAFFLE_CELL + WAFFLE_GAP) - WAFFLE_GAP;
 
-const HEAT_MONTHS = [
-  "J",
-  "F",
-  "M",
-  "A",
-  "M",
-  "J",
-  "J",
-  "A",
-  "S",
-  "O",
-  "N",
-  "D",
-];
-const HEAT_CELL = 14;
-const HEAT_GAP = 2;
+const RADAR_HEIGHT = 280;
+const RADAR_OUTER_R = 90;
+const RADAR_OUTER_R_MOB = 70;
+const RADAR_RINGS = 3;
+const RADAR_MAX_AXES = 8;
+const RADAR_LABEL_OFFSET = 14;
+const RADAR_LINE_HEIGHT = 13;
 
-const NETWORK_NODE_R = 5;
+const NETWORK_HEIGHT = 240;
+const NETWORK_SOL_R = 6;
+const NETWORK_LABEL_MAX = 14;
 
 // ─── Style objects ────────────────────────────────────────────────────────────
 
@@ -70,16 +69,33 @@ const avgValueStyle = {
   fontFamily: "var(--font-display)",
   fontWeight: 700,
 };
-const legendGridStyle = { gridTemplateColumns: "1fr 1fr" };
+const networkLegendStyle: React.CSSProperties = {
+  position: "absolute",
+  top: 8,
+  right: 8,
+  display: "flex",
+  flexDirection: "column",
+  gap: 4,
+  pointerEvents: "none",
+};
+const tooltipBaseStyle: React.CSSProperties = {
+  position: "absolute",
+  background: "#2a2a2a",
+  padding: "8px 12px",
+  pointerEvents: "none",
+  zIndex: 10,
+  maxWidth: 180,
+};
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type InsightData = {
   industryCounts: [string, number][];
-  yearMonthData: { year: number; month: number; count: number }[];
-  years: number[];
-  networkNodes: { id: string; type: "role" | "industry" | "tag" }[];
+  radarAxes: { label: string; value: number }[];
+  networkNodes: { id: string; type: "solutionType" | "role" }[];
   networkLinks: { source: string; target: string }[];
+  networkLinkCounts: Record<string, number>;
+  networkNodeProjectCounts: Record<string, number>;
   stackTree: { name: string; children: { name: string; value: number }[] }[];
   avgMVP: number | null;
   totalProjects: number;
@@ -90,46 +106,39 @@ type InsightData = {
 
 function computeInsights(projects: ProjectFrontmatter[]): InsightData {
   const rawIndustry: Record<string, number> = {};
-  const rawYearMonth: Record<string, number> = {};
+  const rawSolutionType: Record<string, number> = {};
   const rawFrameworks: Record<string, number> = {};
   const rawLanguages: Record<string, number> = {};
   const rawPlatforms: Record<string, number> = {};
   const mvpTimes: number[] = [];
 
-  const nodeSet = new Set<string>();
-  const linkSet = new Set<string>();
-  const edges: { source: string; target: string }[] = [];
+  // Network: solutionType ↔ role
+  const networkLinkCounts: Record<string, number> = {};
+  const solSet = new Set<string>();
+  const roleSet = new Set<string>();
+  const nodeProjectCounts: Record<string, number> = {};
 
   for (const p of projects) {
-    const year = Number(p.year);
-    // distribute across months evenly for heatmap
-    const monthKey = `${year}-${(year % 12) + 1}`;
-    rawYearMonth[monthKey] = (rawYearMonth[monthKey] ?? 0) + 1;
+    const inds = p.industries ?? p.industry ?? [];
+    const sols = p.solutionType ?? [];
+    const roles = p.roles ?? [];
 
-    for (const ind of p.industries ?? p.industry ?? []) {
+    for (const ind of inds) {
       rawIndustry[ind] = (rawIndustry[ind] ?? 0) + 1;
-      if (!nodeSet.has(`ind:${ind}`)) {
-        nodeSet.add(`ind:${ind}`);
-      }
     }
-    for (const role of p.roles) {
-      if (!nodeSet.has(`role:${role}`)) {
-        nodeSet.add(`role:${role}`);
-      }
+    for (const sol of sols) {
+      rawSolutionType[sol] = (rawSolutionType[sol] ?? 0) + 1;
+      solSet.add(`sol:${sol}`);
+      nodeProjectCounts[`sol:${sol}`] = (nodeProjectCounts[`sol:${sol}`] ?? 0) + 1;
     }
-    for (const tag of p.solutionType ?? p.tags ?? []) {
-      if (!nodeSet.has(`tag:${tag}`)) {
-        nodeSet.add(`tag:${tag}`);
-      }
+    for (const role of roles) {
+      roleSet.add(`role:${role}`);
+      nodeProjectCounts[`role:${role}`] = (nodeProjectCounts[`role:${role}`] ?? 0) + 1;
     }
-    // link roles ↔ industries
-    for (const ind of p.industries ?? p.industry ?? []) {
-      for (const role of p.roles) {
-        const key = `ind:${ind}|role:${role}`;
-        if (!linkSet.has(key)) {
-          linkSet.add(key);
-          edges.push({ source: `ind:${ind}`, target: `role:${role}` });
-        }
+    for (const sol of sols) {
+      for (const role of roles) {
+        const key = `sol:${sol}|role:${role}`;
+        networkLinkCounts[key] = (networkLinkCounts[key] ?? 0) + 1;
       }
     }
 
@@ -154,25 +163,20 @@ function computeInsights(projects: ProjectFrontmatter[]): InsightData {
       ? mvpTimes.reduce((a, b) => a + b, 0) / mvpTimes.length
       : null;
 
-  const networkNodes = Array.from(nodeSet).map((id) => ({
-    id,
-    type: id.startsWith("ind:")
-      ? ("industry" as const)
-      : id.startsWith("role:")
-        ? ("role" as const)
-        : ("tag" as const),
-  }));
+  // Radar: top RADAR_MAX_AXES solution types by frequency
+  const radarAxes = Object.entries(rawSolutionType)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, RADAR_MAX_AXES)
+    .map(([label, value]) => ({ label, value }));
 
-  // Build year-month data
-  const yearSet = new Set(projects.map((p) => Number(p.year)));
-  const years = Array.from(yearSet).sort();
-  const yearMonthData: { year: number; month: number; count: number }[] = [];
-  for (const y of years) {
-    for (let m = 0; m < 12; m++) {
-      const key = `${y}-${m + 1}`;
-      yearMonthData.push({ year: y, month: m, count: rawYearMonth[key] ?? 0 });
-    }
-  }
+  const networkNodes = [
+    ...Array.from(solSet).map((id) => ({ id, type: "solutionType" as const })),
+    ...Array.from(roleSet).map((id) => ({ id, type: "role" as const })),
+  ];
+  const networkLinks = Object.keys(networkLinkCounts).map((key) => {
+    const sep = key.indexOf("|");
+    return { source: key.slice(0, sep), target: key.slice(sep + 1) };
+  });
 
   const makeChildren = (rec: Record<string, number>) =>
     Object.entries(rec)
@@ -187,10 +191,11 @@ function computeInsights(projects: ProjectFrontmatter[]): InsightData {
 
   return {
     industryCounts: Object.entries(rawIndustry).sort((a, b) => b[1] - a[1]),
-    yearMonthData,
-    years,
+    radarAxes,
     networkNodes,
-    networkLinks: edges,
+    networkLinks,
+    networkLinkCounts,
+    networkNodeProjectCounts: nodeProjectCounts,
     stackTree,
     avgMVP,
     totalProjects: projects.length,
@@ -240,154 +245,320 @@ function WaffleChart({
   return (
     <div style={cellStyle}>
       <ChartLabel>{LABEL_INDUSTRY_PROPORTION}</ChartLabel>
-      <svg
-        viewBox={`0 0 ${WAFFLE_SVG} ${WAFFLE_SVG}`}
-        width={WAFFLE_SVG}
-        height={WAFFLE_SVG}
-        aria-label="Industry proportion waffle chart"
+      <p
+        className="font-body font-normal text-[10px] text-text-muted"
+        style={{ marginBottom: 16 }}
       >
-        {cells.map((color, i) => {
-          const col = i % WAFFLE_COLS;
-          const row = Math.floor(i / WAFFLE_ROWS);
-          const x = col * (WAFFLE_CELL + WAFFLE_GAP);
-          const y = row * (WAFFLE_CELL + WAFFLE_GAP);
-          const isDimmed =
-            hoveredIndustry !== null &&
-            cellInfo[i] !== hoveredIndustry &&
-            cellInfo[i] !== "";
-          return (
-            <rect
-              key={i}
-              x={x}
-              y={y}
-              width={WAFFLE_CELL}
-              height={WAFFLE_CELL}
-              fill={color}
-              opacity={isDimmed ? 0.2 : 1}
-              style={{ cursor: "default", transition: "opacity 0.15s" }}
-              onMouseEnter={() => {
-                if (cellInfo[i]) setHoveredIndustry(cellInfo[i]);
-              }}
-              onMouseLeave={() => setHoveredIndustry(null)}
-            />
-          );
-        })}
-      </svg>
-      <div className="grid gap-x-3 gap-y-1 mt-3" style={legendGridStyle}>
-        {industryCounts.map(([industry, count]) => {
-          const pct = Math.round((count / Math.max(total, 1)) * 100);
-          const color = INDUSTRY_COLORS[industry] ?? INDUSTRY_COLOR_FALLBACK;
-          return (
-            <div key={industry} className="flex items-center gap-1.5 min-w-0">
-              <span
-                className="shrink-0 inline-block"
-                style={{ width: 10, height: 10, background: color }}
+        {LABEL_INDUSTRY_PROPORTION_SUB}
+      </p>
+      <div className="flex gap-4 items-start">
+        <svg
+          viewBox={`0 0 ${WAFFLE_SVG} ${WAFFLE_SVG}`}
+          width={WAFFLE_SVG}
+          height={WAFFLE_SVG}
+          aria-label="Industry proportion waffle chart"
+          className="shrink-0 mt-4"
+        >
+          {cells.map((color, i) => {
+            const col = i % WAFFLE_COLS;
+            const row = Math.floor(i / WAFFLE_ROWS);
+            const x = col * (WAFFLE_CELL + WAFFLE_GAP);
+            const y = row * (WAFFLE_CELL + WAFFLE_GAP);
+            const isDimmed =
+              hoveredIndustry !== null &&
+              cellInfo[i] !== hoveredIndustry &&
+              cellInfo[i] !== "";
+            return (
+              <rect
+                key={i}
+                x={x}
+                y={y}
+                width={WAFFLE_CELL}
+                height={WAFFLE_CELL}
+                fill={color}
+                opacity={isDimmed ? 0.2 : 1}
+                style={{ cursor: "default", transition: "opacity 0.15s" }}
+                onMouseEnter={() => {
+                  if (cellInfo[i]) setHoveredIndustry(cellInfo[i]);
+                }}
+                onMouseLeave={() => setHoveredIndustry(null)}
               />
-              <span className="font-body font-normal text-[10px] text-text-muted truncate">
-                {industry} {pct}%
-              </span>
-            </div>
-          );
-        })}
+            );
+          })}
+        </svg>
+        <div className="flex flex-col gap-1.5 min-w-0 mt-4">
+          {industryCounts.map(([industry, count]) => {
+            const pct = Math.round((count / Math.max(total, 1)) * 100);
+            const color = INDUSTRY_COLORS[industry] ?? INDUSTRY_COLOR_FALLBACK;
+            return (
+              <div key={industry} className="flex items-center gap-1.5 min-w-0">
+                <span
+                  className="shrink-0 inline-block"
+                  style={{ width: 10, height: 10, background: color }}
+                />
+                <span className="font-body font-normal text-[10px] text-text-muted truncate">
+                  {industry} {pct}%
+                </span>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
 }
 
-// ─── CalendarHeatmap ──────────────────────────────────────────────────────────
+// ─── CapabilityRadar ──────────────────────────────────────────────────────────
 
-function CalendarHeatmap({
-  yearMonthData,
-  years,
+const radarPolygonStyle: React.CSSProperties = {
+  fill: "rgba(255,183,125,0.15)",
+  stroke: "#FFB77D",
+  strokeWidth: 1.5,
+  transformOrigin: "center center",
+};
+
+function CapabilityRadar({
+  axes,
 }: {
-  yearMonthData: { year: number; month: number; count: number }[];
-  years: number[];
+  axes: { label: string; value: number }[];
 }) {
-  const maxCount = Math.max(...yearMonthData.map((d) => d.count), 1);
+  const { parentRef, width } = useParentSize({ debounceTime: 100 });
+  const isMob = width > 0 && width < 400;
+  const outerR = isMob ? RADAR_OUTER_R_MOB : RADAR_OUTER_R;
+  const cx = width > 0 ? width / 2 : 0;
+  const cy = RADAR_HEIGHT / 2;
 
-  const heatW = years.length * (HEAT_CELL + HEAT_GAP) - HEAT_GAP;
-  const heatH = 12 * (HEAT_CELL + HEAT_GAP) - HEAT_GAP;
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const axisRefs = useRef<(SVGLineElement | null)[]>([]);
+  const polygonRef = useRef<SVGPolygonElement | null>(null);
 
-  // bins for HeatmapRect: column = year, row = month
-  const bins = years.map((year) => ({
-    bin: year,
-    bins: yearMonthData
-      .filter((d) => d.year === year)
-      .sort((a, b) => a.month - b.month)
-      .map((d) => ({ bin: d.month, count: d.count })),
-  }));
+  const n = axes.length;
+  const maxVal = Math.max(...axes.map((a) => a.value), 1);
+  const isEmpty = n < 3;
+
+  // Angle for each axis: start at top (−π/2), go clockwise
+  const angleOf = (i: number) => (2 * Math.PI * i) / n - Math.PI / 2;
+
+  const pointOnAxis = (i: number, r: number) => ({
+    x: cx + r * Math.cos(angleOf(i)),
+    y: cy + r * Math.sin(angleOf(i)),
+  });
+
+  const polygonPoints = useMemo(
+    () =>
+      axes
+        .map((a, i) => {
+          const r = (a.value / maxVal) * outerR;
+          const pt = pointOnAxis(i, r);
+          return `${pt.x},${pt.y}`;
+        })
+        .join(" "),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [axes, cx, cy, outerR, maxVal],
+  );
+
+  // Animate axes then polygon on mount / data change
+  useEffect(() => {
+    if (!width || isEmpty) return;
+    let isMounted = true;
+
+    const run = async () => {
+      const { default: gsap } = await import("gsap");
+      if (!isMounted) return;
+
+      // Axis lines: each grows from center outward (animate individually for type safety)
+      const lines = axisRefs.current.filter(Boolean) as SVGLineElement[];
+      lines.forEach((line, i) => {
+        const pt = pointOnAxis(i, outerR);
+        gsap.fromTo(
+          line,
+          { attr: { x2: cx, y2: cy } },
+          {
+            attr: { x2: pt.x, y2: pt.y },
+            duration: 0.3,
+            delay: i * 0.04,
+            ease: "power2.out",
+            onComplete: () => {
+              if (i !== lines.length - 1 || !isMounted || !polygonRef.current) return;
+              // Polygon scales in after last axis finishes
+              gsap.fromTo(
+                polygonRef.current,
+                { scale: 0 },
+                { scale: 1, duration: 0.6, ease: "power2.out", transformOrigin: `${cx}px ${cy}px` },
+              );
+            },
+          },
+        );
+      });
+    };
+
+    run();
+    return () => { isMounted = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [width, n, cx, cy, outerR, isEmpty]);
+
+  // Tooltip for hovered vertex
+  const tooltipData = useMemo(() => {
+    if (hoveredIdx === null) return null;
+    const a = axes[hoveredIdx];
+    const r = (a.value / maxVal) * outerR;
+    const pt = pointOnAxis(hoveredIdx, r);
+    return { label: a.label, value: a.value, x: pt.x + 10, y: pt.y - 10 };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hoveredIdx, axes, cx, cy, outerR, maxVal]);
+
+  const tooltipStyle = useMemo((): React.CSSProperties => ({
+    ...tooltipBaseStyle,
+    left: tooltipData?.x ?? 0,
+    top: tooltipData?.y ?? 0,
+  }), [tooltipData]);
+
+  // text-anchor based on position around the circle
+  const labelAnchor = (i: number): "start" | "end" | "middle" => {
+    const angle = angleOf(i);
+    const cos = Math.cos(angle);
+    if (cos > 0.3) return "start";
+    if (cos < -0.3) return "end";
+    return "middle";
+  };
 
   return (
     <div style={cellStyle}>
-      <ChartLabel>{LABEL_PROJECT_ACTIVITY}</ChartLabel>
-      <div className="overflow-x-auto">
-        <svg width={heatW + 24} height={heatH + 20}>
-          <g transform="translate(20, 0)">
-            <HeatmapRect
-              data={bins}
-              xScale={(i: number) => i * (HEAT_CELL + HEAT_GAP)}
-              yScale={(i: number) => i * (HEAT_CELL + HEAT_GAP)}
-              colorScale={(count: number | { valueOf(): number }) => {
-                const n = Number(count);
-                if (n === 0) return "#1a1a1a";
-                const t = n / maxCount;
-                return t > 0.6
-                  ? "var(--color-accent)"
-                  : t > 0.3
-                    ? "var(--color-accent-deep)"
-                    : "#3a3a38";
-              }}
-              opacityScale={() => 1}
-              binWidth={HEAT_CELL}
-              binHeight={HEAT_CELL}
-              gap={HEAT_GAP}
-            >
-              {(heatmap) =>
-                heatmap.map((columns) =>
-                  columns.map((bin) => (
-                    <rect
-                      key={`heat-${bin.row}-${bin.column}`}
-                      x={bin.x}
-                      y={bin.y}
-                      width={bin.width}
-                      height={bin.height}
-                      fill={bin.color ?? "#1a1a1a"}
-                      rx={0}
-                    />
-                  )),
-                )
-              }
-            </HeatmapRect>
-            {/* Year labels */}
-            {years.map((year, i) => (
-              <text
-                key={year}
-                x={i * (HEAT_CELL + HEAT_GAP) + HEAT_CELL / 2}
-                y={heatH + 14}
-                textAnchor="middle"
-                fontSize={8}
-                fontFamily="var(--font-body)"
-                fill="var(--color-text-muted)"
+      <ChartLabel>{LABEL_CAPABILITY_SPREAD}</ChartLabel>
+      <p
+        className="font-body font-normal text-[10px] text-text-muted"
+        style={{ marginBottom: 16 }}
+      >
+        {LABEL_CAPABILITY_SPREAD_SUB}
+      </p>
+
+      {isEmpty ? (
+        <div
+          className="flex items-center justify-center text-center"
+          style={{ height: RADAR_HEIGHT }}
+        >
+          <span className="font-body font-normal text-[12px] text-text-muted">
+            {LABEL_RADAR_EMPTY}
+          </span>
+        </div>
+      ) : (
+        <div
+          ref={parentRef as React.RefObject<HTMLDivElement>}
+          style={{ height: RADAR_HEIGHT, position: "relative" }}
+        >
+          {width > 0 && (
+            <>
+              <svg
+                width={width}
+                height={RADAR_HEIGHT}
+                style={{ display: "block", overflow: "visible" }}
               >
-                {year}
-              </text>
-            ))}
-          </g>
-          {/* Month labels */}
-          {HEAT_MONTHS.map((m, i) => (
-            <text
-              key={m + i}
-              x={2}
-              y={i * (HEAT_CELL + HEAT_GAP) + HEAT_CELL / 2 + 4}
-              fontSize={7}
-              fontFamily="var(--font-body)"
-              fill="var(--color-text-muted)"
-            >
-              {m}
-            </text>
-          ))}
-        </svg>
-      </div>
+                <Group>
+                  {/* Concentric guide rings */}
+                  {Array.from({ length: RADAR_RINGS }, (_, ri) => {
+                    const r = ((ri + 1) / (RADAR_RINGS + 1)) * outerR;
+                    const pts = Array.from({ length: n }, (__, i) => {
+                      const pt = pointOnAxis(i, r);
+                      return `${pt.x},${pt.y}`;
+                    }).join(" ");
+                    return (
+                      <polygon
+                        key={ri}
+                        points={pts}
+                        fill="none"
+                        stroke="#222220"
+                        strokeWidth={0.5}
+                      />
+                    );
+                  })}
+
+                  {/* Axis lines */}
+                  {axes.map((_, i) => {
+                    const outer = pointOnAxis(i, outerR);
+                    return (
+                      <line
+                        key={i}
+                        ref={(el) => { axisRefs.current[i] = el; }}
+                        x1={cx}
+                        y1={cy}
+                        x2={outer.x}
+                        y2={outer.y}
+                        stroke="#1e1e1e"
+                        strokeWidth={1}
+                      />
+                    );
+                  })}
+
+                  {/* Data polygon */}
+                  <polygon
+                    ref={polygonRef}
+                    points={polygonPoints}
+                    style={radarPolygonStyle}
+                  />
+
+                  {/* Vertex dots */}
+                  {axes.map((a, i) => {
+                    const r = (a.value / maxVal) * outerR;
+                    const pt = pointOnAxis(i, r);
+                    const isHovered = hoveredIdx === i;
+                    return (
+                      <circle
+                        key={i}
+                        cx={pt.x}
+                        cy={pt.y}
+                        r={isHovered ? 5 : 3}
+                        fill="#FFB77D"
+                        style={{ cursor: "default", transition: "r 0.1s" }}
+                        onMouseEnter={() => setHoveredIdx(i)}
+                        onMouseLeave={() => setHoveredIdx(null)}
+                      />
+                    );
+                  })}
+
+                  {/* Axis labels — wrap on spaces, vertically centred */}
+                  {axes.map((a, i) => {
+                    const pt = pointOnAxis(i, outerR + RADAR_LABEL_OFFSET);
+                    const words = a.label.split(" ");
+                    const totalH = (words.length - 1) * RADAR_LINE_HEIGHT;
+                    const startY = pt.y - totalH / 2;
+                    return (
+                      <text
+                        key={i}
+                        x={pt.x}
+                        y={startY}
+                        textAnchor={labelAnchor(i)}
+                        dominantBaseline="middle"
+                        fontSize={11}
+                        fontFamily="var(--font-body)"
+                        fontWeight={400}
+                        fill="#5a5a58"
+                      >
+                        {words.map((word, wi) => (
+                          <tspan key={wi} x={pt.x} dy={wi === 0 ? 0 : RADAR_LINE_HEIGHT}>
+                            {word}
+                          </tspan>
+                        ))}
+                      </text>
+                    );
+                  })}
+                </Group>
+              </svg>
+
+              {/* Tooltip */}
+              {hoveredIdx !== null && tooltipData && (
+                <div style={tooltipStyle}>
+                  <div className="font-body font-normal text-[11px] text-text-primary">
+                    {tooltipData.label}
+                  </div>
+                  <div className="font-body font-normal text-[10px] text-text-muted mt-0.5">
+                    {tooltipData.value} project{tooltipData.value !== 1 ? "s" : ""}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -396,41 +567,64 @@ function CalendarHeatmap({
 
 type NodeDatum = {
   id: string;
-  type: "role" | "industry" | "tag";
+  type: "solutionType" | "role";
   x?: number;
   y?: number;
 };
 type LinkDatum = { source: string; target: string };
 
+type PositionedNode = { id: string; x: number; y: number; type: string };
+type PositionedLink = {
+  x1: number; y1: number; x2: number; y2: number;
+  sourceId: string; targetId: string;
+};
+
+function truncateLabel(text: string): string {
+  return text.length > NETWORK_LABEL_MAX
+    ? text.slice(0, NETWORK_LABEL_MAX - 1) + "…"
+    : text;
+}
+
+function stripPrefix(id: string): string {
+  return id.replace(/^(ind:|sol:|role:)/, "");
+}
+
 function NetworkGraph({
   nodes: rawNodes,
   links: rawLinks,
+  linkCounts,
+  nodeProjectCounts,
 }: {
   nodes: NodeDatum[];
   links: LinkDatum[];
+  linkCounts: Record<string, number>;
+  nodeProjectCounts: Record<string, number>;
 }) {
   const { parentRef, width } = useParentSize({ debounceTime: 100 });
-  const HEIGHT = 200;
 
   const [positions, setPositions] = useState<{
-    nodes: { id: string; x: number; y: number; type: string }[];
-    links: { x1: number; y1: number; x2: number; y2: number }[];
+    nodes: PositionedNode[];
+    links: PositionedLink[];
   } | null>(null);
+
+  const [hoveredNode, setHoveredNode] = useState<PositionedNode | null>(null);
+
+  const isEmpty = rawNodes.length < 2 || rawLinks.length === 0;
 
   useEffect(() => {
     if (!width || rawNodes.length === 0) return;
     let isMounted = true;
 
     const run = async () => {
-      const { forceSimulation, forceLink, forceManyBody, forceCenter } =
+      const { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide } =
         await loadD3Force();
       if (!isMounted) return;
 
       const nodesCopy: (NodeDatum & { x: number; y: number })[] = rawNodes.map(
         (n) => ({
           ...n,
-          x: width / 2 + (Math.random() - 0.5) * 100,
-          y: HEIGHT / 2 + (Math.random() - 0.5) * 100,
+          x: width / 2 + (Math.random() - 0.5) * 80,
+          y: NETWORK_HEIGHT / 2 + (Math.random() - 0.5) * 80,
         }),
       );
 
@@ -440,29 +634,59 @@ function NetworkGraph({
         .map((l) => ({
           source: nodeById.get(l.source)!,
           target: nodeById.get(l.target)!,
+          _sourceId: l.source,
+          _targetId: l.target,
         }))
         .filter((l) => l.source && l.target);
+
+      // Collision radius = node radius + half max label width, so labels don't overlap
+      const collideRadius = () => NETWORK_SOL_R + 44;
+
+      // Repel nodes from the top-right legend zone (~110×52px at top-right corner)
+      const legendCx = width - 63;
+      const legendCy = 34;
+      const legendRepelR = 80;
+      const legendRepelForce = (alpha: number) => {
+        for (const node of nodesCopy) {
+          const dx = (node.x ?? 0) - legendCx;
+          const dy = (node.y ?? 0) - legendCy;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+          if (dist < legendRepelR) {
+            const f = ((legendRepelR - dist) / legendRepelR) * alpha * 2;
+            (node as { vx?: number }).vx = ((node as { vx?: number }).vx ?? 0) + (dx / dist) * f;
+            (node as { vy?: number }).vy = ((node as { vy?: number }).vy ?? 0) + (dy / dist) * f;
+          }
+        }
+      };
 
       const sim = forceSimulation(nodesCopy as never[])
         .force(
           "link",
           forceLink(linksCopy)
             .id((d: unknown) => (d as NodeDatum).id)
-            .distance(40),
+            .distance(80),
         )
-        .force("charge", forceManyBody().strength(-60))
-        .force("center", forceCenter(width / 2, HEIGHT / 2))
+        .force("charge", forceManyBody().strength(-120))
+        .force("center", forceCenter(width * 0.44, NETWORK_HEIGHT / 2 + 8))
+        .force("collide", forceCollide().radius(collideRadius as never).strength(0.8))
+        .force("legendRepel", legendRepelForce as never)
         .stop();
 
       for (let i = 0; i < 200; i++) sim.tick();
 
       if (!isMounted) return;
 
+      // Pad by enough to keep node + label inside bounds
+      // Label is up to 14 chars ~5.5px wide = ~77px, centered → 38px each side
+      // Label sits r+11=17px below center; add a few px margin
+      const PAD_X = 44;
+      const PAD_Y_TOP = 16;
+      const PAD_Y_BOT = 28; // extra for label below node
       setPositions({
         nodes: nodesCopy.map((n) => ({
           id: n.id,
-          x: n.x ?? 0,
-          y: n.y ?? 0,
+          x: Math.max(PAD_X, Math.min(width - PAD_X, n.x ?? 0)),
+          y: Math.max(PAD_Y_TOP, Math.min(NETWORK_HEIGHT - PAD_Y_BOT, n.y ?? 0)),
           type: n.type,
         })),
         links: linksCopy.map((l) => ({
@@ -470,80 +694,169 @@ function NetworkGraph({
           y1: (l.source as { y: number }).y ?? 0,
           x2: (l.target as { x: number }).x ?? 0,
           y2: (l.target as { y: number }).y ?? 0,
+          sourceId: l._sourceId,
+          targetId: l._targetId,
         })),
       });
     };
 
     run();
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, [width, rawNodes, rawLinks]);
 
-  const nodeColor = (type: string) =>
-    type === "industry"
-      ? "var(--color-accent)"
-      : type === "role"
-        ? "var(--color-text-primary)"
-        : "var(--color-text-muted)";
+  const edgeCount = (l: PositionedLink) => {
+    return (
+      linkCounts[`${l.sourceId}|${l.targetId}`] ??
+      linkCounts[`${l.targetId}|${l.sourceId}`] ??
+      1
+    );
+  };
 
-  const graphLinks = positions
-    ? positions.links.map((l, i) => ({
-        source: { x: l.x1, y: l.y1 },
-        target: { x: l.x2, y: l.y2 },
-        index: i,
-      }))
-    : [];
+  const tooltipContent = useMemo(() => {
+    if (!hoveredNode) return null;
+    const label = stripPrefix(hoveredNode.id);
+    const isRole = hoveredNode.type === "role";
+    const projectCount = nodeProjectCounts[hoveredNode.id] ?? 0;
+    const detail = `Appears in ${projectCount} project${projectCount !== 1 ? "s" : ""}`;
+    const typeLabel = isRole ? "Role" : "Solution type";
+    return { label, type: typeLabel, detail };
+  }, [hoveredNode, nodeProjectCounts]);
 
-  const graphNodes = positions
-    ? positions.nodes.map((n, i) => ({ ...n, index: i }))
-    : [];
+  const tooltipStyle = useMemo((): React.CSSProperties => {
+    if (!hoveredNode) return tooltipBaseStyle;
+    const x = hoveredNode.x + 14;
+    const y = Math.max(0, hoveredNode.y - 12);
+    return { ...tooltipBaseStyle, left: x, top: y };
+  }, [hoveredNode]);
 
   return (
     <div style={cellStyle}>
       <ChartLabel>{LABEL_WORK_CONNECTIONS}</ChartLabel>
-      <div
-        ref={parentRef as React.RefObject<HTMLDivElement>}
-        style={{ height: HEIGHT, position: "relative" }}
-      >
-        {positions && width > 0 && (
-          <svg width={width} height={HEIGHT} style={{ display: "block" }}>
-            <Graph
-              graph={{ nodes: graphNodes, links: graphLinks }}
-              linkComponent={({
-                link,
-              }: {
-                link: {
-                  source: { x: number; y: number };
-                  target: { x: number; y: number };
-                };
-              }) => (
-                <line
-                  x1={link.source.x}
-                  y1={link.source.y}
-                  x2={link.target.x}
-                  y2={link.target.y}
-                  stroke="#222220"
-                  strokeWidth={1}
-                />
+      <p className="font-body font-normal text-[10px] text-text-muted mb-4">
+        {LABEL_WORK_CONNECTIONS_SUB}
+      </p>
+
+      {isEmpty ? (
+        <div
+          className="flex items-center justify-center text-center"
+          style={{ height: NETWORK_HEIGHT }}
+        >
+          <span className="font-body font-normal text-[12px] text-text-muted">
+            {LABEL_NETWORK_EMPTY}
+          </span>
+        </div>
+      ) : (
+        <div
+          ref={parentRef as React.RefObject<HTMLDivElement>}
+          style={{ height: NETWORK_HEIGHT, position: "relative", overflow: "hidden" }}
+        >
+          {positions && width > 0 && (
+            <>
+              <svg
+                width={width}
+                height={NETWORK_HEIGHT}
+                style={{ display: "block" }}
+              >
+                {/* Links */}
+                {positions.links.map((l, i) => {
+                  const count = edgeCount(l);
+                  const isStrong = count >= 2;
+                  return (
+                    <line
+                      key={i}
+                      x1={l.x1}
+                      y1={l.y1}
+                      x2={l.x2}
+                      y2={l.y2}
+                      stroke={isStrong ? "rgba(255,183,125,0.4)" : "#2a2a2a"}
+                      strokeWidth={isStrong ? 2 : 1}
+                    />
+                  );
+                })}
+
+                {/* Nodes + Labels */}
+                {positions.nodes.map((n) => {
+                  const isRole = n.type === "role";
+                  const label = stripPrefix(n.id);
+                  return (
+                    <g
+                      key={n.id}
+                      transform={`translate(${n.x},${n.y})`}
+                      style={{ cursor: "default" }}
+                      onMouseEnter={() => setHoveredNode(n)}
+                      onMouseLeave={() => setHoveredNode(null)}
+                    >
+                      <title>{label}</title>
+                      {isRole ? (
+                        <circle r={NETWORK_SOL_R} fill="#D97707" />
+                      ) : (
+                        <circle
+                          r={NETWORK_SOL_R}
+                          fill="none"
+                          stroke="#5a5a58"
+                          strokeWidth={1.5}
+                        />
+                      )}
+                      <text
+                        y={NETWORK_SOL_R + 11}
+                        textAnchor="middle"
+                        fontSize={9}
+                        fontFamily="var(--font-body)"
+                        fontWeight={400}
+                        fill={isRole ? "#D97707" : "#5a5a58"}
+                      >
+                        {truncateLabel(label)}
+                      </text>
+                    </g>
+                  );
+                })}
+              </svg>
+
+              {/* Tooltip */}
+              {hoveredNode && tooltipContent && (
+                <div style={tooltipStyle}>
+                  <div className="font-body font-normal text-[11px] text-text-primary">
+                    {tooltipContent.label}
+                  </div>
+                  <div className="font-body font-normal text-[10px] text-text-muted mt-0.5">
+                    {tooltipContent.type}
+                  </div>
+                  <div className="font-body font-normal text-[10px] text-text-muted mt-0.5">
+                    {tooltipContent.detail}
+                  </div>
+                </div>
               )}
-              nodeComponent={({
-                node,
-              }: {
-                node: { id: string; x: number; y: number; type: string };
-              }) => (
-                <circle
-                  cx={0}
-                  cy={0}
-                  r={NETWORK_NODE_R}
-                  fill={nodeColor(node.type)}
-                  opacity={0.85}
-                />
-              )}
-            />
-          </svg>
-        )}
-      </div>
+
+              {/* Legend */}
+              <div style={networkLegendStyle}>
+                <div className="flex items-center gap-1.5">
+                  <svg width={12} height={12}>
+                    <circle
+                      cx={6}
+                      cy={6}
+                      r={5}
+                      fill="none"
+                      stroke="#5a5a58"
+                      strokeWidth={1.5}
+                    />
+                  </svg>
+                  <span className="font-body font-normal text-[9px] text-text-muted">
+                    Solution type
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <svg width={12} height={12}>
+                    <circle cx={6} cy={6} r={5} fill="#D97707" />
+                  </svg>
+                  <span className="font-body font-normal text-[9px] text-text-muted">
+                    Role
+                  </span>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -558,7 +871,7 @@ function TechTreemap({
   stackTree: { name: string; children: { name: string; value: number }[] }[];
 }) {
   const { parentRef, width } = useParentSize({ debounceTime: 100 });
-  const HEIGHT = 200;
+  const HEIGHT = 150;
 
   if (!stackTree.length) return null;
 
@@ -578,6 +891,12 @@ function TechTreemap({
   return (
     <div style={cellStyle}>
       <ChartLabel>{LABEL_TECH_STACK}</ChartLabel>
+      <p
+        className="font-body font-normal text-[10px] text-text-muted"
+        style={{ marginBottom: 16 }}
+      >
+        {LABEL_TECH_STACK_SUB}
+      </p>
       <div
         ref={parentRef as React.RefObject<HTMLDivElement>}
         style={{ height: HEIGHT }}
@@ -751,18 +1070,17 @@ export function InsightsPanel({
                   industryCounts={insights.industryCounts}
                   total={insights.totalProjects}
                 />
-                <CalendarHeatmap
-                  yearMonthData={insights.yearMonthData}
-                  years={insights.years}
-                />
+                <CapabilityRadar axes={insights.radarAxes} />
                 <NetworkGraph
                   nodes={insights.networkNodes}
                   links={insights.networkLinks}
+                  linkCounts={insights.networkLinkCounts}
+                  nodeProjectCounts={insights.networkNodeProjectCounts}
                 />
               </div>
 
-              {/* Row 2 — treemap spans 2, stat spans 1 */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+              {/* Row 2 — treemap spans 2, stat spans 1 — desktop only */}
+              <div className="hidden md:grid grid-cols-3 gap-3 mt-3">
                 <div className="md:col-span-2">
                   <TechTreemap stackTree={insights.stackTree} />
                 </div>
