@@ -7,6 +7,14 @@ GSAP, Space Grotesk + Manrope, deployed on Vercel.
 
 ---
 
+## Backlog
+
+Before starting any task, check `.claude/BACKLOG.md`
+to see if the task is listed there. If it is, ask
+whether it should be checked off once complete.
+
+---
+
 ## Design System
 
 The single source of truth for all design decisions
@@ -123,6 +131,9 @@ app/
     currently.ts                # Currently drawer content — edit here to update
     styleguide.ts               # Style guide drawer content
     mdx.server.ts               # MDX content loaders (server-only)
+    visx.ts                     # Re-exports from @visx/* — import here, not directly
+    fuse.ts                     # Re-exports Fuse — import here, not directly
+    d3.ts                       # loadD3() async loader for d3 + topojson
   types/
     content.ts                  # Content type definitions
 content/
@@ -311,6 +322,38 @@ export function Hero() {
   navigator.maxTouchPoints > 0` — return null on touch devices
 - Ripple effect on touch: `createRipple()` from `~/lib/ripple`
   applied via `onTouchStart` on work rows and writing rows
+
+### State Management
+- **Use `useReducer` when a component has more than three
+  pieces of state** — `useState` for simple, isolated values;
+  `useReducer` for anything more complex
+
+### Third-party Libraries
+- **Never import directly from a third-party package** in
+  components or routes. Instead, route all third-party
+  imports through a dedicated module in `~/lib/`.
+  This provides a single refactor point if a package changes.
+
+  | Package | Wrapper module | Pattern |
+  |---|---|---|
+  | `@visx/*` | `~/lib/visx.ts` | static re-export |
+  | `fuse.js` | `~/lib/fuse.ts` | static re-export |
+  | `d3` + `topojson-client` | `~/lib/d3.ts` | async `loadD3()` |
+
+  When adding a new third-party package, create or extend the
+  appropriate `~/lib/<package>.ts` wrapper before using it.
+
+```ts
+// ✅ correct
+import { scaleLinear } from "~/lib/visx";
+import { Fuse } from "~/lib/fuse";
+import { loadD3 } from "~/lib/d3";
+
+// ❌ avoid — direct package imports in components/routes
+import { scaleLinear } from "@visx/scale";
+import Fuse from "fuse.js";
+import("d3");
+```
 
 ### Utilities
 - Pure functions shared across components → `~/lib/utils.ts`

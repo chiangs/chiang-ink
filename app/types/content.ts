@@ -6,12 +6,19 @@ export type ArticleFrontmatter = {
   category: string;
   featured: boolean;
   order: number;
+  status?: "draft" | "published";
   slug?: string;
 };
 
 export type ProjectMetric = {
   value: string;
   label: string;
+};
+
+export type ProjectStack = {
+  frameworks: string[];
+  languages: string[];
+  platforms: string[];
 };
 
 export type ProjectFrontmatter = {
@@ -22,9 +29,14 @@ export type ProjectFrontmatter = {
   year: string;
   status: string;
   tags: string[];
+  industry: string[];
+  industries?: string[];
+  solutionType: string[];
   metrics: ProjectMetric[];
+  stack?: ProjectStack;
   heroImage: string;
   featured: boolean;
   order: number;
+  publishStatus?: "draft" | "published";
   slug?: string;
 };

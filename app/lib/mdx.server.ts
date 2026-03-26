@@ -26,9 +26,9 @@ export async function getAllArticles(): Promise<ArticleFrontmatter[]> {
       }),
   );
 
-  return articles.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
+  return articles
+    .filter((a) => a.status !== "draft")
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
 // Get single article by slug
@@ -61,7 +61,9 @@ export async function getAllProjects(): Promise<ProjectFrontmatter[]> {
       }),
   );
 
-  return projects.sort((a, b) => a.order - b.order);
+  return projects
+    .filter((p) => p.publishStatus !== "draft")
+    .sort((a, b) => a.order - b.order);
 }
 
 // Get single project by slug
@@ -76,13 +78,13 @@ export async function getProject(slug: string) {
   };
 }
 
-// Get featured articles (max 3)
+// Get featured articles (max 3) — drafts already excluded by getAllArticles
 export async function getFeaturedArticles() {
   const all = await getAllArticles();
   return all.filter((a) => a.featured).slice(0, 3);
 }
 
-// Get featured projects (max 3)
+// Get featured projects (max 3) — drafts already excluded by getAllProjects
 export async function getFeaturedProjects() {
   const all = await getAllProjects();
   return all.filter((p) => p.featured).slice(0, 3);

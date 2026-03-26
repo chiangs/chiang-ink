@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 import type { Feature, FeatureCollection, Geometry } from "geojson";
 import type { Topology, GeometryCollection } from "topojson-specification";
+import { loadD3 } from "~/lib/d3";
 
 const IND_ORG_LABEL = "ORGANISATION TYPES";
 
@@ -82,10 +83,7 @@ function WorldMap({ className = "" }: { className?: string }) {
     let isMounted = true;
 
     const render = async () => {
-      const [d3, { feature }] = await Promise.all([
-        import("d3"),
-        import("topojson-client"),
-      ]);
+      const { d3, feature } = await loadD3();
       if (!isMounted || !svgRef.current) return;
 
       const svg = d3.select(svgRef.current);
