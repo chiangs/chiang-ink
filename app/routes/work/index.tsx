@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useReducer, useRef } from "react";
 import { Link, useLoaderData } from "react-router";
-import Fuse from "fuse.js";
+import { Fuse } from "~/lib/fuse";
 import type { Route } from "./+types/index";
 import type { ProjectFrontmatter } from "~/types/content";
 import { getAllProjects } from "~/lib/mdx.server";
 import { createRipple } from "~/lib/ripple";
 import { ITEM_STAGGER_S } from "~/lib/constants";
+import { InsightsPanel } from "~/components/work";
 
 // ─── Page copy ───────────────────────────────────────────────────────────────
 
@@ -318,6 +319,9 @@ export default function WorkIndex() {
           {SUBHEADLINE}
         </p>
       </div>
+
+      {/* Insights panel — always receives all projects, not filtered subset */}
+      <InsightsPanel projects={projects} />
 
       {/* Control bar + active tags */}
       <div ref={controlBarRef}>

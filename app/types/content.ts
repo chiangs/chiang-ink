@@ -14,6 +14,12 @@ export type ProjectMetric = {
   label: string;
 };
 
+export type ProjectStack = {
+  frameworks: string[];
+  languages: string[];
+  platforms: string[];
+};
+
 export type ProjectFrontmatter = {
   title: string;
   client: string;
@@ -23,8 +29,10 @@ export type ProjectFrontmatter = {
   status: string;
   tags: string[];
   industry: string[];
+  industries?: string[];
   solutionType: string[];
   metrics: ProjectMetric[];
+  stack?: ProjectStack;
   heroImage: string;
   featured: boolean;
   order: number;

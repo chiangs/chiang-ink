@@ -289,14 +289,45 @@ WORK INDEX PAGE (routes/work/index.tsx)
     Sub:      "A record of problems solved, systems built,
               and organisations changed."
               Manrope 400, 18px, #5a5a58, max-width 560px, mt 16px
+  Insights panel (InsightsPanel component — above control bar):
+    Background: #1a1a1a, padding 32px, border-bottom #222220
+    Toggle row: "WORK INSIGHTS" label (#FFB77D) + "Hide ↑"/"Show ↓" (#5a5a58)
+    Sub-label: "Derived from N projects across X industries." Manrope 400, 12px
+    Default: expanded (desktop), collapsed (mobile)
+    Collapse: GSAP height tween 0.4s
+    Always receives ALL projects (not filtered subset)
+    Layout — asymmetric grid (2-col):
+      Left (row-span-2): Waffle chart — 10×10 = 100 cells, industry proportion
+        Cell: 18×18px, 2px gap, 0px radius
+        Colors: Maritime=#FFB77D, Oil&Gas=#D97707, others mapped
+        Hover: dim non-hovered cells + tooltip showing industry+%
+        Legend: 2-col grid below chart, 12×12 color swatch + name%
+      Right top: "PROJECTS BY INDUSTRY" horizontal bars
+        Bar: 8px height, bg-accent fill, bg-border track
+        GSAP animate width 0→% on expand, 0.6s stagger 80ms
+      Right bottom: "ACTIVITY BY YEAR" line + "ROLES" frequency (side by side)
+        Line: @visx/scale (scalePoint + scaleLinear), plain SVG path
+        Dots: 5px → 8px on hover, tooltip shows year:count
+        Line draw: GSAP stroke-dashoffset 0.8s on expand
+        Roles: role name left + Space Grotesk 700 20px count right, sorted desc
+    Full-width bottom row (3-col):
+      Solution types: "SOLUTION TYPES" — top 6 tags as horizontal bars (same as industry)
+      Tech stack: 3 sub-groups (FRAMEWORKS / LANGUAGES / PLATFORMS)
+        Pills: bg #2a2a2a, #FFB77D if count≥2, #5a5a58 if count=1
+      Avg MVP time: Space Grotesk 700 56px #FFB77D + "months to MVP" sub-label
+        Computed from metrics where label contains "month" or "MVP"
+    Mobile: single column, panel collapsed by default
+    MDX frontmatter additions (for charts):
+      industries: string[]  (mirrors industry field)
+      stack: { frameworks, languages, platforms } string arrays
   Control bar:
-    Background: #1a1a1a, padding 20px 24px
+    Background: #1a1a1a, padding 24px 32px
     Three zones in one row (stacks vertically on mobile):
-      Left:   Search input, width 280px (full-width mobile)
+      Left:   Search input, width 280px (full-width mobile), height 40px
               Underline-only border (#222220), bg #131313
               Search icon (SVG magnifier, 14px, #5a5a58) left of text
-              Clears on ESC key
-      Middle: Two multi-select filter dropdowns (gap 12px)
+              padding 0 16px, clears on ESC key
+      Middle: Two multi-select filter dropdowns (gap 12px), height 40px
               Industry + Solution Type
               Trigger: bg #131313, border-bottom #222220, Manrope 500, 12px
               Panel: bg #1e1e1e, border #222220, min-width 220px
@@ -325,9 +356,6 @@ WORK INDEX PAGE (routes/work/index.tsx)
     Fuse.js — keys: title (0.5), tags (0.3), roles (0.2), threshold 0.3
     Filter order: fuse → industry → solutionType (AND logic)
     State managed via useReducer (5 pieces of state)
-  MDX frontmatter additions:
-    industry: string[]    (e.g. ["Maritime"])
-    solutionType: string[] (e.g. ["Data & Analytics Platforms"])
   Animations:
     Load: header slides up 24px + fades, control bar fades (−0.3s), rows stagger
     Filter change: rows fade in 0.2s with 0.04s stagger (GSAP)

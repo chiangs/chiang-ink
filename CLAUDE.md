@@ -123,6 +123,9 @@ app/
     currently.ts                # Currently drawer content — edit here to update
     styleguide.ts               # Style guide drawer content
     mdx.server.ts               # MDX content loaders (server-only)
+    visx.ts                     # Re-exports from @visx/* — import here, not directly
+    fuse.ts                     # Re-exports Fuse — import here, not directly
+    d3.ts                       # loadD3() async loader for d3 + topojson
   types/
     content.ts                  # Content type definitions
 content/
@@ -316,6 +319,33 @@ export function Hero() {
 - **Use `useReducer` when a component has more than three
   pieces of state** — `useState` for simple, isolated values;
   `useReducer` for anything more complex
+
+### Third-party Libraries
+- **Never import directly from a third-party package** in
+  components or routes. Instead, route all third-party
+  imports through a dedicated module in `~/lib/`.
+  This provides a single refactor point if a package changes.
+
+  | Package | Wrapper module | Pattern |
+  |---|---|---|
+  | `@visx/*` | `~/lib/visx.ts` | static re-export |
+  | `fuse.js` | `~/lib/fuse.ts` | static re-export |
+  | `d3` + `topojson-client` | `~/lib/d3.ts` | async `loadD3()` |
+
+  When adding a new third-party package, create or extend the
+  appropriate `~/lib/<package>.ts` wrapper before using it.
+
+```ts
+// ✅ correct
+import { scaleLinear } from "~/lib/visx";
+import { Fuse } from "~/lib/fuse";
+import { loadD3 } from "~/lib/d3";
+
+// ❌ avoid — direct package imports in components/routes
+import { scaleLinear } from "@visx/scale";
+import Fuse from "fuse.js";
+import("d3");
+```
 
 ### Utilities
 - Pure functions shared across components → `~/lib/utils.ts`
