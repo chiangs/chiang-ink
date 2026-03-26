@@ -7,6 +7,7 @@ import { getAllProjects } from "~/lib/mdx.server";
 import { createRipple } from "~/lib/ripple";
 import { ITEM_STAGGER_S } from "~/lib/constants";
 import { InsightsPanel } from "~/components/work";
+import { PatternWaves } from "~/lib/visx";
 
 // ─── Page copy ───────────────────────────────────────────────────────────────
 
@@ -53,6 +54,16 @@ const SOLUTION_TYPE_OPTIONS = [
 
 // ─── Style objects ────────────────────────────────────────────────────────────
 
+const headerWrapStyle = { position: "relative" as const, overflow: "hidden" };
+const waveOverlayStyle = {
+  position: "absolute" as const,
+  inset: 0,
+  width: "100%",
+  height: "100%",
+  pointerEvents: "none" as const,
+  zIndex: 0,
+};
+const headerContentStyle = { position: "relative" as const, zIndex: 1 };
 const subHeadlineStyle = { maxWidth: "560px" };
 const controlBarStyle = { padding: "24px 32px" };
 const activeTagsBarStyle = { padding: "12px 24px" };
@@ -178,18 +189,24 @@ export default function WorkIndex() {
 
     if (state.selectedIndustries.length > 0) {
       result = result.filter((p) =>
-        state.selectedIndustries.some((ind) => p.industry?.includes(ind))
+        state.selectedIndustries.some((ind) => p.industry?.includes(ind)),
       );
     }
 
     if (state.selectedSolutionTypes.length > 0) {
       result = result.filter((p) =>
-        state.selectedSolutionTypes.some((st) => p.solutionType?.includes(st))
+        state.selectedSolutionTypes.some((st) => p.solutionType?.includes(st)),
       );
     }
 
     return result;
-  }, [state.query, state.selectedIndustries, state.selectedSolutionTypes, fuse, projects]);
+  }, [
+    state.query,
+    state.selectedIndustries,
+    state.selectedSolutionTypes,
+    fuse,
+    projects,
+  ]);
 
   const hasFilters =
     state.query.length > 0 ||
@@ -197,8 +214,14 @@ export default function WorkIndex() {
     state.selectedSolutionTypes.length > 0;
 
   const activeTags = [
-    ...state.selectedIndustries.map((v) => ({ kind: "industry" as const, value: v })),
-    ...state.selectedSolutionTypes.map((v) => ({ kind: "solution" as const, value: v })),
+    ...state.selectedIndustries.map((v) => ({
+      kind: "industry" as const,
+      value: v,
+    })),
+    ...state.selectedSolutionTypes.map((v) => ({
+      kind: "solution" as const,
+      value: v,
+    })),
   ];
 
   const resultsLabel = hasFilters
@@ -225,7 +248,7 @@ export default function WorkIndex() {
         (tl as ReturnType<typeof gsap.timeline>).from(
           controlBarRef.current,
           { opacity: 0, duration: 0.4, ease: "power2.out" },
-          "-=0.3"
+          "-=0.3",
         );
       }
       if (rowsContainerRef.current) {
@@ -239,7 +262,7 @@ export default function WorkIndex() {
             stagger: ITEM_STAGGER_S,
             ease: "power2.out",
           },
-          "-=0.2"
+          "-=0.2",
         );
       }
     };
@@ -268,7 +291,7 @@ export default function WorkIndex() {
       tween = gsap.fromTo(
         rows,
         { opacity: 0 },
-        { opacity: 1, duration: 0.2, stagger: 0.04, ease: "power1.out" }
+        { opacity: 1, duration: 0.2, stagger: 0.04, ease: "power1.out" },
       );
     };
     animate();
@@ -299,25 +322,44 @@ export default function WorkIndex() {
   return (
     <main>
       {/* Page header */}
-      <div
-        ref={headerRef}
-        className="max-w-container mx-auto px-margin-mob md:px-margin pt-section-mob md:pt-section pb-12 md:pb-16"
-      >
-        <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-accent mb-4">
-          {SECTION_LABEL}
-        </p>
-        <h1
-          className="font-display font-bold text-text-primary leading-[0.9]"
-          style={{ fontSize: "clamp(56px, 8vw, 96px)" }}
+      <div ref={headerRef} style={headerWrapStyle}>
+        <svg style={waveOverlayStyle} aria-hidden="true">
+          <defs>
+            <PatternWaves
+              id="work-wave-pattern"
+              width={80}
+              height={80}
+              stroke="var(--color-invert-bg)"
+              strokeWidth={0.4}
+            />
+          </defs>
+          <rect
+            width="100%"
+            height="100%"
+            fill="url(#work-wave-pattern)"
+            opacity={0.8}
+          />
+        </svg>
+        <div
+          className="max-w-container mx-auto px-margin-mob md:px-margin pt-section-mob md:pt-section pb-12 md:pb-16"
+          style={headerContentStyle}
         >
-          {HEADLINE}
-        </h1>
-        <p
-          className="font-body font-normal text-[18px] text-text-muted mt-4"
-          style={subHeadlineStyle}
-        >
-          {SUBHEADLINE}
-        </p>
+          <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-accent mb-4">
+            {SECTION_LABEL}
+          </p>
+          <h1
+            className="font-display font-bold text-text-primary leading-[0.9]"
+            style={{ fontSize: "clamp(56px, 8vw, 96px)" }}
+          >
+            {HEADLINE}
+          </h1>
+          <p
+            className="font-body font-normal text-[18px] text-text-muted mt-4"
+            style={subHeadlineStyle}
+          >
+            {SUBHEADLINE}
+          </p>
+        </div>
       </div>
 
       {/* Insights panel — always receives all projects, not filtered subset */}
@@ -339,7 +381,11 @@ export default function WorkIndex() {
                 onKeyDown={handleSearchKeyDown}
                 placeholder={PLACEHOLDER_SEARCH}
                 className="w-full bg-bg border-b border-border font-body font-normal text-[14px] text-text-primary placeholder:text-text-muted outline-none focus:border-accent"
-                style={{ height: "40px", padding: "0 16px 0 28px", transition: "border-color var(--transition-fast)" }}
+                style={{
+                  height: "40px",
+                  padding: "0 16px 0 28px",
+                  transition: "border-color var(--transition-fast)",
+                }}
               />
             </div>
 
@@ -391,7 +437,10 @@ export default function WorkIndex() {
 
         {/* Active filter tags */}
         {activeTags.length > 0 && (
-          <div className="bg-surface border-t border-bg" style={activeTagsBarStyle}>
+          <div
+            className="bg-surface border-t border-bg"
+            style={activeTagsBarStyle}
+          >
             <div className="max-w-container mx-auto flex flex-wrap gap-2">
               {activeTags.map((tag) => (
                 <button
@@ -522,7 +571,10 @@ function ProjectRow({ project, index }: ProjectRowProps) {
       {/* Ghost number */}
       <span
         className="hidden md:block absolute left-[-10px] font-display font-bold text-accent select-none pointer-events-none leading-none group-hover:opacity-[0.16]"
-        style={{ ...ghostNumberStyle, transition: "opacity var(--transition-fast)" }}
+        style={{
+          ...ghostNumberStyle,
+          transition: "opacity var(--transition-fast)",
+        }}
         aria-hidden
       >
         {number}
@@ -598,9 +650,7 @@ function EmptyState({ onClear }: { onClear: () => void }) {
       className="flex flex-col items-center justify-center"
       style={emptyStateStyle}
     >
-      <p
-        className="font-display font-light text-[24px] text-text-muted text-center"
-      >
+      <p className="font-display font-light text-[24px] text-text-muted text-center">
         {LABEL_NO_RESULTS}
       </p>
       <button

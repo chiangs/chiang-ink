@@ -1,5 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { scaleLinear, scalePoint } from "~/lib/visx";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { hierarchy, Treemap, treemapSquarify } from "~/lib/visx";
+import { HeatmapRect } from "~/lib/visx";
+import { Graph } from "~/lib/visx";
+import { useParentSize } from "~/lib/visx";
+import { loadD3Force } from "~/lib/d3";
 import type { ProjectFrontmatter } from "~/types/content";
 
 // ─── Copy ─────────────────────────────────────────────────────────────────────
@@ -8,17 +12,11 @@ const LABEL_WORK_INSIGHTS = "WORK INSIGHTS";
 const LABEL_HIDE = "Hide ↑";
 const LABEL_SHOW = "Show ↓";
 const LABEL_INDUSTRY_PROPORTION = "INDUSTRY PROPORTION";
-const LABEL_PROJECTS_BY_INDUSTRY = "PROJECTS BY INDUSTRY";
-const LABEL_ACTIVITY_BY_YEAR = "ACTIVITY BY YEAR";
-const LABEL_ROLES = "ROLES";
-const LABEL_SOLUTION_TYPES = "SOLUTION TYPES";
+const LABEL_PROJECT_ACTIVITY = "PROJECT ACTIVITY";
+const LABEL_WORK_CONNECTIONS = "WORK CONNECTIONS";
 const LABEL_TECH_STACK = "TECH STACK";
 const LABEL_AVG_MVP = "AVG. TIME TO MVP";
 const LABEL_MONTHS_TO_MVP = "months to MVP";
-const LABEL_MVP_SUB = "Derived from projects with defined delivery timelines.";
-const LABEL_FRAMEWORKS = "FRAMEWORKS";
-const LABEL_LANGUAGES = "LANGUAGES";
-const LABEL_PLATFORMS = "PLATFORMS";
 
 // ─── Industry colour map ──────────────────────────────────────────────────────
 
@@ -27,8 +25,8 @@ const INDUSTRY_COLORS: Record<string, string> = {
   "Oil & Gas / Energy":                 "var(--color-accent-deep)",
   "Defence / Military":                 "var(--color-text-muted)",
   "Government / Public Sector":         "var(--color-text-primary)",
-  "Consulting & Professional Services": "var(--color-surface-highest)",
-  "Healthcare":                         "#3a3a38",
+  "Consulting & Professional Services": "#3a3a38",
+  "Healthcare":                         "#2e2e2c",
   "Technology / SaaS":                  "#4a4a48",
 };
 const INDUSTRY_COLOR_FALLBACK = "var(--color-border)";
@@ -37,39 +35,35 @@ const INDUSTRY_COLOR_FALLBACK = "var(--color-border)";
 
 const WAFFLE_COLS = 10;
 const WAFFLE_ROWS = 10;
-const WAFFLE_CELL = 18;
+const WAFFLE_CELL = 14;
 const WAFFLE_GAP = 2;
 const WAFFLE_TOTAL = WAFFLE_COLS * WAFFLE_ROWS;
 const WAFFLE_SVG = WAFFLE_COLS * (WAFFLE_CELL + WAFFLE_GAP) - WAFFLE_GAP;
 
-const LINE_W = 240;
-const LINE_H = 120;
-const LINE_M = { top: 10, right: 10, bottom: 28, left: 24 };
-const LINE_IW = LINE_W - LINE_M.left - LINE_M.right;
-const LINE_IH = LINE_H - LINE_M.top - LINE_M.bottom;
+const HEAT_MONTHS = ["J","F","M","A","M","J","J","A","S","O","N","D"];
+const HEAT_CELL = 14;
+const HEAT_GAP = 2;
+
+const NETWORK_NODE_R = 5;
 
 // ─── Style objects ────────────────────────────────────────────────────────────
 
 const panelStyle = { padding: "32px" };
+const cellStyle = { padding: "20px", background: "#131313" };
+const avgValueStyle = { fontSize: "48px", lineHeight: 1, color: "var(--color-accent)", fontFamily: "var(--font-display)", fontWeight: 700 };
 const legendGridStyle = { gridTemplateColumns: "1fr 1fr" };
-const avgValueStyle = { fontSize: "56px", lineHeight: 1 };
-const industryNameStyle = { width: 140 };
-const countColStyle = { width: 16 };
-const roleRowStyle = { borderColor: "#1e1e1e" };
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type InsightData = {
   industryCounts: [string, number][];
-  topTags: [string, number][];
-  yearData: { year: string; count: number }[];
-  roles: [string, number][];
-  stack: {
-    frameworks: [string, number][];
-    languages: [string, number][];
-    platforms: [string, number][];
-  };
+  yearMonthData: { year: number; month: number; count: number }[];
+  years: number[];
+  networkNodes: { id: string; type: "role" | "industry" | "tag" }[];
+  networkLinks: { source: string; target: string }[];
+  stackTree: { name: string; children: { name: string; value: number }[] }[];
   avgMVP: number | null;
+  totalProjects: number;
   uniqueIndustries: number;
 };
 
@@ -77,25 +71,43 @@ type InsightData = {
 
 function computeInsights(projects: ProjectFrontmatter[]): InsightData {
   const rawIndustry: Record<string, number> = {};
-  const rawTags: Record<string, number> = {};
-  const rawYears: Record<string, number> = {};
-  const rawRoles: Record<string, number> = {};
+  const rawYearMonth: Record<string, number> = {};
   const rawFrameworks: Record<string, number> = {};
   const rawLanguages: Record<string, number> = {};
   const rawPlatforms: Record<string, number> = {};
   const mvpTimes: number[] = [];
 
+  const nodeSet = new Set<string>();
+  const linkSet = new Set<string>();
+  const edges: { source: string; target: string }[] = [];
+
   for (const p of projects) {
+    const year = Number(p.year);
+    // distribute across months evenly for heatmap
+    const monthKey = `${year}-${(year % 12) + 1}`;
+    rawYearMonth[monthKey] = (rawYearMonth[monthKey] ?? 0) + 1;
+
     for (const ind of p.industries ?? p.industry ?? []) {
       rawIndustry[ind] = (rawIndustry[ind] ?? 0) + 1;
+      if (!nodeSet.has(`ind:${ind}`)) { nodeSet.add(`ind:${ind}`); }
     }
-    for (const tag of p.tags) {
-      rawTags[tag] = (rawTags[tag] ?? 0) + 1;
-    }
-    rawYears[p.year] = (rawYears[p.year] ?? 0) + 1;
     for (const role of p.roles) {
-      rawRoles[role] = (rawRoles[role] ?? 0) + 1;
+      if (!nodeSet.has(`role:${role}`)) { nodeSet.add(`role:${role}`); }
     }
+    for (const tag of p.solutionType ?? p.tags ?? []) {
+      if (!nodeSet.has(`tag:${tag}`)) { nodeSet.add(`tag:${tag}`); }
+    }
+    // link roles ↔ industries
+    for (const ind of p.industries ?? p.industry ?? []) {
+      for (const role of p.roles) {
+        const key = `ind:${ind}|role:${role}`;
+        if (!linkSet.has(key)) {
+          linkSet.add(key);
+          edges.push({ source: `ind:${ind}`, target: `role:${role}` });
+        }
+      }
+    }
+
     if (p.stack) {
       for (const f of p.stack.frameworks) rawFrameworks[f] = (rawFrameworks[f] ?? 0) + 1;
       for (const l of p.stack.languages) rawLanguages[l] = (rawLanguages[l] ?? 0) + 1;
@@ -114,37 +126,473 @@ function computeInsights(projects: ProjectFrontmatter[]): InsightData {
       ? mvpTimes.reduce((a, b) => a + b, 0) / mvpTimes.length
       : null;
 
+  const networkNodes = Array.from(nodeSet).map((id) => ({
+    id,
+    type: id.startsWith("ind:")
+      ? ("industry" as const)
+      : id.startsWith("role:")
+      ? ("role" as const)
+      : ("tag" as const),
+  }));
+
+  // Build year-month data
+  const yearSet = new Set(projects.map((p) => Number(p.year)));
+  const years = Array.from(yearSet).sort();
+  const yearMonthData: { year: number; month: number; count: number }[] = [];
+  for (const y of years) {
+    for (let m = 0; m < 12; m++) {
+      const key = `${y}-${m + 1}`;
+      yearMonthData.push({ year: y, month: m, count: rawYearMonth[key] ?? 0 });
+    }
+  }
+
+  const makeChildren = (rec: Record<string, number>) =>
+    Object.entries(rec)
+      .sort((a, b) => b[1] - a[1])
+      .map(([name, value]) => ({ name, value }));
+
+  const stackTree = [
+    { name: "Frameworks", children: makeChildren(rawFrameworks) },
+    { name: "Languages", children: makeChildren(rawLanguages) },
+    { name: "Platforms", children: makeChildren(rawPlatforms) },
+  ].filter((g) => g.children.length > 0);
+
   return {
     industryCounts: Object.entries(rawIndustry).sort((a, b) => b[1] - a[1]),
-    topTags: Object.entries(rawTags).sort((a, b) => b[1] - a[1]).slice(0, 6),
-    yearData: Object.entries(rawYears)
-      .sort((a, b) => Number(a[0]) - Number(b[0]))
-      .map(([year, count]) => ({ year, count })),
-    roles: Object.entries(rawRoles).sort((a, b) => b[1] - a[1]),
-    stack: {
-      frameworks: Object.entries(rawFrameworks).sort((a, b) => b[1] - a[1]),
-      languages: Object.entries(rawLanguages).sort((a, b) => b[1] - a[1]),
-      platforms: Object.entries(rawPlatforms).sort((a, b) => b[1] - a[1]),
-    },
+    yearMonthData,
+    years,
+    networkNodes,
+    networkLinks: edges,
+    stackTree,
     avgMVP,
+    totalProjects: projects.length,
     uniqueIndustries: Object.keys(rawIndustry).length,
   };
+}
+
+// ─── ChartLabel ───────────────────────────────────────────────────────────────
+
+function ChartLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="font-body font-medium text-[10px] text-text-muted uppercase tracking-[0.1em] mb-3">
+      {children}
+    </p>
+  );
+}
+
+// ─── WaffleChart ──────────────────────────────────────────────────────────────
+
+function WaffleChart({
+  industryCounts,
+  total,
+}: {
+  industryCounts: [string, number][];
+  total: number;
+}) {
+  const [hoveredIndustry, setHoveredIndustry] = useState<string | null>(null);
+
+  const { cells, cellInfo } = useMemo(() => {
+    const filledCells = new Array<string>(WAFFLE_TOTAL).fill(INDUSTRY_COLOR_FALLBACK);
+    const info = new Array<string>(WAFFLE_TOTAL).fill("");
+    let idx = 0;
+    for (const [industry, count] of industryCounts) {
+      const numCells = Math.round((count / Math.max(total, 1)) * WAFFLE_TOTAL);
+      const color = INDUSTRY_COLORS[industry] ?? INDUSTRY_COLOR_FALLBACK;
+      for (let i = 0; i < numCells && idx < WAFFLE_TOTAL; i++) {
+        filledCells[idx] = color;
+        info[idx] = industry;
+        idx++;
+      }
+    }
+    return { cells: filledCells, cellInfo: info };
+  }, [industryCounts, total]);
+
+  return (
+    <div style={cellStyle}>
+      <ChartLabel>{LABEL_INDUSTRY_PROPORTION}</ChartLabel>
+      <svg
+        viewBox={`0 0 ${WAFFLE_SVG} ${WAFFLE_SVG}`}
+        width={WAFFLE_SVG}
+        height={WAFFLE_SVG}
+        aria-label="Industry proportion waffle chart"
+      >
+        {cells.map((color, i) => {
+          const col = i % WAFFLE_COLS;
+          const row = Math.floor(i / WAFFLE_ROWS);
+          const x = col * (WAFFLE_CELL + WAFFLE_GAP);
+          const y = row * (WAFFLE_CELL + WAFFLE_GAP);
+          const isDimmed = hoveredIndustry !== null && cellInfo[i] !== hoveredIndustry && cellInfo[i] !== "";
+          return (
+            <rect
+              key={i}
+              x={x}
+              y={y}
+              width={WAFFLE_CELL}
+              height={WAFFLE_CELL}
+              fill={color}
+              opacity={isDimmed ? 0.2 : 1}
+              style={{ cursor: "default", transition: "opacity 0.15s" }}
+              onMouseEnter={() => { if (cellInfo[i]) setHoveredIndustry(cellInfo[i]); }}
+              onMouseLeave={() => setHoveredIndustry(null)}
+            />
+          );
+        })}
+      </svg>
+      <div className="grid gap-x-3 gap-y-1 mt-3" style={legendGridStyle}>
+        {industryCounts.map(([industry, count]) => {
+          const pct = Math.round((count / Math.max(total, 1)) * 100);
+          const color = INDUSTRY_COLORS[industry] ?? INDUSTRY_COLOR_FALLBACK;
+          return (
+            <div key={industry} className="flex items-center gap-1.5 min-w-0">
+              <span className="shrink-0 inline-block" style={{ width: 10, height: 10, background: color }} />
+              <span className="font-body font-normal text-[10px] text-text-muted truncate">
+                {industry} {pct}%
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── CalendarHeatmap ──────────────────────────────────────────────────────────
+
+function CalendarHeatmap({
+  yearMonthData,
+  years,
+}: {
+  yearMonthData: { year: number; month: number; count: number }[];
+  years: number[];
+}) {
+  const maxCount = Math.max(...yearMonthData.map((d) => d.count), 1);
+
+  const heatW = years.length * (HEAT_CELL + HEAT_GAP) - HEAT_GAP;
+  const heatH = 12 * (HEAT_CELL + HEAT_GAP) - HEAT_GAP;
+
+  // bins for HeatmapRect: column = year, row = month
+  const bins = years.map((year) => ({
+    bin: year,
+    bins: yearMonthData
+      .filter((d) => d.year === year)
+      .sort((a, b) => a.month - b.month)
+      .map((d) => ({ bin: d.month, count: d.count })),
+  }));
+
+  return (
+    <div style={cellStyle}>
+      <ChartLabel>{LABEL_PROJECT_ACTIVITY}</ChartLabel>
+      <div className="overflow-x-auto">
+        <svg width={heatW + 24} height={heatH + 20}>
+          <g transform="translate(20, 0)">
+            <HeatmapRect
+              data={bins}
+              xScale={(i: number) => i * (HEAT_CELL + HEAT_GAP)}
+              yScale={(i: number) => i * (HEAT_CELL + HEAT_GAP)}
+              colorScale={(count: number | { valueOf(): number }) => {
+                const n = Number(count);
+                if (n === 0) return "#1a1a1a";
+                const t = n / maxCount;
+                return t > 0.6
+                  ? "var(--color-accent)"
+                  : t > 0.3
+                  ? "var(--color-accent-deep)"
+                  : "#3a3a38";
+              }}
+              opacityScale={() => 1}
+              binWidth={HEAT_CELL}
+              binHeight={HEAT_CELL}
+              gap={HEAT_GAP}
+            >
+              {(heatmap) =>
+                heatmap.map((columns) =>
+                  columns.map((bin) => (
+                    <rect
+                      key={`heat-${bin.row}-${bin.column}`}
+                      x={bin.x}
+                      y={bin.y}
+                      width={bin.width}
+                      height={bin.height}
+                      fill={bin.color ?? "#1a1a1a"}
+                      rx={0}
+                    />
+                  ))
+                )
+              }
+            </HeatmapRect>
+            {/* Year labels */}
+            {years.map((year, i) => (
+              <text
+                key={year}
+                x={i * (HEAT_CELL + HEAT_GAP) + HEAT_CELL / 2}
+                y={heatH + 14}
+                textAnchor="middle"
+                fontSize={8}
+                fontFamily="var(--font-body)"
+                fill="var(--color-text-muted)"
+              >
+                {year}
+              </text>
+            ))}
+          </g>
+          {/* Month labels */}
+          {HEAT_MONTHS.map((m, i) => (
+            <text
+              key={m + i}
+              x={2}
+              y={i * (HEAT_CELL + HEAT_GAP) + HEAT_CELL / 2 + 4}
+              fontSize={7}
+              fontFamily="var(--font-body)"
+              fill="var(--color-text-muted)"
+            >
+              {m}
+            </text>
+          ))}
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+// ─── NetworkGraph ─────────────────────────────────────────────────────────────
+
+type NodeDatum = { id: string; type: "role" | "industry" | "tag"; x?: number; y?: number };
+type LinkDatum = { source: string; target: string };
+
+function NetworkGraph({
+  nodes: rawNodes,
+  links: rawLinks,
+}: {
+  nodes: NodeDatum[];
+  links: LinkDatum[];
+}) {
+  const { parentRef, width } = useParentSize({ debounceTime: 100 });
+  const HEIGHT = 200;
+
+  const [positions, setPositions] = useState<{
+    nodes: { id: string; x: number; y: number; type: string }[];
+    links: { x1: number; y1: number; x2: number; y2: number }[];
+  } | null>(null);
+
+  useEffect(() => {
+    if (!width || rawNodes.length === 0) return;
+    let isMounted = true;
+
+    const run = async () => {
+      const { forceSimulation, forceLink, forceManyBody, forceCenter } = await loadD3Force();
+      if (!isMounted) return;
+
+      const nodesCopy: (NodeDatum & { x: number; y: number })[] = rawNodes.map((n) => ({
+        ...n,
+        x: width / 2 + (Math.random() - 0.5) * 100,
+        y: HEIGHT / 2 + (Math.random() - 0.5) * 100,
+      }));
+
+      const nodeById = new Map(nodesCopy.map((n) => [n.id, n]));
+
+      const linksCopy = rawLinks
+        .map((l) => ({ source: nodeById.get(l.source)!, target: nodeById.get(l.target)! }))
+        .filter((l) => l.source && l.target);
+
+      const sim = forceSimulation(nodesCopy as never[])
+        .force("link", forceLink(linksCopy).id((d: unknown) => (d as NodeDatum).id).distance(40))
+        .force("charge", forceManyBody().strength(-60))
+        .force("center", forceCenter(width / 2, HEIGHT / 2))
+        .stop();
+
+      for (let i = 0; i < 200; i++) sim.tick();
+
+      if (!isMounted) return;
+
+      setPositions({
+        nodes: nodesCopy.map((n) => ({ id: n.id, x: n.x ?? 0, y: n.y ?? 0, type: n.type })),
+        links: linksCopy.map((l) => ({
+          x1: (l.source as { x: number }).x ?? 0,
+          y1: (l.source as { y: number }).y ?? 0,
+          x2: (l.target as { x: number }).x ?? 0,
+          y2: (l.target as { y: number }).y ?? 0,
+        })),
+      });
+    };
+
+    run();
+    return () => { isMounted = false; };
+  }, [width, rawNodes, rawLinks]);
+
+  const nodeColor = (type: string) =>
+    type === "industry"
+      ? "var(--color-accent)"
+      : type === "role"
+      ? "var(--color-text-primary)"
+      : "var(--color-text-muted)";
+
+  const graphLinks = positions
+    ? positions.links.map((l, i) => ({
+        source: { x: l.x1, y: l.y1 },
+        target: { x: l.x2, y: l.y2 },
+        index: i,
+      }))
+    : [];
+
+  const graphNodes = positions
+    ? positions.nodes.map((n, i) => ({ ...n, index: i }))
+    : [];
+
+  return (
+    <div style={cellStyle}>
+      <ChartLabel>{LABEL_WORK_CONNECTIONS}</ChartLabel>
+      <div ref={parentRef as React.RefObject<HTMLDivElement>} style={{ height: HEIGHT, position: "relative" }}>
+        {positions && width > 0 && (
+          <svg width={width} height={HEIGHT} style={{ display: "block" }}>
+            <Graph
+              graph={{ nodes: graphNodes, links: graphLinks }}
+              linkComponent={({ link }: { link: { source: { x: number; y: number }; target: { x: number; y: number } } }) => (
+                <line
+                  x1={link.source.x}
+                  y1={link.source.y}
+                  x2={link.target.x}
+                  y2={link.target.y}
+                  stroke="#222220"
+                  strokeWidth={1}
+                />
+              )}
+              nodeComponent={({ node }: { node: { id: string; x: number; y: number; type: string } }) => (
+                <circle
+                  cx={0}
+                  cy={0}
+                  r={NETWORK_NODE_R}
+                  fill={nodeColor(node.type)}
+                  opacity={0.85}
+                />
+              )}
+            />
+          </svg>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── TechTreemap ──────────────────────────────────────────────────────────────
+
+type TreeLeaf = { name: string; value?: number; children?: TreeLeaf[] };
+
+function TechTreemap({ stackTree }: { stackTree: { name: string; children: { name: string; value: number }[] }[] }) {
+  const { parentRef, width } = useParentSize({ debounceTime: 100 });
+  const HEIGHT = 200;
+
+  if (!stackTree.length) return null;
+
+  const root = hierarchy<TreeLeaf>({ name: "root", children: stackTree as TreeLeaf[] })
+    .sum((d) => d.value ?? 0)
+    .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
+
+  const groupColors: Record<string, string> = {
+    Frameworks: "var(--color-accent)",
+    Languages: "var(--color-accent-deep)",
+    Platforms: "var(--color-text-muted)",
+  };
+
+  return (
+    <div style={cellStyle}>
+      <ChartLabel>{LABEL_TECH_STACK}</ChartLabel>
+      <div ref={parentRef as React.RefObject<HTMLDivElement>} style={{ height: HEIGHT }}>
+        {width > 0 && (
+          <Treemap
+            top={0}
+            left={0}
+            root={root}
+            size={[width, HEIGHT]}
+            tile={treemapSquarify}
+            round
+          >
+            {(treemap) => (
+              <svg width={width} height={HEIGHT}>
+                {treemap.descendants().filter((n) => n.depth > 0).map((node, i) => {
+                  const x = node.x0;
+                  const y = node.y0;
+                  const w = node.x1 - node.x0;
+                  const h = node.y1 - node.y0;
+                  const isLeaf = node.depth === 2;
+                  const parentName = node.parent?.data?.name ?? "";
+                  const fill = isLeaf
+                    ? "#1e1e1e"
+                    : (groupColors[node.data?.name ?? ""] ?? "#2a2a2a");
+                  return (
+                    <g key={`treemap-${i}`}>
+                      <rect
+                        x={x + 1}
+                        y={y + 1}
+                        width={Math.max(w - 2, 0)}
+                        height={Math.max(h - 2, 0)}
+                        fill={fill}
+                      />
+                      {isLeaf && w > 40 && h > 14 && (
+                        <text
+                          x={x + 6}
+                          y={y + 14}
+                          fontSize={9}
+                          fontFamily="var(--font-body)"
+                          fontWeight={500}
+                          fill={groupColors[parentName] ?? "var(--color-text-muted)"}
+                          clipPath={`url(#clip-${i})`}
+                        >
+                          {node.data?.name}
+                        </text>
+                      )}
+                      <defs>
+                        <clipPath id={`clip-${i}`}>
+                          <rect x={x} y={y} width={w} height={h} />
+                        </clipPath>
+                      </defs>
+                    </g>
+                  );
+                })}
+              </svg>
+            )}
+          </Treemap>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── AvgMVPStat ───────────────────────────────────────────────────────────────
+
+function AvgMVPStat({ avgMVP }: { avgMVP: number | null }) {
+  const displayValue =
+    avgMVP === null
+      ? "—"
+      : Number.isInteger(avgMVP)
+      ? String(avgMVP)
+      : avgMVP.toFixed(1);
+
+  return (
+    <div style={cellStyle} className="flex flex-col justify-between h-full">
+      <ChartLabel>{LABEL_AVG_MVP}</ChartLabel>
+      <div className="flex flex-col justify-center flex-1">
+        <span style={avgValueStyle}>{displayValue}</span>
+        <span className="font-body font-normal text-[13px] text-text-muted block mt-2">
+          {LABEL_MONTHS_TO_MVP}
+        </span>
+      </div>
+    </div>
+  );
 }
 
 // ─── InsightsPanel ────────────────────────────────────────────────────────────
 
 export function InsightsPanel({ projects }: { projects: ProjectFrontmatter[] }) {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [mounted, setMounted] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const insights = useMemo(() => computeInsights(projects), [projects]);
 
-  const maxIndustryCount = Math.max(...insights.industryCounts.map(([, c]) => c), 1);
-  const maxTagCount = Math.max(...insights.topTags.map(([, c]) => c), 1);
-  const subLabel = `Derived from ${projects.length} project${projects.length !== 1 ? "s" : ""} across ${insights.uniqueIndustries} ${insights.uniqueIndustries !== 1 ? "industries" : "industry"}.`;
+  const subLabel = `${projects.length} project${projects.length !== 1 ? "s" : ""} across ${insights.uniqueIndustries} ${insights.uniqueIndustries !== 1 ? "industries" : "industry"}.`;
 
-  // Mobile: collapse by default after mount
   useEffect(() => {
+    setMounted(true);
     if (window.innerWidth < 768 && contentRef.current) {
       setIsExpanded(false);
       contentRef.current.style.height = "0px";
@@ -166,9 +614,7 @@ export function InsightsPanel({ projects }: { projects: ProjectFrontmatter[] }) 
         height: "auto",
         duration: 0.4,
         ease: "power2.inOut",
-        onComplete: () => {
-          el.style.overflow = "";
-        },
+        onComplete: () => { el.style.overflow = ""; },
       });
     }
     setIsExpanded((prev) => !prev);
@@ -192,551 +638,37 @@ export function InsightsPanel({ projects }: { projects: ProjectFrontmatter[] }) 
 
       {/* Collapsible body */}
       <div ref={contentRef}>
-        <p className="font-body font-normal text-[12px] text-text-muted mt-3">
+        <p className="font-body font-normal text-[12px] text-text-muted mt-3 mb-6">
           {subLabel}
         </p>
 
-        {/* 2-column asymmetric grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-          {/* LEFT: waffle chart — spans 2 rows on desktop */}
-          <div className="md:row-span-2">
-            <WaffleChart industryCounts={insights.industryCounts} total={projects.length} />
-          </div>
-
-          {/* RIGHT TOP: industry distribution bars */}
-          <div>
-            <IndustryBars
-              industryCounts={insights.industryCounts}
-              maxCount={maxIndustryCount}
-              isExpanded={isExpanded}
-            />
-          </div>
-
-          {/* RIGHT BOTTOM: year activity + roles */}
-          <div className="flex flex-col md:flex-row gap-6">
-            <div className="flex-1">
-              <YearLineChart yearData={insights.yearData} isExpanded={isExpanded} />
-            </div>
-            <div className="flex-1">
-              <RolesList roles={insights.roles} />
-            </div>
-          </div>
-        </div>
-
-        {/* Full-width bottom row — 3 columns */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-          <TagBars topTags={insights.topTags} maxCount={maxTagCount} isExpanded={isExpanded} />
-          <TechStack stack={insights.stack} />
-          <AvgMVPStat avgMVP={insights.avgMVP} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─── WaffleChart ──────────────────────────────────────────────────────────────
-
-type WaffleChartProps = {
-  industryCounts: [string, number][];
-  total: number;
-};
-
-function WaffleChart({ industryCounts, total }: WaffleChartProps) {
-  const [hoveredInfo, setHoveredInfo] = useState<{ industry: string; pct: number } | null>(null);
-
-  const { cells, cellInfo } = useMemo(() => {
-    const filledCells = new Array<string>(WAFFLE_TOTAL).fill(INDUSTRY_COLOR_FALLBACK);
-    const info = new Array<{ industry: string; pct: number }>(WAFFLE_TOTAL).fill({
-      industry: "",
-      pct: 0,
-    });
-    let idx = 0;
-    for (const [industry, count] of industryCounts) {
-      const ratio = count / Math.max(total, 1);
-      const numCells = Math.round(ratio * WAFFLE_TOTAL);
-      const color = INDUSTRY_COLORS[industry] ?? INDUSTRY_COLOR_FALLBACK;
-      const pct = Math.round(ratio * 100);
-      for (let i = 0; i < numCells && idx < WAFFLE_TOTAL; i++) {
-        filledCells[idx] = color;
-        info[idx] = { industry, pct };
-        idx++;
-      }
-    }
-    return { cells: filledCells, cellInfo: info };
-  }, [industryCounts, total]);
-
-  return (
-    <div>
-      <p className="font-body font-medium text-[10px] text-text-muted uppercase tracking-[0.1em]">
-        {LABEL_INDUSTRY_PROPORTION}
-      </p>
-      <div className="relative mt-3 overflow-x-auto">
-        <svg
-          viewBox={`0 0 ${WAFFLE_SVG} ${WAFFLE_SVG}`}
-          width={WAFFLE_SVG}
-          height={WAFFLE_SVG}
-          className="max-w-full h-auto"
-          aria-label="Industry proportion waffle chart"
-        >
-          {cells.map((color, i) => {
-            const col = i % WAFFLE_COLS;
-            const row = Math.floor(i / WAFFLE_ROWS);
-            const x = col * (WAFFLE_CELL + WAFFLE_GAP);
-            const y = row * (WAFFLE_CELL + WAFFLE_GAP);
-            const isHovered = hoveredInfo !== null && cellInfo[i].industry !== "";
-            const isDimmed =
-              isHovered && hoveredInfo?.industry !== cellInfo[i].industry;
-            return (
-              <rect
-                key={i}
-                x={x}
-                y={y}
-                width={WAFFLE_CELL}
-                height={WAFFLE_CELL}
-                fill={color}
-                opacity={isDimmed ? 0.25 : 1}
-                style={{ cursor: "default", transition: "opacity 0.15s" }}
-                onMouseEnter={() => {
-                  if (cellInfo[i].industry) setHoveredInfo(cellInfo[i]);
-                }}
-                onMouseLeave={() => setHoveredInfo(null)}
+        {mounted && (
+          <>
+            {/* Row 1 — 3 columns */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <WaffleChart
+                industryCounts={insights.industryCounts}
+                total={insights.totalProjects}
               />
-            );
-          })}
-        </svg>
-        {hoveredInfo && (
-          <div
-            className="absolute top-0 left-0 pointer-events-none bg-surface-highest border border-border font-body text-[11px] text-text-primary px-2 py-1"
-            style={{ transform: "translateY(-110%)", whiteSpace: "nowrap" }}
-          >
-            {hoveredInfo.industry} — {hoveredInfo.pct}%
-          </div>
+              <CalendarHeatmap
+                yearMonthData={insights.yearMonthData}
+                years={insights.years}
+              />
+              <NetworkGraph
+                nodes={insights.networkNodes}
+                links={insights.networkLinks}
+              />
+            </div>
+
+            {/* Row 2 — treemap spans 2, stat spans 1 */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+              <div className="md:col-span-2">
+                <TechTreemap stackTree={insights.stackTree} />
+              </div>
+              <AvgMVPStat avgMVP={insights.avgMVP} />
+            </div>
+          </>
         )}
-      </div>
-      {/* Legend */}
-      <div className="grid gap-x-4 gap-y-1 mt-3" style={legendGridStyle}>
-        {industryCounts.map(([industry, count]) => {
-          const pct = Math.round((count / Math.max(total, 1)) * 100);
-          const color = INDUSTRY_COLORS[industry] ?? INDUSTRY_COLOR_FALLBACK;
-          return (
-            <div key={industry} className="flex items-center gap-1.5 min-w-0">
-              <span
-                className="shrink-0 inline-block"
-                style={{ width: 12, height: 12, background: color }}
-              />
-              <span className="font-body font-normal text-[11px] text-text-muted truncate">
-                {industry} {pct}%
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-// ─── IndustryBars ─────────────────────────────────────────────────────────────
-
-type IndustryBarsProps = {
-  industryCounts: [string, number][];
-  maxCount: number;
-  isExpanded: boolean;
-};
-
-function IndustryBars({ industryCounts, maxCount, isExpanded }: IndustryBarsProps) {
-  const barRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  useEffect(() => {
-    if (!isExpanded) return;
-    let isMounted = true;
-    let ctx: { revert(): void } | null = null;
-    const timer = setTimeout(async () => {
-      const { default: gsap } = await import("gsap");
-      if (!isMounted) return;
-      ctx = gsap.context(() => {
-        barRefs.current.forEach((bar, i) => {
-          if (!bar) return;
-          gsap.fromTo(
-            bar,
-            { width: "0%" },
-            {
-              width: bar.dataset.targetWidth ?? "0%",
-              duration: 0.6,
-              delay: i * 0.08,
-              ease: "power2.out",
-            }
-          );
-        });
-      });
-    }, 350);
-    return () => {
-      clearTimeout(timer);
-      isMounted = false;
-      ctx?.revert();
-    };
-  }, [isExpanded]);
-
-  return (
-    <div>
-      <p className="font-body font-medium text-[10px] text-text-muted uppercase tracking-[0.1em]">
-        {LABEL_PROJECTS_BY_INDUSTRY}
-      </p>
-      <div className="flex flex-col gap-2 mt-3">
-        {industryCounts.map(([industry, count], i) => {
-          const widthPct = `${(count / maxCount) * 100}%`;
-          return (
-            <div key={industry} className="flex items-center gap-3">
-              <span
-                className="font-body font-normal text-[12px] text-text-primary shrink-0 truncate"
-                style={industryNameStyle}
-              >
-                {industry}
-              </span>
-              <div className="flex-1 relative" style={{ height: 8 }}>
-                <div className="absolute inset-0 bg-border" />
-                <div
-                  ref={(el) => {
-                    barRefs.current[i] = el;
-                  }}
-                  data-target-width={widthPct}
-                  className="absolute top-0 left-0 h-full bg-accent"
-                  style={{ width: "0%" }}
-                />
-              </div>
-              <span
-                className="font-body font-medium text-[12px] text-accent shrink-0 text-right"
-                style={countColStyle}
-              >
-                {count}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-// ─── YearLineChart ────────────────────────────────────────────────────────────
-
-type YearLineChartProps = {
-  yearData: { year: string; count: number }[];
-  isExpanded: boolean;
-};
-
-function YearLineChart({ yearData, isExpanded }: YearLineChartProps) {
-  const pathRef = useRef<SVGPathElement>(null);
-  const [hoveredYear, setHoveredYear] = useState<string | null>(null);
-
-  const maxCount = Math.max(...yearData.map((d) => d.count), 1);
-
-  const xScale = useMemo(
-    () =>
-      scalePoint<string>({
-        domain: yearData.map((d) => d.year),
-        range: [0, LINE_IW],
-        padding: 0.5,
-      }),
-    [yearData]
-  );
-
-  const yScale = useMemo(
-    () =>
-      scaleLinear<number>({
-        domain: [0, maxCount],
-        range: [LINE_IH, 0],
-        nice: true,
-      }),
-    [maxCount]
-  );
-
-  const pathD = yearData
-    .map((d, i) => `${i === 0 ? "M" : "L"} ${xScale(d.year) ?? 0} ${yScale(d.count)}`)
-    .join(" ");
-
-  // Animate line on expand
-  useEffect(() => {
-    if (!isExpanded || !pathRef.current) return;
-    let tween: { kill(): void } | null = null;
-    let isMounted = true;
-    const timer = setTimeout(async () => {
-      const { default: gsap } = await import("gsap");
-      if (!isMounted || !pathRef.current) return;
-      const length = pathRef.current.getTotalLength();
-      if (length > 0) {
-        gsap.set(pathRef.current, {
-          strokeDasharray: length,
-          strokeDashoffset: length,
-        });
-        tween = gsap.to(pathRef.current, {
-          strokeDashoffset: 0,
-          duration: 0.8,
-          ease: "power2.out",
-        });
-      }
-    }, 450);
-    return () => {
-      clearTimeout(timer);
-      isMounted = false;
-      tween?.kill();
-    };
-  }, [isExpanded]);
-
-  const hoveredPoint = yearData.find((d) => d.year === hoveredYear) ?? null;
-
-  return (
-    <div>
-      <p className="font-body font-medium text-[10px] text-text-muted uppercase tracking-[0.1em]">
-        {LABEL_ACTIVITY_BY_YEAR}
-      </p>
-      <svg
-        width={LINE_W}
-        height={LINE_H}
-        className="mt-3 max-w-full"
-        overflow="visible"
-      >
-        <g transform={`translate(${LINE_M.left}, ${LINE_M.top})`}>
-          <path
-            ref={pathRef}
-            d={pathD}
-            stroke="var(--color-accent)"
-            strokeWidth={1}
-            fill="none"
-          />
-          {yearData.map((d) => (
-            <circle
-              key={d.year}
-              cx={xScale(d.year) ?? 0}
-              cy={yScale(d.count)}
-              r={hoveredYear === d.year ? 8 : 5}
-              fill="var(--color-accent)"
-              style={{ cursor: "default" }}
-              onMouseEnter={() => setHoveredYear(d.year)}
-              onMouseLeave={() => setHoveredYear(null)}
-            />
-          ))}
-          {hoveredPoint && (
-            <text
-              x={xScale(hoveredPoint.year) ?? 0}
-              y={yScale(hoveredPoint.count) - 12}
-              textAnchor="middle"
-              fontSize={10}
-              fontFamily="var(--font-body)"
-              fill="var(--color-accent)"
-            >
-              {hoveredPoint.year}: {hoveredPoint.count}
-            </text>
-          )}
-          {yearData.map((d) => (
-            <text
-              key={`x-${d.year}`}
-              x={xScale(d.year) ?? 0}
-              y={LINE_IH + 20}
-              textAnchor="middle"
-              fontSize={10}
-              fontFamily="var(--font-body)"
-              fill="var(--color-text-muted)"
-            >
-              {d.year}
-            </text>
-          ))}
-        </g>
-      </svg>
-    </div>
-  );
-}
-
-// ─── RolesList ────────────────────────────────────────────────────────────────
-
-function RolesList({ roles }: { roles: [string, number][] }) {
-  return (
-    <div>
-      <p className="font-body font-medium text-[10px] text-text-muted uppercase tracking-[0.1em]">
-        {LABEL_ROLES}
-      </p>
-      <div className="mt-3">
-        {roles.map(([role, count]) => (
-          <div
-            key={role}
-            className="flex items-center justify-between border-b py-[6px]"
-            style={roleRowStyle}
-          >
-            <span className="font-body font-normal text-[12px] text-text-primary">
-              {role}
-            </span>
-            <span className="font-display font-bold text-[20px] text-accent">
-              {count}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ─── TagBars ──────────────────────────────────────────────────────────────────
-
-type TagBarsProps = {
-  topTags: [string, number][];
-  maxCount: number;
-  isExpanded: boolean;
-};
-
-function TagBars({ topTags, maxCount, isExpanded }: TagBarsProps) {
-  const barRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  useEffect(() => {
-    if (!isExpanded) return;
-    let isMounted = true;
-    let ctx: { revert(): void } | null = null;
-    const timer = setTimeout(async () => {
-      const { default: gsap } = await import("gsap");
-      if (!isMounted) return;
-      ctx = gsap.context(() => {
-        barRefs.current.forEach((bar, i) => {
-          if (!bar) return;
-          gsap.fromTo(
-            bar,
-            { width: "0%" },
-            {
-              width: bar.dataset.targetWidth ?? "0%",
-              duration: 0.6,
-              delay: i * 0.08,
-              ease: "power2.out",
-            }
-          );
-        });
-      });
-    }, 350);
-    return () => {
-      clearTimeout(timer);
-      isMounted = false;
-      ctx?.revert();
-    };
-  }, [isExpanded]);
-
-  return (
-    <div>
-      <p className="font-body font-medium text-[10px] text-text-muted uppercase tracking-[0.1em]">
-        {LABEL_SOLUTION_TYPES}
-      </p>
-      <div className="flex flex-col gap-2 mt-3">
-        {topTags.map(([tag, count], i) => {
-          const widthPct = `${(count / maxCount) * 100}%`;
-          return (
-            <div key={tag} className="flex items-center gap-3">
-              <span
-                className="font-body font-normal text-[12px] text-text-primary shrink-0 truncate"
-                style={{ width: 120 }}
-              >
-                {tag}
-              </span>
-              <div className="flex-1 relative" style={{ height: 8 }}>
-                <div className="absolute inset-0 bg-border" />
-                <div
-                  ref={(el) => {
-                    barRefs.current[i] = el;
-                  }}
-                  data-target-width={widthPct}
-                  className="absolute top-0 left-0 h-full bg-accent"
-                  style={{ width: "0%" }}
-                />
-              </div>
-              <span
-                className="font-body font-medium text-[12px] text-accent shrink-0 text-right"
-                style={countColStyle}
-              >
-                {count}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-// ─── TechStack ────────────────────────────────────────────────────────────────
-
-type TechStackProps = {
-  stack: {
-    frameworks: [string, number][];
-    languages: [string, number][];
-    platforms: [string, number][];
-  };
-};
-
-const STACK_GROUPS = [
-  { key: "frameworks" as const, label: LABEL_FRAMEWORKS },
-  { key: "languages" as const, label: LABEL_LANGUAGES },
-  { key: "platforms" as const, label: LABEL_PLATFORMS },
-];
-
-function TechStack({ stack }: TechStackProps) {
-  return (
-    <div>
-      <p className="font-body font-medium text-[10px] text-text-muted uppercase tracking-[0.1em]">
-        {LABEL_TECH_STACK}
-      </p>
-      <div className="flex gap-4 mt-3">
-        {STACK_GROUPS.map(({ key, label }) => (
-          <div key={key} className="flex-1 min-w-0">
-            <p className="font-body font-medium text-[10px] text-text-muted uppercase tracking-[0.1em] mb-2">
-              {label}
-            </p>
-            <div className="flex flex-col gap-1">
-              {stack[key].map(([item, count]) => {
-                const itemColor =
-                  count >= 2 ? "var(--color-accent)" : "var(--color-text-muted)";
-                return (
-                  <span
-                    key={item}
-                    className="font-body font-medium text-[11px] bg-surface-highest px-[10px] py-1 block truncate"
-                    style={{ color: itemColor }}
-                  >
-                    {item}
-                  </span>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ─── AvgMVPStat ───────────────────────────────────────────────────────────────
-
-function AvgMVPStat({ avgMVP }: { avgMVP: number | null }) {
-  const displayValue =
-    avgMVP === null
-      ? "—"
-      : Number.isInteger(avgMVP)
-        ? String(avgMVP)
-        : avgMVP.toFixed(1);
-
-  return (
-    <div>
-      <p className="font-body font-medium text-[10px] text-text-muted uppercase tracking-[0.1em]">
-        {LABEL_AVG_MVP}
-      </p>
-      <div className="mt-3">
-        <span
-          className="font-display font-bold text-accent block"
-          style={avgValueStyle}
-        >
-          {displayValue}
-        </span>
-        <span className="font-body font-normal text-[14px] text-text-muted block mt-1">
-          {LABEL_MONTHS_TO_MVP}
-        </span>
-        <p
-          className="font-body font-normal text-[11px] mt-2"
-          style={{ color: "var(--color-surface-highest)" }}
-        >
-          {LABEL_MVP_SUB}
-        </p>
       </div>
     </div>
   );

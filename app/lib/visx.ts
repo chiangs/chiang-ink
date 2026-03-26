@@ -3,4 +3,9 @@
 // Add new visx exports here as needed — never import @visx/* directly
 // in components or routes.
 
-export { scaleLinear, scalePoint } from "@visx/scale";
+export { scaleLinear, scalePoint, scaleBand } from "@visx/scale";
+export { HeatmapRect } from "@visx/heatmap";
+export { hierarchy, Treemap, treemapSquarify } from "@visx/hierarchy";
+export { Graph } from "@visx/network";
+export { PatternWaves } from "@visx/pattern";
+export { useParentSize } from "@visx/responsive";

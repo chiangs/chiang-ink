@@ -10,3 +10,11 @@ export async function loadD3() {
   ]);
   return { d3, feature: topojson.feature };
 }
+
+// Async loader for d3-force.
+// Call loadD3Force() to get force simulation utilities.
+export async function loadD3Force() {
+  const { forceSimulation, forceLink, forceManyBody, forceCenter } =
+    await import("d3-force");
+  return { forceSimulation, forceLink, forceManyBody, forceCenter };
+}
