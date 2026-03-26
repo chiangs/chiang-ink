@@ -98,12 +98,19 @@ Body font:      Manrope (Google Fonts)
                 Provides humanist balance to Space Grotesk's
                 geometric precision.
 
-Label style:    Manrope 500, 10–11px, uppercase,
+Label style:    Manrope 500, 14px, uppercase,
                 letter-spacing: 0.15em
 
+Minimum font size: 14px — no text anywhere on the site should
+                render below 14px.
+                Exception: tag pills (work row tags, filter tags)
+                may use 12px — they are dense UI elements where
+                14px creates visual imbalance.
+
 Type scale:
-  --text-label:   11px  / Manrope 500 / uppercase / ls 0.15em
-  --text-caption: 12px  / Manrope 400
+  --text-tag:     12px  / Manrope 500 / uppercase / ls 0.1em  (exception)
+  --text-label:   14px  / Manrope 500 / uppercase / ls 0.15em
+  --text-caption: 14px  / Manrope 400
   --text-body:    16px  / Manrope 400 / lh 1.75
   --text-body-lg: 18px  / Manrope 400 / lh 1.75
   --text-sub:     20px  / Manrope 400
@@ -134,7 +141,7 @@ EXTREME WEIGHT CONTRAST (from Stitch — adopted):
 IMAGE CAPTIONS (from Stitch — adopted):
   All image captions use technical reference style:
   "REF_001 // SCALE 1:1" format
-  Manrope 500, 10px, uppercase, #FFB77D
+  Manrope 500, 14px, uppercase, #FFB77D
   Positioned bottom-right, overlapping image edge slightly.
 
 ---

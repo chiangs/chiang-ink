@@ -128,7 +128,7 @@ export function StyleGuideDrawer({
             background: "none",
             border: "none",
             color: "#5a5a58",
-            fontSize: "11px",
+            fontSize: "14px",
             fontFamily: "Inter, sans-serif",
             fontWeight: 500,
             letterSpacing: "0.15em",
@@ -183,7 +183,7 @@ export function StyleGuideDrawer({
           <p
             style={{
               fontFamily: "Manrope, sans-serif",
-              fontSize: "11px",
+              fontSize: "14px",
               fontWeight: 500,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
@@ -238,7 +238,7 @@ export function StyleGuideDrawer({
                   <p
                     style={{
                       fontFamily: "Manrope, sans-serif",
-                      fontSize: "13px",
+                      fontSize: "14px",
                       color: "#efefec",
                       margin: "0 0 2px",
                       fontWeight: 500,
@@ -249,7 +249,7 @@ export function StyleGuideDrawer({
                   <p
                     style={{
                       fontFamily: "monospace",
-                      fontSize: "11px",
+                      fontSize: "14px",
                       color: "#5a5a58",
                       margin: 0,
                     }}
@@ -287,7 +287,7 @@ export function StyleGuideDrawer({
                 <p
                   style={{
                     fontFamily: "monospace",
-                    fontSize: "10px",
+                    fontSize: "14px",
                     color: "#5a5a58",
                     margin: 0,
                   }}
@@ -313,10 +313,10 @@ export function StyleGuideDrawer({
                   paddingBottom: "8px",
                 }}
               >
-                <span style={{ fontFamily: "Manrope, sans-serif", fontSize: "13px", color: "#5a5a58" }}>
+                <span style={{ fontFamily: "Manrope, sans-serif", fontSize: "14px", color: "#5a5a58" }}>
                   {s.name}
                 </span>
-                <span style={{ fontFamily: "monospace", fontSize: "12px", color: "#f5a020" }}>
+                <span style={{ fontFamily: "monospace", fontSize: "14px", color: "#f5a020" }}>
                   {s.value}
                 </span>
               </div>
@@ -335,7 +335,7 @@ export function StyleGuideDrawer({
                 <p
                   style={{
                     fontFamily: "Manrope, sans-serif",
-                    fontSize: "12px",
+                    fontSize: "14px",
                     fontWeight: 500,
                     color: "#efefec",
                     margin: "0 0 4px",
@@ -346,7 +346,7 @@ export function StyleGuideDrawer({
                 <p
                   style={{
                     fontFamily: "monospace",
-                    fontSize: "11px",
+                    fontSize: "14px",
                     color: "#5a5a58",
                     margin: 0,
                   }}
@@ -362,7 +362,7 @@ export function StyleGuideDrawer({
         <p
           style={{
             fontFamily: "Manrope, sans-serif",
-            fontSize: "11px",
+            fontSize: "14px",
             color: "#5a5a58",
             letterSpacing: "0.05em",
             lineHeight: 1.6,
@@ -399,7 +399,7 @@ function Section({
         <p
           style={{
             fontFamily: "Manrope, sans-serif",
-            fontSize: "11px",
+            fontSize: "14px",
             fontWeight: 500,
             letterSpacing: "0.18em",
             textTransform: "uppercase",

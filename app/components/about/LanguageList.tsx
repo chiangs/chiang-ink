@@ -34,7 +34,7 @@ export function LanguageList() {
             <span
               className="font-body font-medium uppercase"
               style={{
-                fontSize: "11px",
+                fontSize: "14px",
                 color: "#FFB77D",
                 letterSpacing: "0.15em",
               }}

@@ -23,7 +23,7 @@ const imgCaptionStyle: React.CSSProperties = {
   right: "12px",
   fontFamily: "var(--font-body)",
   fontWeight: 500,
-  fontSize: "10px",
+  fontSize: "14px",
   letterSpacing: "0.15em",
   textTransform: "uppercase",
   color: "#E5E2E1",

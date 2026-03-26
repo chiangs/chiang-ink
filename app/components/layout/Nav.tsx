@@ -75,7 +75,7 @@ export function Nav({ onOpenStyleGuide, onOpenCurrently }: NavProps) {
           <button
             onClick={onOpenCurrently}
             aria-label={ARIA_CURRENTLY}
-            className="bg-transparent border-0 font-body text-[11px] font-medium uppercase tracking-[0.15em] text-accent-deep cursor-pointer p-0 transition-colors duration-200 hover:text-accent"
+            className="bg-transparent border-0 font-body text-[14px] font-medium uppercase tracking-[0.15em] text-accent-deep cursor-pointer p-0 transition-colors duration-200 hover:text-accent"
           >
             {time}
           </button>
@@ -182,7 +182,7 @@ function NavLink({
       to={to}
       viewTransition
       data-anim="nav-link"
-      className={`group relative font-body text-[11px] font-medium uppercase tracking-[0.15em] no-underline pb-0.5 transition-colors duration-200 ${colorClass}`}
+      className={`group relative font-body text-[14px] font-medium uppercase tracking-[0.15em] no-underline pb-0.5 transition-colors duration-200 ${colorClass}`}
     >
       {label}
       <span
@@ -310,7 +310,7 @@ function MobileMenu({
         <button
           onClick={handleCurrently}
           aria-label={ARIA_CURRENTLY}
-          className="bg-transparent border-0 cursor-pointer font-body text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted transition-colors duration-200 hover:text-text-primary p-0"
+          className="bg-transparent border-0 cursor-pointer font-body text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted transition-colors duration-200 hover:text-text-primary p-0"
         >
           {time}
         </button>

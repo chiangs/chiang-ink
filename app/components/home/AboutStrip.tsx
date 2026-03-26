@@ -58,7 +58,7 @@ export function AboutStrip() {
       </span>
 
       <div className="max-w-container mx-auto px-margin-mob md:px-margin relative z-10">
-        <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-invert-text/60 mb-8">
+        <p className="text-[14px] font-medium uppercase tracking-[0.15em] text-invert-text/60 mb-8">
           {SECTION_LABEL}
         </p>
 
@@ -82,11 +82,11 @@ export function AboutStrip() {
             href={LINKEDIN_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[11px] font-medium uppercase tracking-[0.15em] text-invert-text border-b border-invert-text pb-0.5 hover:opacity-60 transition-opacity duration-200"
+            className="text-[14px] font-medium uppercase tracking-[0.15em] text-invert-text border-b border-invert-text pb-0.5 hover:opacity-60 transition-opacity duration-200"
           >
             {LABEL_LINKEDIN}
           </a>
-          <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-invert-text/40">
+          <span className="text-[14px] font-medium uppercase tracking-[0.15em] text-invert-text/40">
             {LOCATION}
           </span>
         </div>

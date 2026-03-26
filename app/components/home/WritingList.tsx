@@ -34,12 +34,12 @@ export function WritingList({ articles }: Props) {
     <section className="py-section-mob md:py-section border-b border-border">
       <div className="max-w-container mx-auto px-margin-mob md:px-margin">
         <div className="flex items-baseline justify-between mb-16">
-          <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">
+          <p className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted">
             {SECTION_LABEL}
           </p>
           <Link
             to={HREF_WRITING}
-            className="text-[11px] font-medium uppercase tracking-[0.15em] text-accent hover:opacity-60 transition-opacity duration-200"
+            className="text-[14px] font-medium uppercase tracking-[0.15em] text-accent hover:opacity-60 transition-opacity duration-200"
           >
             {LABEL_ALL_POSTS}
           </Link>
@@ -93,13 +93,13 @@ function WritingRow({ slug, number, title, date, readTime, category }: WritingRo
 
       {/* Desktop meta — three separate spans */}
       <div className="hidden md:flex items-center gap-4 relative z-10 shrink-0 ml-8">
-        <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">
+        <span className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted">
           {category}
         </span>
-        <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">
+        <span className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted">
           {date}
         </span>
-        <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">
+        <span className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted">
           {readTime}
         </span>
       </div>

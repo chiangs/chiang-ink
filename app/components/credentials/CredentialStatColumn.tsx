@@ -25,7 +25,7 @@ export function CredentialStatColumn({ num, label, className }: Props) {
         <span style={statNumStyle}>{num}</span>
       </div>
       <div className="flex-1 items-start">
-        <span className="text-[10px] md:text-[11px] font-medium uppercase tracking-[0.12em] md:tracking-[0.15em] text-text-muted mt-2 block">
+        <span className="text-[14px] md:text-[14px] font-medium uppercase tracking-[0.12em] md:tracking-[0.15em] text-text-muted mt-2 block">
           {label}
         </span>
       </div>

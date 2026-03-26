@@ -355,7 +355,7 @@ export default function About() {
                 onClick={() => scrollToSection(id)}
                 className="shrink-0 font-body font-medium uppercase border-0 cursor-pointer transition-colors duration-200"
                 style={{
-                  fontSize: "10px",
+                  fontSize: "14px",
                   letterSpacing: "0.12em",
                   padding: "6px 14px",
                   background: isActive ? "#FFB77D" : "#1a1a1a",
@@ -390,13 +390,13 @@ export default function About() {
             <div>
               <p
                 className="font-display font-bold text-text-primary"
-                style={{ fontSize: "14px" }}
+                style={{ fontSize: "16px" }}
               >
                 {OWNER_NAME}
               </p>
               <p
                 className="font-body text-text-muted"
-                style={{ fontSize: "12px", marginTop: "4px" }}
+                style={{ fontSize: "14px", marginTop: "4px" }}
               >
                 {OWNER_LOCATION}
               </p>
@@ -414,7 +414,7 @@ export default function About() {
                           : "text-text-muted hover:text-accent-deep"
                       }`}
                       style={{
-                        fontSize: "11px",
+                        fontSize: "14px",
                         letterSpacing: "0.15em",
                         paddingLeft: "12px",
                         borderLeft: isActive
@@ -437,7 +437,7 @@ export default function About() {
             <section id="bio">
               <p
                 data-anim="about-label"
-                className="font-body font-medium text-[11px] uppercase tracking-[0.15em] text-accent block mb-3"
+                className="font-body font-medium text-[14px] uppercase tracking-[0.15em] text-accent block mb-3"
               >
                 {PAGE_LABEL}
               </p>
@@ -520,7 +520,7 @@ export default function About() {
                     </p>
                     <p
                       className="font-body text-text-muted"
-                      style={{ fontSize: "12px", marginTop: "8px" }}
+                      style={{ fontSize: "14px", marginTop: "8px" }}
                     >
                       {stat.label}
                     </p>
@@ -567,19 +567,54 @@ export default function About() {
 
               {/* Bio text */}
               <div data-anim="bio-text" style={{ maxWidth: "680px" }}>
-                <p className="font-body text-text-primary" style={{ fontSize: "18px", lineHeight: 1.8 }}>
-                  {BIO_P1_PRE}<span className="text-accent-deep">{BIO_P1_HL}</span>{BIO_P1_POST}
+                <p
+                  className="font-body text-text-primary"
+                  style={{ fontSize: "18px", lineHeight: 1.8 }}
+                >
+                  {BIO_P1_PRE}
+                  <span className="text-accent-deep">{BIO_P1_HL}</span>
+                  {BIO_P1_POST}
                 </p>
-                <p className="font-body text-text-primary" style={{ fontSize: "18px", lineHeight: 1.8, marginTop: "28px" }}>
+                <p
+                  className="font-body text-text-primary"
+                  style={{
+                    fontSize: "18px",
+                    lineHeight: 1.8,
+                    marginTop: "28px",
+                  }}
+                >
                   {BIO_P2}
                 </p>
-                <p className="font-body text-text-primary" style={{ fontSize: "18px", lineHeight: 1.8, marginTop: "28px" }}>
-                  {BIO_P3_PRE}<span className="text-accent-deep">{BIO_P3_HL}</span>{BIO_P3_POST}
+                <p
+                  className="font-body text-text-primary"
+                  style={{
+                    fontSize: "18px",
+                    lineHeight: 1.8,
+                    marginTop: "28px",
+                  }}
+                >
+                  {BIO_P3_PRE}
+                  <span className="text-accent-deep">{BIO_P3_HL}</span>
+                  {BIO_P3_POST}
                 </p>
-                <p className="font-body text-text-primary" style={{ fontSize: "18px", lineHeight: 1.8, marginTop: "28px" }}>
+                <p
+                  className="font-body text-text-primary"
+                  style={{
+                    fontSize: "18px",
+                    lineHeight: 1.8,
+                    marginTop: "28px",
+                  }}
+                >
                   {BIO_P4}
                 </p>
-                <p className="font-body text-text-primary" style={{ fontSize: "18px", lineHeight: 1.8, marginTop: "28px" }}>
+                <p
+                  className="font-body text-text-primary"
+                  style={{
+                    fontSize: "18px",
+                    lineHeight: 1.8,
+                    marginTop: "28px",
+                  }}
+                >
                   {BIO_P5}
                 </p>
               </div>
@@ -587,7 +622,7 @@ export default function About() {
 
             {/* ────── EXPERIENCE ────── */}
             <section id="experience" className="mt-16 md:mt-32">
-              <p className="font-body font-medium text-[11px] uppercase tracking-[0.15em] text-accent block mb-3">
+              <p className="font-body font-medium text-[14px] uppercase tracking-[0.15em] text-accent block mb-3">
                 {EXP_LABEL}
               </p>
               <h2 className="font-display font-bold text-[32px] text-text-primary mb-[60px] leading-[1.1]">
@@ -600,7 +635,7 @@ export default function About() {
 
             {/* ────── INDUSTRIES ────── */}
             <section id="industries" className="mt-16 md:mt-32">
-              <p className="font-body font-medium text-[11px] uppercase tracking-[0.15em] text-accent block mb-3">
+              <p className="font-body font-medium text-[14px] uppercase tracking-[0.15em] text-accent block mb-3">
                 {IND_LABEL}
               </p>
               <h2 className="font-display font-bold text-[32px] text-text-primary mb-[60px] leading-[1.1]">
@@ -613,7 +648,7 @@ export default function About() {
 
             {/* ────── SKILLS ────── */}
             <section id="skills" className="mt-16 md:mt-32">
-              <p className="font-body font-medium text-[11px] uppercase tracking-[0.15em] text-accent block mb-3">
+              <p className="font-body font-medium text-[14px] uppercase tracking-[0.15em] text-accent block mb-3">
                 {SKILLS_LABEL}
               </p>
               <h2 className="font-display font-bold text-[32px] text-text-primary mb-[60px] leading-[1.1]">
@@ -626,7 +661,7 @@ export default function About() {
 
             {/* ────── LANGUAGES ────── */}
             <section id="languages" className="mt-16 md:mt-32">
-              <p className="font-body font-medium text-[11px] uppercase tracking-[0.15em] text-accent block mb-3">
+              <p className="font-body font-medium text-[14px] uppercase tracking-[0.15em] text-accent block mb-3">
                 {LANG_LABEL}
               </p>
               <h2 className="font-display font-bold text-[32px] text-text-primary mb-[60px] leading-[1.1]">
@@ -642,7 +677,7 @@ export default function About() {
               id="images"
               className="mt-16 md:mt-32 pb-section-mob md:pb-section"
             >
-              <p className="font-body font-medium text-[11px] uppercase tracking-[0.15em] text-accent block mb-3">
+              <p className="font-body font-medium text-[14px] uppercase tracking-[0.15em] text-accent block mb-3">
                 {IMG_LABEL}
               </p>
               <h2 className="font-display font-bold text-[32px] text-text-primary mb-15 leading-[1.1]">

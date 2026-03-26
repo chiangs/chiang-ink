@@ -24,7 +24,7 @@ export default function Contact() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-start">
             {/* Left */}
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted mb-6">{SECTION_LABEL}</p>
+              <p className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted mb-6">{SECTION_LABEL}</p>
               <h1 className="font-display font-black text-[clamp(40px,6vw,72px)] text-text-primary leading-[0.95] mb-8">
                 {HEADING}
               </h1>
@@ -33,7 +33,7 @@ export default function Contact() {
               </p>
               <a
                 href={HREF_EMAIL}
-                className="text-[11px] font-medium uppercase tracking-[0.15em] text-accent border-b border-border-accent pb-0.5 hover:opacity-60 transition-opacity duration-200"
+                className="text-[14px] font-medium uppercase tracking-[0.15em] text-accent border-b border-border-accent pb-0.5 hover:opacity-60 transition-opacity duration-200"
               >
                 {EMAIL}
               </a>
@@ -42,7 +42,7 @@ export default function Contact() {
             {/* Right — form */}
             <form className="flex flex-col gap-10 bg-card p-10">
               <div className="flex flex-col gap-2">
-                <label className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">{LABEL_NAME}</label>
+                <label className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted">{LABEL_NAME}</label>
                 <input
                   type="text"
                   name="name"
@@ -53,7 +53,7 @@ export default function Contact() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">{LABEL_EMAIL}</label>
+                <label className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted">{LABEL_EMAIL}</label>
                 <input
                   type="email"
                   name="email"
@@ -64,7 +64,7 @@ export default function Contact() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">{LABEL_MESSAGE}</label>
+                <label className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted">{LABEL_MESSAGE}</label>
                 <textarea
                   name="message"
                   required

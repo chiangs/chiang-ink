@@ -124,7 +124,7 @@ export function Hero() {
       <div className="hidden md:flex flex-col justify-between h-full w-[55%] py-section px-margin relative z-2">
         <p
           data-anim="eyebrow"
-          className="font-body text-[11px] font-medium uppercase tracking-[0.15em] text-accent"
+          className="font-body text-[14px] font-medium uppercase tracking-[0.15em] text-accent"
         >
           {EYEBROW}
         </p>
@@ -156,10 +156,10 @@ export function Hero() {
         </div>
 
         <div className="flex items-end justify-between gap-8">
-          <p className="font-body text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted w-full">
+          <p className="font-body text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted w-full">
             {DESCRIPTOR}
           </p>
-          <p className="font-body text-[11px] font-medium uppercase tracking-[0.15em] text-accent whitespace-nowrap flex items-center gap-1">
+          <p className="font-body text-[14px] font-medium uppercase tracking-[0.15em] text-accent whitespace-nowrap flex items-center gap-1">
             {SCROLL_CTA} <span className="arrow-pulse">{SCROLL_ARROW}</span>
           </p>
         </div>
@@ -171,13 +171,13 @@ export function Hero() {
         style={{ bottom: "80px", right: "24px" }}
       >
         <p
-          className="font-body text-[10px] font-medium uppercase tracking-[0.15em]"
+          className="font-body text-[14px] font-medium uppercase tracking-[0.15em]"
           style={{ color: "#E5E2E1", opacity: 0.5 }}
         >
           {CAPTION_REF}
         </p>
         <p
-          className="font-body text-[10px] font-medium uppercase tracking-[0.15em] mt-1"
+          className="font-body text-[14px] font-medium uppercase tracking-[0.15em] mt-1"
           style={{ color: "#E5E2E1", opacity: 0.5 }}
         >
           {CAPTION_ISO}
@@ -186,7 +186,7 @@ export function Hero() {
 
       {/* ── DESKTOP: Vertical text — right edge ── */}
       <div
-        className="absolute hidden md:block z-3 font-body text-[10px] font-medium uppercase tracking-[0.2em] text-text-muted"
+        className="absolute hidden md:block z-3 font-body text-[14px] font-medium uppercase tracking-[0.2em] text-text-muted"
         style={{
           right: "16px",
           top: "50%",

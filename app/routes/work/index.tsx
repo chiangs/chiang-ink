@@ -465,7 +465,7 @@ export default function WorkIndex() {
           className="max-w-container mx-auto px-margin-mob md:px-margin pt-section-mob md:pt-section pb-12 md:pb-16"
           style={headerContentStyle}
         >
-          <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-accent mb-4">
+          <p className="text-[14px] font-medium uppercase tracking-[0.15em] text-accent mb-4">
             {SECTION_LABEL}
           </p>
           <h1
@@ -534,13 +534,13 @@ export default function WorkIndex() {
 
             {/* Results count + clear */}
             <div className="flex items-center mt-1 md:mt-0 md:ml-auto">
-              <span className="font-body font-normal text-[12px] text-text-muted">
+              <span className="font-body font-normal text-[14px] text-text-muted">
                 {resultsLabel}
               </span>
               {hasFilters && (
                 <button
                   onClick={handleClearAll}
-                  className="font-body font-medium text-[12px] text-accent ml-4"
+                  className="font-body font-medium text-[14px] text-accent ml-4"
                   style={{ transition: "opacity var(--transition-fast)" }}
                 >
                   {LABEL_CLEAR_ALL}
@@ -569,7 +569,7 @@ export default function WorkIndex() {
                       payload: tag.value,
                     })
                   }
-                  className="flex items-center gap-2 bg-surface-highest font-body font-medium text-[11px] text-accent uppercase tracking-[0.1em] px-[10px] py-1"
+                  className="flex items-center gap-2 bg-surface-highest font-body font-medium text-[12px] text-accent uppercase tracking-[0.1em] px-[10px] py-1"
                   style={{ transition: "background var(--transition-fast)" }}
                 >
                   {tag.value}
@@ -622,7 +622,7 @@ function FilterDropdown({
     <div className="relative" data-dropdown>
       <button
         onClick={onToggleOpen}
-        className="flex items-center justify-between w-full md:w-auto bg-bg border-b border-border font-body font-medium text-[12px] text-text-muted uppercase tracking-[0.1em] px-3 whitespace-nowrap"
+        className="flex items-center justify-between w-full md:w-auto bg-bg border-b border-border font-body font-medium text-[14px] text-text-muted uppercase tracking-[0.1em] px-3 whitespace-nowrap"
         style={{ height: "40px", transition: "color var(--transition-fast)" }}
       >
         {buttonLabel}
@@ -634,7 +634,7 @@ function FilterDropdown({
         <div className="absolute top-full left-0 z-50 bg-hover-surface border border-border w-full md:w-auto md:min-w-[220px] mt-1">
           {options.map((option) => {
             const isSelected = selected.includes(option);
-            const optionClass = `flex items-center justify-between w-full text-left font-body font-normal text-[13px] px-4 py-[10px] ${
+            const optionClass = `flex items-center justify-between w-full text-left font-body font-normal text-[14px] px-4 py-[10px] ${
               isSelected ? "text-accent" : "text-text-primary"
             }`;
             return (

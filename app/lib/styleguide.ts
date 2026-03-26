@@ -64,7 +64,8 @@ export const STYLEGUIDE_TYPE: TypeEntry[] = [
   { name: "H2", size: "32px", weight: 700, font: "Space Grotesk", sample: "Article Heading" },
   { name: "Body Large", size: "18px", weight: 400, font: "Manrope", sample: "Body copy at reading size, comfortable for long-form" },
   { name: "Body", size: "16px", weight: 400, font: "Manrope", sample: "Standard body text and UI copy" },
-  { name: "Label", size: "11px", weight: 500, font: "Manrope", sample: "UPPERCASE LABEL · LETTER SPACED", uppercase: true, letterSpacing: "0.15em" },
+  { name: "Label", size: "14px", weight: 500, font: "Manrope", sample: "UPPERCASE LABEL · LETTER SPACED", uppercase: true, letterSpacing: "0.15em" },
+  { name: "Tag", size: "12px", weight: 500, font: "Manrope", sample: "ENTERPRISE · DATA STRATEGY", uppercase: true, letterSpacing: "0.1em" },
 ];
 
 // --- Spacing System ---

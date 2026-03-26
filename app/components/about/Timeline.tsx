@@ -57,7 +57,7 @@ function TimelineContent({ entry }: { entry: (typeof EXPERIENCE)[number] }) {
       <p
         className="font-body font-medium uppercase"
         style={{
-          fontSize: "13px",
+          fontSize: "14px",
           color: "#FFB77D",
           letterSpacing: "0.1em",
           marginTop: "4px",
@@ -127,7 +127,7 @@ export function Timeline() {
                     key={j}
                     className="block font-display font-bold uppercase"
                     style={{
-                      fontSize: "13px",
+                      fontSize: "14px",
                       color: "#FFB77D",
                       letterSpacing: "0.02em",
                       lineHeight: 1.4,
@@ -166,7 +166,7 @@ export function Timeline() {
               <p
                 className="font-display font-bold uppercase"
                 style={{
-                  fontSize: "13px",
+                  fontSize: "14px",
                   color: "#FFB77D",
                   letterSpacing: "0.02em",
                   marginBottom: "6px",

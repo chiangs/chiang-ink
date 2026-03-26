@@ -152,7 +152,7 @@ export function CredentialsBar() {
           className="bg-invert-text flex flex-col justify-between p-card md:w-[20%] flex-none"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">
+            <span className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted">
               {STATUS_LABEL}
             </span>
             {/* Accent status indicator */}
@@ -166,7 +166,7 @@ export function CredentialsBar() {
               <span className="text-accent-deep">{STATUS_BODY_1_HL2}</span>
               {STATUS_BODY_1_C}
             </p>
-            <p className="font-body text-[13px] text-text-muted leading-[1.6]">
+            <p className="font-body text-[14px] text-text-muted leading-[1.6]">
               {STATUS_BODY_2}
             </p>
           </div>

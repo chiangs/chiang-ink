@@ -43,7 +43,7 @@ const MAP_H = 500;
 const mapCaptionStyle: React.CSSProperties = {
   fontFamily: "var(--font-body)",
   fontWeight: 400,
-  fontSize: "12px",
+  fontSize: "14px",
   fontStyle: "italic",
   color: "#5a5a58",
   textAlign: "left",
@@ -178,7 +178,7 @@ export function Industries() {
             <p
               className="font-body font-medium uppercase text-text-muted"
               style={{
-                fontSize: "11px",
+                fontSize: "14px",
                 letterSpacing: "0.15em",
                 marginBottom: "12px",
               }}
@@ -191,7 +191,7 @@ export function Industries() {
               <p
                 key={type}
                 className="font-body font-medium uppercase text-text-muted"
-                style={{ fontSize: "12px", letterSpacing: "0.05em" }}
+                style={{ fontSize: "14px", letterSpacing: "0.05em" }}
               >
                 {type}
               </p>

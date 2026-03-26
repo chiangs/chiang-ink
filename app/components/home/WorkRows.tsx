@@ -11,7 +11,7 @@ export function WorkRows({ projects }: Props) {
   return (
     <section className="py-section-mob md:py-section">
       <div className="max-w-container mx-auto px-margin-mob md:px-margin">
-        <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted mb-16">
+        <p className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted mb-16">
           {SECTION_LABEL}
         </p>
         <div>
