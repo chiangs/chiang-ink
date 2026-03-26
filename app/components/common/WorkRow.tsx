@@ -24,7 +24,11 @@ type WorkRowProps = {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function WorkRow({ project, index, variant = "detailed" }: WorkRowProps) {
+export function WorkRow({
+  project,
+  index,
+  variant = "detailed",
+}: WorkRowProps) {
   const number = String(index + 1).padStart(2, "0");
   if (variant === "compact") {
     return <CompactRow project={project} number={number} />;
@@ -48,7 +52,7 @@ function DetailedRow({
   return (
     <Link
       to={`/work/${project.slug}`}
-      className="work-row group relative flex items-center w-full border-b border-border overflow-hidden md:min-h-[120px] px-margin-mob py-5 md:px-6 md:py-0"
+      className="work-row group relative flex items-center w-full border-b border-border overflow-hidden md:min-h-30 px-margin-mob py-5 md:px-6 md:py-0 md:gap-4"
       style={rowTransitionStyle}
       data-cursor="view"
       onTouchStart={createRipple}
@@ -56,7 +60,10 @@ function DetailedRow({
       {/* Ghost number — desktop */}
       <span
         className="hidden md:block absolute left-[-10px] font-display font-bold text-accent select-none pointer-events-none leading-none group-hover:opacity-[0.16]"
-        style={{ ...ghostNumberStyle, transition: "opacity var(--transition-fast)" }}
+        style={{
+          ...ghostNumberStyle,
+          transition: "opacity var(--transition-fast)",
+        }}
         aria-hidden
       >
         {number}
@@ -71,7 +78,7 @@ function DetailedRow({
       </span>
 
       {/* Zone 2: Title + tags (+ mobile meta inline) */}
-      <div className="flex-1 md:pl-20 md:py-6">
+      <div className="flex-1 md:flex-none md:w-100 md:py-6">
         {/* Top row: title left, year+status right on mobile */}
         <div className="flex justify-between items-start gap-3 md:block">
           <span
@@ -81,21 +88,21 @@ function DetailedRow({
             {project.title}
           </span>
           {/* Mobile: year + status — hidden on desktop */}
-          <div className="md:hidden text-right flex-shrink-0 min-w-[80px]">
-            <span className="font-display font-bold text-[12px] text-text-primary block">
+          <div className="md:hidden text-right shrink-0 min-w-20">
+            <span className="font-display font-bold text-sm text-text-primary block">
               {project.year}
             </span>
-            <span className="font-body font-medium text-[9px] text-text-muted uppercase tracking-[0.1em] block mt-[2px]">
+            <span className="font-body font-medium text-sm text-text-muted uppercase tracking-[0.1em] block mt-0.5">
               {project.status}
             </span>
           </div>
         </div>
         {/* Tags */}
-        <div className="flex flex-wrap gap-1 md:gap-[6px] mt-2">
+        <div className="flex flex-wrap gap-1 md:gap-1.5 mt-2">
           {displayTags.map((tag) => (
             <span
               key={tag}
-              className="font-body font-medium text-[9px] md:text-[10px] text-text-muted uppercase tracking-[0.1em] border border-border px-[6px] md:px-2 py-[2px]"
+              className="font-body font-medium text-xs text-text-muted uppercase tracking-[0.1em] border border-border px-1.5 md:px-2 py-0.5"
             >
               {tag}
             </span>
@@ -103,7 +110,7 @@ function DetailedRow({
         </div>
         {/* Industry — mobile only, below tags */}
         {industryLabel && (
-          <span className="md:hidden block font-body font-medium text-[9px] text-accent uppercase tracking-[0.1em] mt-[6px]">
+          <span className="md:hidden block font-body font-medium text-sm text-accent uppercase tracking-[0.1em] mt-1.5">
             {industryLabel}
           </span>
         )}
@@ -111,13 +118,13 @@ function DetailedRow({
 
       {/* Zone 3: Metrics — desktop only */}
       {displayMetrics.length > 0 && (
-        <div className="hidden md:flex flex-col gap-1 w-[280px] py-6">
+        <div className="hidden md:flex flex-col gap-2 flex-1 min-w-0 py-6">
           {displayMetrics.map((m) => (
-            <div key={m.label} className="flex items-baseline gap-2">
-              <span className="font-display font-bold text-[16px] text-accent">
+            <div key={m.label} className="flex items-baseline gap-2 text-left">
+              <span className="font-display font-bold text-base text-accent shrink-0">
                 {m.value}
               </span>
-              <span className="font-body font-normal text-[11px] text-text-muted">
+              <span className="font-body font-normal text-sm text-text-muted">
                 {m.label}
               </span>
             </div>
@@ -126,15 +133,15 @@ function DetailedRow({
       )}
 
       {/* Zone 4: Meta — desktop only */}
-      <div className="hidden md:block text-right min-w-[120px] py-6">
-        <span className="font-display font-bold text-[13px] text-text-primary block">
+      <div className="hidden md:block text-right min-w-30 py-6">
+        <span className="font-display font-bold text-sm text-text-primary block">
           {project.year}
         </span>
-        <span className="font-body font-medium text-[10px] text-text-muted uppercase tracking-[0.1em] block mt-1">
+        <span className="font-body font-medium text-sm text-text-muted uppercase tracking-[0.1em] block mt-1">
           {project.status}
         </span>
         {industryLabel && (
-          <span className="font-body font-medium text-[10px] text-accent uppercase tracking-[0.1em] mt-1 block">
+          <span className="font-body font-medium text-sm text-accent uppercase tracking-[0.1em] mt-1 block">
             {industryLabel}
           </span>
         )}
@@ -177,16 +184,18 @@ function CompactRow({
       </span>
 
       {/* Project name */}
-      <span className="project-title font-display font-bold text-[clamp(20px,5vw,28px)] md:text-[36px] relative z-10 ml-4 w-full md:w-auto">
+      <span className="project-title font-display font-bold text-[clamp(20px,5vw,28px)] md:text-4xl relative z-10 w-full md:w-auto">
         {project.title}
       </span>
 
       {/* Meta */}
       <div className="flex flex-row justify-between md:flex-col md:items-end gap-1 relative z-10 w-full md:w-auto mt-2 md:mt-0 max-w-full overflow-hidden">
-        <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted">
+        <span className="text-sm font-medium uppercase tracking-[0.15em] text-text-muted">
           {category}
         </span>
-        <span className="outcome-text text-[14px] text-text-muted">{outcome}</span>
+        <span className="outcome-text text-sm text-text-muted">
+          {outcome}
+        </span>
       </div>
     </Link>
   );

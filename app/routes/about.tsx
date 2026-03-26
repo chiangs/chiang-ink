@@ -102,6 +102,38 @@ const PORTRAIT_ALT = SITE_OWNER;
 
 // ── Module-level style objects ────────────────────────────────────
 
+const mobileNavStyle: React.CSSProperties = {
+  bottom: 0,
+  overflowX: "auto",
+  scrollbarWidth: "none",
+  paddingBottom: "env(safe-area-inset-bottom)",
+};
+
+const pillButtonStaticStyle = { letterSpacing: "0.12em" } as const;
+
+const sidebarStyle: React.CSSProperties = {
+  width: "24%",
+  position: "sticky",
+  top: "120px",
+  alignSelf: "flex-start",
+  height: "calc(100vh - 160px)",
+  paddingRight: "48px",
+  paddingTop: "120px",
+  paddingBottom: "40px",
+};
+
+const navButtonStaticStyle = { letterSpacing: "0.15em" } as const;
+
+const portraitDropShadowStyle: React.CSSProperties = {
+  filter:
+    "drop-shadow(0 1px 2px rgba(0,0,0,1)) drop-shadow(0 2px 4px rgba(0,0,0,0.9)) drop-shadow(0 3px 6px rgba(0,0,0,0.8)) drop-shadow(0 4px 8px rgba(0,0,0,0.6)) drop-shadow(0 5px 10px rgba(0,0,0,0.4))",
+};
+
+const portraitDropShadowMobStyle: React.CSSProperties = {
+  filter:
+    "drop-shadow(0 1px 2px rgba(0,0,0,1)) drop-shadow(0 2px 3px rgba(0,0,0,0.8)) drop-shadow(0 3px 5px rgba(0,0,0,0.5))",
+};
+
 const portraitCircleImgStyle: React.CSSProperties = {
   width: "100%",
   height: "100%",
@@ -335,12 +367,7 @@ export default function About() {
       {/* ── Mobile pill nav — fixed bottom bar ── */}
       <nav
         className="md:hidden fixed z-90 left-0 right-0 bg-bg border-t border-border"
-        style={{
-          bottom: 0,
-          overflowX: "auto",
-          scrollbarWidth: "none",
-          paddingBottom: "env(safe-area-inset-bottom)",
-        }}
+        style={mobileNavStyle}
       >
         <div
           className="flex gap-2 px-4 py-3"
@@ -353,13 +380,11 @@ export default function About() {
                 key={id}
                 data-pill={id}
                 onClick={() => scrollToSection(id)}
-                className="shrink-0 font-body font-medium uppercase border-0 cursor-pointer transition-colors duration-200"
+                className={`shrink-0 font-body text-sm font-medium uppercase border-0 cursor-pointer transition-colors duration-200 px-3.5 py-1.5 ${isActive ? "bg-accent text-bg" : "bg-surface text-text-muted"}`}
                 style={{
-                  fontSize: "10px",
-                  letterSpacing: "0.12em",
-                  padding: "6px 14px",
-                  background: isActive ? "#FFB77D" : "#1a1a1a",
-                  color: isActive ? "#131313" : "#5a5a58",
+                  ...pillButtonStaticStyle,
+                  background: isActive ? "var(--color-accent)" : "var(--color-surface)",
+                  color: isActive ? "var(--color-invert-text)" : "var(--color-text-muted)",
                 }}
               >
                 {label}
@@ -376,28 +401,13 @@ export default function About() {
           {/* ── Desktop sidebar ── */}
           <aside
             className="hidden md:flex flex-col flex-none"
-            style={{
-              width: "24%",
-              position: "sticky",
-              top: "120px",
-              alignSelf: "flex-start",
-              height: "calc(100vh - 160px)",
-              paddingRight: "48px",
-              paddingTop: "120px",
-              paddingBottom: "40px",
-            }}
+            style={sidebarStyle}
           >
             <div>
-              <p
-                className="font-display font-bold text-text-primary"
-                style={{ fontSize: "14px" }}
-              >
+              <p className="font-display font-bold text-base text-text-primary">
                 {OWNER_NAME}
               </p>
-              <p
-                className="font-body text-text-muted"
-                style={{ fontSize: "12px", marginTop: "4px" }}
-              >
+              <p className="font-body text-sm text-text-muted mt-1">
                 {OWNER_LOCATION}
               </p>
 
@@ -408,19 +418,16 @@ export default function About() {
                     <button
                       key={id}
                       onClick={() => scrollToSection(id)}
-                      className={`text-left font-body font-medium uppercase bg-transparent border-0 cursor-pointer transition-colors duration-200 ${
+                      className={`text-left font-body text-sm font-medium uppercase bg-transparent border-0 cursor-pointer pl-3 transition-[color,border-color] duration-200 ${
                         isActive
                           ? "text-accent"
                           : "text-text-muted hover:text-accent-deep"
                       }`}
                       style={{
-                        fontSize: "11px",
-                        letterSpacing: "0.15em",
-                        paddingLeft: "12px",
+                        ...navButtonStaticStyle,
                         borderLeft: isActive
-                          ? "4px solid #FFB77D"
+                          ? "4px solid var(--color-accent)"
                           : "4px solid transparent",
-                        transition: "color 0.2s ease, border-color 0.2s ease",
                       }}
                     >
                       {label}
@@ -437,7 +444,7 @@ export default function About() {
             <section id="bio">
               <p
                 data-anim="about-label"
-                className="font-body font-medium text-[11px] uppercase tracking-[0.15em] text-accent block mb-3"
+                className="font-body font-medium text-sm uppercase tracking-[0.15em] text-accent block mb-3"
               >
                 {PAGE_LABEL}
               </p>
@@ -445,7 +452,7 @@ export default function About() {
               {/* Hero row: headline left, circular portrait right */}
               <div className="flex items-center gap-12 mb-16">
                 <div className="min-w-0">
-                  <h1 className="font-display" style={{ lineHeight: 0.9 }}>
+                  <h1 className="font-display leading-[0.9]">
                     <span
                       data-anim="about-h1"
                       className="block font-light text-text-primary"
@@ -455,11 +462,8 @@ export default function About() {
                     </span>
                     <span
                       data-anim="about-h2"
-                      className="block font-bold"
-                      style={{
-                        fontSize: "clamp(56px, 8vw, 96px)",
-                        color: "#FFB77D",
-                      }}
+                      className="block font-bold text-accent"
+                      style={{ fontSize: "clamp(56px, 8vw, 96px)" }}
                     >
                       {HEADLINE_2}
                     </span>
@@ -469,13 +473,10 @@ export default function About() {
                 {/* Circular portrait — desktop only; mobile version sits above bio text */}
                 <div
                   className="shrink-0 hidden md:block"
-                  style={{
-                    filter:
-                      "drop-shadow(0 1px 2px rgba(0,0,0,1)) drop-shadow(0 2px 4px rgba(0,0,0,0.9)) drop-shadow(0 3px 6px rgba(0,0,0,0.8)) drop-shadow(0 4px 8px rgba(0,0,0,0.6)) drop-shadow(0 5px 10px rgba(0,0,0,0.4))",
-                  }}
+                  style={portraitDropShadowStyle}
                 >
                   <div
-                    className="portrait-circle-wrap relative overflow-hidden w-14 h-14 md:w-[211px] md:h-[211px]"
+                    className="portrait-circle-wrap relative overflow-hidden w-14 h-14 md:w-52.75 md:h-52.75"
                     style={{ clipPath: "circle(50%)" }}
                   >
                     <img
@@ -509,19 +510,11 @@ export default function About() {
                 {BIO_STATS.map((stat) => (
                   <div key={stat.label} data-anim="bio-stat">
                     <p
-                      className="font-display font-bold"
-                      style={{
-                        fontSize: "40px",
-                        color: "#FFB77D",
-                        lineHeight: 1,
-                      }}
+                      className="font-display font-bold text-accent text-[40px] leading-none"
                     >
                       {stat.num}
                     </p>
-                    <p
-                      className="font-body text-text-muted"
-                      style={{ fontSize: "12px", marginTop: "8px" }}
-                    >
+                    <p className="font-body text-sm text-text-muted mt-2">
                       {stat.label}
                     </p>
                   </div>
@@ -531,10 +524,7 @@ export default function About() {
               {/* Portrait — mobile only, above bio text */}
               <div
                 className="md:hidden mb-6 flex justify-center"
-                style={{
-                  filter:
-                    "drop-shadow(0 1px 2px rgba(0,0,0,1)) drop-shadow(0 2px 3px rgba(0,0,0,0.8)) drop-shadow(0 3px 5px rgba(0,0,0,0.5))",
-                }}
+                style={portraitDropShadowMobStyle}
               >
                 <div
                   className="portrait-circle-wrap relative overflow-hidden w-24 h-24"
@@ -566,20 +556,24 @@ export default function About() {
               </div>
 
               {/* Bio text */}
-              <div data-anim="bio-text" style={{ maxWidth: "680px" }}>
-                <p className="font-body text-text-primary" style={{ fontSize: "18px", lineHeight: 1.8 }}>
-                  {BIO_P1_PRE}<span className="text-accent-deep">{BIO_P1_HL}</span>{BIO_P1_POST}
+              <div data-anim="bio-text" className="max-w-170">
+                <p className="font-body text-lg text-text-primary leading-[1.8]">
+                  {BIO_P1_PRE}
+                  <span className="text-accent-deep">{BIO_P1_HL}</span>
+                  {BIO_P1_POST}
                 </p>
-                <p className="font-body text-text-primary" style={{ fontSize: "18px", lineHeight: 1.8, marginTop: "28px" }}>
+                <p className="font-body text-lg text-text-primary mt-7 leading-[1.8]">
                   {BIO_P2}
                 </p>
-                <p className="font-body text-text-primary" style={{ fontSize: "18px", lineHeight: 1.8, marginTop: "28px" }}>
-                  {BIO_P3_PRE}<span className="text-accent-deep">{BIO_P3_HL}</span>{BIO_P3_POST}
+                <p className="font-body text-lg text-text-primary mt-7 leading-[1.8]">
+                  {BIO_P3_PRE}
+                  <span className="text-accent-deep">{BIO_P3_HL}</span>
+                  {BIO_P3_POST}
                 </p>
-                <p className="font-body text-text-primary" style={{ fontSize: "18px", lineHeight: 1.8, marginTop: "28px" }}>
+                <p className="font-body text-lg text-text-primary mt-7 leading-[1.8]">
                   {BIO_P4}
                 </p>
-                <p className="font-body text-text-primary" style={{ fontSize: "18px", lineHeight: 1.8, marginTop: "28px" }}>
+                <p className="font-body text-lg text-text-primary mt-7 leading-[1.8]">
                   {BIO_P5}
                 </p>
               </div>
@@ -587,10 +581,10 @@ export default function About() {
 
             {/* ────── EXPERIENCE ────── */}
             <section id="experience" className="mt-16 md:mt-32">
-              <p className="font-body font-medium text-[11px] uppercase tracking-[0.15em] text-accent block mb-3">
+              <p className="font-body font-medium text-sm uppercase tracking-[0.15em] text-accent block mb-3">
                 {EXP_LABEL}
               </p>
-              <h2 className="font-display font-bold text-[32px] text-text-primary mb-[60px] leading-[1.1]">
+              <h2 className="font-display font-bold text-[32px] text-text-primary mb-15 leading-[1.1]">
                 {EXP_TITLE}
               </h2>
               <div data-anim="section-content">
@@ -600,10 +594,10 @@ export default function About() {
 
             {/* ────── INDUSTRIES ────── */}
             <section id="industries" className="mt-16 md:mt-32">
-              <p className="font-body font-medium text-[11px] uppercase tracking-[0.15em] text-accent block mb-3">
+              <p className="font-body font-medium text-sm uppercase tracking-[0.15em] text-accent block mb-3">
                 {IND_LABEL}
               </p>
-              <h2 className="font-display font-bold text-[32px] text-text-primary mb-[60px] leading-[1.1]">
+              <h2 className="font-display font-bold text-[32px] text-text-primary mb-15 leading-[1.1]">
                 {IND_TITLE}
               </h2>
               <div data-anim="section-content">
@@ -613,10 +607,10 @@ export default function About() {
 
             {/* ────── SKILLS ────── */}
             <section id="skills" className="mt-16 md:mt-32">
-              <p className="font-body font-medium text-[11px] uppercase tracking-[0.15em] text-accent block mb-3">
+              <p className="font-body font-medium text-sm uppercase tracking-[0.15em] text-accent block mb-3">
                 {SKILLS_LABEL}
               </p>
-              <h2 className="font-display font-bold text-[32px] text-text-primary mb-[60px] leading-[1.1]">
+              <h2 className="font-display font-bold text-[32px] text-text-primary mb-15 leading-[1.1]">
                 {SKILLS_TITLE}
               </h2>
               <div data-anim="section-content">
@@ -626,10 +620,10 @@ export default function About() {
 
             {/* ────── LANGUAGES ────── */}
             <section id="languages" className="mt-16 md:mt-32">
-              <p className="font-body font-medium text-[11px] uppercase tracking-[0.15em] text-accent block mb-3">
+              <p className="font-body font-medium text-sm uppercase tracking-[0.15em] text-accent block mb-3">
                 {LANG_LABEL}
               </p>
-              <h2 className="font-display font-bold text-[32px] text-text-primary mb-[60px] leading-[1.1]">
+              <h2 className="font-display font-bold text-[32px] text-text-primary mb-15 leading-[1.1]">
                 {LANG_TITLE}
               </h2>
               <div data-anim="section-content">
@@ -642,7 +636,7 @@ export default function About() {
               id="images"
               className="mt-16 md:mt-32 pb-section-mob md:pb-section"
             >
-              <p className="font-body font-medium text-[11px] uppercase tracking-[0.15em] text-accent block mb-3">
+              <p className="font-body font-medium text-sm uppercase tracking-[0.15em] text-accent block mb-3">
                 {IMG_LABEL}
               </p>
               <h2 className="font-display font-bold text-[32px] text-text-primary mb-15 leading-[1.1]">

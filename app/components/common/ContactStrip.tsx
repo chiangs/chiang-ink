@@ -23,7 +23,6 @@ const headlineStyle = {
 const bodyStyle = {
   fontFamily: "var(--font-body)",
   fontWeight: 400,
-  fontSize: "16px",
   color: "#5a5a58",
   maxWidth: "480px",
   lineHeight: 1.75,
@@ -33,7 +32,6 @@ const bodyStyle = {
 const contactLinkStyle = {
   fontFamily: "var(--font-body)",
   fontWeight: 500,
-  fontSize: "14px",
   color: "#FFB77D",
   textDecoration: "none",
 };
@@ -41,7 +39,6 @@ const contactLinkStyle = {
 const linkedinLinkStyle = {
   fontFamily: "var(--font-body)",
   fontWeight: 500,
-  fontSize: "14px",
   color: "#5a5a58",
   textDecoration: "none",
 };
@@ -83,7 +80,7 @@ export function ContactStrip() {
           <span className="contact-highlight contact-highlight--deep">{HEADING_2_WORD}</span>
         </p>
 
-        <p style={bodyStyle}>{BODY}</p>
+        <p className="text-base" style={bodyStyle}>{BODY}</p>
 
         <div
           style={{
@@ -96,7 +93,7 @@ export function ContactStrip() {
           <Link
             to={HREF_CONTACT}
             style={contactLinkStyle}
-            className="contact-strip-link contact-strip-link--accent contact-cta-link"
+            className="text-sm contact-strip-link contact-strip-link--accent contact-cta-link"
           >
             {LABEL_CONTACT}
           </Link>
@@ -105,7 +102,7 @@ export function ContactStrip() {
             target="_blank"
             rel="noopener noreferrer"
             style={linkedinLinkStyle}
-            className="contact-strip-link contact-strip-link--muted contact-cta-link"
+            className="text-sm contact-strip-link contact-strip-link--muted contact-cta-link"
           >
             {LABEL_LINKEDIN}
           </a>

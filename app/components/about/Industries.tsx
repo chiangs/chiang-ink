@@ -43,9 +43,7 @@ const MAP_H = 500;
 const mapCaptionStyle: React.CSSProperties = {
   fontFamily: "var(--font-body)",
   fontWeight: 400,
-  fontSize: "12px",
   fontStyle: "italic",
-  color: "#5a5a58",
   textAlign: "left",
   marginTop: "24px",
   paddingLeft: "12px",
@@ -54,22 +52,13 @@ const mapCaptionStyle: React.CSSProperties = {
 function IndustryRow({ name }: { name: string }) {
   return (
     <div
-      className="flex items-center"
-      style={{ paddingBottom: "14px", marginBottom: "14px" }}
+      className="flex items-center pb-3.5 mb-3.5"
     >
-      <span
-        className="font-body font-medium text-text-primary shrink-0"
-        style={{ fontSize: "14px" }}
-      >
+      <span className="font-body font-medium text-sm text-text-primary shrink-0">
         {name}
       </span>
       <div
-        style={{
-          flex: 1,
-          height: "1px",
-          background: "#222220",
-          marginLeft: "20px",
-        }}
+        className="bg-border flex-1 h-px ml-5"
       />
     </div>
   );
@@ -170,18 +159,14 @@ export function Industries() {
         {/* Map container — same bg as org types, caption inside */}
         <div className="flex-1 min-w-0 flex flex-col bg-surface min-h-52">
           <WorldMap className="w-full block bg-surface min-h-52 md:flex-1" />
-          <p style={mapCaptionStyle}>{MAP_CAPTION}</p>
+          <p className="text-sm text-text-muted" style={mapCaptionStyle}>{MAP_CAPTION}</p>
         </div>
         {/* Org types */}
         <div className="md:w-1/3 shrink-0 flex flex-col bg-surface p-10 min-h-52">
           <div>
             <p
-              className="font-body font-medium uppercase text-text-muted"
-              style={{
-                fontSize: "11px",
-                letterSpacing: "0.15em",
-                marginBottom: "12px",
-              }}
+              className="font-body font-medium text-sm uppercase text-text-muted mb-3"
+              style={{ letterSpacing: "0.15em" }}
             >
               {IND_ORG_LABEL}
             </p>
@@ -190,8 +175,8 @@ export function Industries() {
             {ORG_TYPES.map((type) => (
               <p
                 key={type}
-                className="font-body font-medium uppercase text-text-muted"
-                style={{ fontSize: "12px", letterSpacing: "0.05em" }}
+                className="font-body font-medium text-sm uppercase text-text-muted"
+                style={{ letterSpacing: "0.05em" }}
               >
                 {type}
               </p>

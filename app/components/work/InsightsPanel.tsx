@@ -207,7 +207,7 @@ function computeInsights(projects: ProjectFrontmatter[]): InsightData {
 
 function ChartLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-body font-medium text-[10px] text-text-muted uppercase tracking-[0.1em] mb-3">
+    <p className="font-body font-medium text-sm text-text-muted uppercase tracking-[0.1em] mb-3">
       {children}
     </p>
   );
@@ -246,7 +246,7 @@ function WaffleChart({
     <div style={cellStyle}>
       <ChartLabel>{LABEL_INDUSTRY_PROPORTION}</ChartLabel>
       <p
-        className="font-body font-normal text-[10px] text-text-muted"
+        className="font-body font-normal text-sm text-text-muted"
         style={{ marginBottom: 16 }}
       >
         {LABEL_INDUSTRY_PROPORTION_SUB}
@@ -296,7 +296,7 @@ function WaffleChart({
                   className="shrink-0 inline-block"
                   style={{ width: 10, height: 10, background: color }}
                 />
-                <span className="font-body font-normal text-[10px] text-text-muted truncate">
+                <span className="font-body font-normal text-sm text-text-muted truncate">
                   {industry} {pct}%
                 </span>
               </div>
@@ -426,7 +426,7 @@ function CapabilityRadar({
     <div style={cellStyle}>
       <ChartLabel>{LABEL_CAPABILITY_SPREAD}</ChartLabel>
       <p
-        className="font-body font-normal text-[10px] text-text-muted"
+        className="font-body font-normal text-sm text-text-muted"
         style={{ marginBottom: 16 }}
       >
         {LABEL_CAPABILITY_SPREAD_SUB}
@@ -437,7 +437,7 @@ function CapabilityRadar({
           className="flex items-center justify-center text-center"
           style={{ height: RADAR_HEIGHT }}
         >
-          <span className="font-body font-normal text-[12px] text-text-muted">
+          <span className="font-body font-normal text-sm text-text-muted">
             {LABEL_RADAR_EMPTY}
           </span>
         </div>
@@ -547,10 +547,10 @@ function CapabilityRadar({
               {/* Tooltip */}
               {hoveredIdx !== null && tooltipData && (
                 <div style={tooltipStyle}>
-                  <div className="font-body font-normal text-[11px] text-text-primary">
+                  <div className="font-body font-normal text-sm text-text-primary">
                     {tooltipData.label}
                   </div>
-                  <div className="font-body font-normal text-[10px] text-text-muted mt-0.5">
+                  <div className="font-body font-normal text-sm text-text-muted mt-0.5">
                     {tooltipData.value} project{tooltipData.value !== 1 ? "s" : ""}
                   </div>
                 </div>
@@ -732,7 +732,7 @@ function NetworkGraph({
   return (
     <div style={cellStyle}>
       <ChartLabel>{LABEL_WORK_CONNECTIONS}</ChartLabel>
-      <p className="font-body font-normal text-[10px] text-text-muted mb-4">
+      <p className="font-body font-normal text-sm text-text-muted mb-4">
         {LABEL_WORK_CONNECTIONS_SUB}
       </p>
 
@@ -741,7 +741,7 @@ function NetworkGraph({
           className="flex items-center justify-center text-center"
           style={{ height: NETWORK_HEIGHT }}
         >
-          <span className="font-body font-normal text-[12px] text-text-muted">
+          <span className="font-body font-normal text-sm text-text-muted">
             {LABEL_NETWORK_EMPTY}
           </span>
         </div>
@@ -815,13 +815,13 @@ function NetworkGraph({
               {/* Tooltip */}
               {hoveredNode && tooltipContent && (
                 <div style={tooltipStyle}>
-                  <div className="font-body font-normal text-[11px] text-text-primary">
+                  <div className="font-body font-normal text-sm text-text-primary">
                     {tooltipContent.label}
                   </div>
-                  <div className="font-body font-normal text-[10px] text-text-muted mt-0.5">
+                  <div className="font-body font-normal text-sm text-text-muted mt-0.5">
                     {tooltipContent.type}
                   </div>
-                  <div className="font-body font-normal text-[10px] text-text-muted mt-0.5">
+                  <div className="font-body font-normal text-sm text-text-muted mt-0.5">
                     {tooltipContent.detail}
                   </div>
                 </div>
@@ -840,7 +840,7 @@ function NetworkGraph({
                       strokeWidth={1.5}
                     />
                   </svg>
-                  <span className="font-body font-normal text-[9px] text-text-muted">
+                  <span className="font-body font-normal text-sm text-text-muted">
                     Solution type
                   </span>
                 </div>
@@ -848,7 +848,7 @@ function NetworkGraph({
                   <svg width={12} height={12}>
                     <circle cx={6} cy={6} r={5} fill="#D97707" />
                   </svg>
-                  <span className="font-body font-normal text-[9px] text-text-muted">
+                  <span className="font-body font-normal text-sm text-text-muted">
                     Role
                   </span>
                 </div>
@@ -892,7 +892,7 @@ function TechTreemap({
     <div style={cellStyle}>
       <ChartLabel>{LABEL_TECH_STACK}</ChartLabel>
       <p
-        className="font-body font-normal text-[10px] text-text-muted"
+        className="font-body font-normal text-sm text-text-muted"
         style={{ marginBottom: 16 }}
       >
         {LABEL_TECH_STACK_SUB}
@@ -982,7 +982,7 @@ function AvgMVPStat({ avgMVP }: { avgMVP: number | null }) {
       <ChartLabel>{LABEL_AVG_MVP}</ChartLabel>
       <div className="flex flex-col justify-center flex-1">
         <span style={avgValueStyle}>{displayValue}</span>
-        <span className="font-body font-normal text-[13px] text-text-muted block mt-2">
+        <span className="font-body font-normal text-sm text-text-muted block mt-2">
           {LABEL_MONTHS_TO_MVP}
         </span>
       </div>
@@ -1048,17 +1048,17 @@ export function InsightsPanel({
           className="w-full flex items-center justify-between"
           aria-expanded={isExpanded}
         >
-          <span className="font-body font-medium text-[11px] text-accent uppercase tracking-[0.15em]">
+          <span className="font-body font-medium text-sm text-accent uppercase tracking-[0.15em]">
             {LABEL_WORK_INSIGHTS}
           </span>
-          <span className="font-body font-medium text-[11px] text-text-muted">
+          <span className="font-body font-medium text-sm text-text-muted">
             {isExpanded ? LABEL_HIDE : LABEL_SHOW}
           </span>
         </button>
 
         {/* Collapsible body */}
         <div ref={contentRef}>
-          <p className="font-body font-normal text-[12px] text-text-muted mt-3 mb-6">
+          <p className="font-body font-normal text-sm text-text-muted mt-3 mb-6">
             {subLabel}
           </p>
 

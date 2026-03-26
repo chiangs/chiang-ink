@@ -103,14 +103,14 @@ export function CurrentlyDrawer({ isOpen, onClose }: CurrentlyDrawerProps) {
         <button
           onClick={onClose}
           aria-label={ARIA_CLOSE}
-          className="absolute top-6 right-6 bg-transparent border-0 font-body text-[11px] font-medium uppercase tracking-[0.15em] text-text-muted cursor-pointer p-1 transition-colors duration-200 hover:text-accent"
+          className="absolute top-6 right-6 bg-transparent border-0 font-body text-sm font-medium uppercase tracking-[0.15em] text-text-muted cursor-pointer p-1 transition-colors duration-200 hover:text-accent"
         >
           {LABEL_CLOSE}
         </button>
 
         {/* Header */}
         <div>
-          <p className="font-body text-[11px] font-medium uppercase tracking-[0.18em] text-accent-deep mb-4">
+          <p className="font-body text-sm font-medium uppercase tracking-[0.18em] text-accent-deep mb-4">
             {CURRENTLY_TITLE}
           </p>
           <div className="w-10 h-px bg-accent" />
@@ -121,7 +121,7 @@ export function CurrentlyDrawer({ isOpen, onClose }: CurrentlyDrawerProps) {
 
         {/* Footer */}
         <p
-          className="font-body text-[11px] text-text-muted tracking-[0.05em] leading-relaxed pt-6 mt-auto"
+          className="font-body text-sm text-text-muted tracking-[0.05em] leading-relaxed pt-6 mt-auto"
           style={{ borderTop: "1px solid var(--color-border)" }}
         >
           {CURRENTLY_FOOTER}
@@ -142,7 +142,7 @@ function CurrentlyBlock({ item }: { item: CurrentlyItem }) {
     return (
       <p
         key={i}
-        className="font-body text-[16px] font-normal text-text-primary leading-[1.75] m-0"
+        className="font-body text-base font-normal text-text-primary leading-[1.75] m-0"
         style={{ marginTop: i > 0 ? "16px" : 0 }}
       >
         {content}
@@ -165,7 +165,7 @@ function CurrentlyBlock({ item }: { item: CurrentlyItem }) {
           "transform 0.35s cubic-bezier(0.34,1.56,0.64,1), filter 0.3s ease",
       }}
     >
-      <p className="font-body text-[10px] font-medium uppercase tracking-[0.15em] text-text-muted mb-3">
+      <p className="font-body text-sm font-medium uppercase tracking-[0.15em] text-text-muted mb-3">
         {label}
       </p>
       {renderedParagraphs}

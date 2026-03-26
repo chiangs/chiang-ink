@@ -12,13 +12,14 @@
     --color-invert-bg: #D97707;
     --color-invert-text: #0c0c0c;
     --color-text-primary: #E5E2E1;
-    --color-text-muted: #5a5a58;
+    --color-text-muted: #737371;
     --color-accent: #FFB77D;
     --color-accent-deep: #D97707;
     --color-border: #222220;
     --color-border-accent: #FFB77D;
     --color-ghost-border: rgba(85, 67, 54, 0.15);
     --color-hover-surface: #1e1e1e;
+    --color-bg-portrait: #c97a20;
 
     /* Accent gradient — Stitch "Copper Lead" */
     --gradient-accent: linear-gradient(135deg, #FFB77D, #D97707);
@@ -105,7 +106,7 @@ html {
     width: 56px;
     height: 56px;
     font-family: var(--font-body);
-    font-size: 9px;
+    font-size: 14px;
     font-weight: 600;
     letter-spacing: 0.05em;
     color: var(--color-invert-text);
@@ -227,7 +228,7 @@ html {
     transform: translateX(-50%);
     height: 50vh;
     overflow: hidden;
-    background-color: #c97a20;
+    background-color: var(--color-bg-portrait);
 }
 
 .portrait-mobile img {
@@ -297,7 +298,7 @@ html {
     left: 50%;
     transform: translateX(-50%);
     font-family: 'Manrope', sans-serif;
-    font-size: 10px;
+    font-size: 14px;
     font-weight: 500;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -312,7 +313,7 @@ html {
     bottom: 24px;
     right: 24px;
     font-family: 'Manrope', sans-serif;
-    font-size: 10px;
+    font-size: 14px;
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -508,7 +509,7 @@ html {
 
 @media (max-width: 767px) {
     .footer-easter-egg:active {
-        color: #5a5a58 !important;
+        color: #737371 !important;
     }
 }
 

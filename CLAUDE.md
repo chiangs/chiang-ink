@@ -59,6 +59,10 @@ not a diff.
 - **Manrope** for body/UI (weights 400, 500, 600)
 - Never use raw hex values — always use
   design tokens from `@theme`
+- **Minimum font size: 14px** (`text-sm`) everywhere.
+  Exception: tag/pill labels may use 12px (`text-xs`).
+  Never use sub-14px font sizes in JSX `style` props
+  or Tailwind classes except for tag pills.
 
 ---
 
@@ -193,7 +197,20 @@ import { Hero } from "~/components/home/Hero";
 - No custom utility classes — use token-based Tailwind classes:
   - Layout: `max-w-container mx-auto px-margin-mob md:px-margin`
   - Section spacing: `py-section-mob md:py-section`
-  - Label text: `text-[11px] font-medium uppercase tracking-[0.15em]`
+  - Label text: `text-sm font-medium uppercase tracking-[0.15em]`
+- **Tailwind type scale over custom tokens**: prefer the built-in
+  named scale (`text-xs`=12px, `text-sm`=14px, `text-base`=16px,
+  `text-lg`=18px, `text-xl`=20px, `text-2xl`=24px, `text-3xl`=30px,
+  `text-4xl`=36px) over adding `@theme` font-size tokens.
+  Only add custom tokens when no built-in equivalent exists.
+- **Canonical spacing classes** (`suggestCanonicalClasses`): replace
+  arbitrary `[Xpx]` classes with scale equivalents — `px ÷ 4 = units`
+  (e.g. `w-[400px]` → `w-100`, `gap-[6px]` → `gap-1.5`).
+  Percentages (`w-[55%]`) and `clamp()` / `calc()` values must stay
+  as arbitrary values.
+- **D3 / SVG color exception**: raw hex values are permitted inside
+  D3-generated SVG `fill` and `stroke` attributes — CSS custom
+  properties are not reliably supported in that context.
 
 ### Design Tokens (key values)
 | Token | Tailwind class(es) | Value |
@@ -210,9 +227,10 @@ import { Hero } from "~/components/home/Hero";
 | `--color-invert-bg` | `bg-invert-bg` | `#D97707` |
 | `--color-invert-text` | `text-invert-text` | `#0c0c0c` |
 | `--color-text-primary` | `text-text-primary` | `#E5E2E1` |
-| `--color-text-muted` | `text-text-muted` | `#5a5a58` |
+| `--color-text-muted` | `text-text-muted` | `#737371` |
 | `--color-border` | `border-border` | `#222220` |
 | `--color-border-accent` | `border-border-accent` | `#FFB77D` |
+| `--color-bg-portrait` | CSS var only | `#c97a20` |
 | `--color-ghost-border` | CSS var only | `rgba(85,67,54,0.15)` |
 | `--gradient-accent` | CSS var only | `linear-gradient(135deg, #FFB77D, #D97707)` |
 | `--font-display` | `font-display` | Space Grotesk (Google Fonts) |
