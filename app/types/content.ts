@@ -6,6 +6,7 @@ export type ArticleFrontmatter = {
   category: string;
   featured: boolean;
   order: number;
+  status?: "draft" | "published";
   slug?: string;
 };
 
@@ -36,5 +37,6 @@ export type ProjectFrontmatter = {
   heroImage: string;
   featured: boolean;
   order: number;
+  publishStatus?: "draft" | "published";
   slug?: string;
 };
