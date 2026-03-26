@@ -19,6 +19,7 @@
     --color-border-accent: #FFB77D;
     --color-ghost-border: rgba(85, 67, 54, 0.15);
     --color-hover-surface: #1e1e1e;
+    --color-bg-portrait: #c97a20;
 
     /* Accent gradient — Stitch "Copper Lead" */
     --gradient-accent: linear-gradient(135deg, #FFB77D, #D97707);
@@ -227,7 +228,7 @@ html {
     transform: translateX(-50%);
     height: 50vh;
     overflow: hidden;
-    background-color: #c97a20;
+    background-color: var(--color-bg-portrait);
 }
 
 .portrait-mobile img {

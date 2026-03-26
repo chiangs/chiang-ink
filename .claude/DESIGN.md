@@ -253,7 +253,7 @@ PORTRAIT (homepage hero — mobile)
   Top fade:   linear-gradient #131313 0%→40%, transparent 100%
               Blends text section into portrait seamlessly
   Bottom fade:transparent 0% → #131313 100%, height 200px
-  Section bg: #c97a20 — matches portrait so image bleeds edge to edge
+  Section bg: var(--color-bg-portrait) / #c97a20 — matches portrait so image bleeds edge to edge
   Vertical text: hidden on mobile
   Caption:    hidden on mobile
 
