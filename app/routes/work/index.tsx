@@ -52,18 +52,11 @@ const SOLUTION_TYPE_OPTIONS = [
 
 // ─── Style objects ────────────────────────────────────────────────────────────
 
-const headerWrapStyle = { position: "relative" as const, overflow: "hidden" };
-const waveOverlayStyle = {
-  position: "absolute" as const,
-  inset: 0,
-  width: "100%",
-  height: "100%",
-  pointerEvents: "none" as const,
-  zIndex: 0,
+const searchInputStyle: React.CSSProperties = {
+  height: "40px",
+  padding: "0 16px 0 32px",
+  transition: "border-color var(--transition-fast)",
 };
-const headerContentStyle = { position: "relative" as const, zIndex: 1 };
-const activeTagsBarStyle = { paddingTop: "12px", paddingBottom: "12px" };
-const emptyStateStyle = { margin: "80px auto" };
 
 // ─── Fuse config ──────────────────────────────────────────────────────────────
 
@@ -372,9 +365,9 @@ export default function WorkIndex() {
   return (
     <main>
       {/* Page header */}
-      <div ref={headerRef} style={headerWrapStyle}>
+      <div ref={headerRef} className="relative overflow-hidden">
         <svg
-          style={waveOverlayStyle}
+          className="absolute inset-0 w-full h-full pointer-events-none z-0"
           preserveAspectRatio="none"
           aria-hidden="true"
         >
@@ -450,7 +443,7 @@ export default function WorkIndex() {
             y="0"
             width="33.33%"
             height="100%"
-            fill="#131313"
+            fill="var(--color-bg)"
           />
           <rect
             id="cover-waves"
@@ -458,14 +451,13 @@ export default function WorkIndex() {
             y="0"
             width="33.33%"
             height="100%"
-            fill="#131313"
+            fill="var(--color-bg)"
           />
         </svg>
         <div
-          className="max-w-container mx-auto px-margin-mob md:px-margin pt-section-mob md:pt-section pb-12 md:pb-16"
-          style={headerContentStyle}
+          className="relative z-[1] max-w-container mx-auto px-margin-mob md:px-margin pt-section-mob md:pt-section pb-12 md:pb-16"
         >
-          <p className="text-[14px] font-medium uppercase tracking-[0.15em] text-accent mb-4">
+          <p className="text-sm font-medium uppercase tracking-[0.15em] text-accent mb-4">
             {SECTION_LABEL}
           </p>
           <h1
@@ -495,12 +487,8 @@ export default function WorkIndex() {
                 }
                 onKeyDown={handleSearchKeyDown}
                 placeholder={PLACEHOLDER_SEARCH}
-                className="w-full bg-bg border-b border-border font-body font-normal text-[14px] text-text-primary placeholder:text-text-muted outline-none focus:border-accent"
-                style={{
-                  height: "40px",
-                  padding: "0 16px 0 32px",
-                  transition: "border-color var(--transition-fast)",
-                }}
+                className="w-full bg-bg border-b border-border font-body font-normal text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-accent"
+                style={searchInputStyle}
               />
             </div>
 
@@ -534,13 +522,13 @@ export default function WorkIndex() {
 
             {/* Results count + clear */}
             <div className="flex items-center mt-1 md:mt-0 md:ml-auto">
-              <span className="font-body font-normal text-[14px] text-text-muted">
+              <span className="font-body font-normal text-sm text-text-muted">
                 {resultsLabel}
               </span>
               {hasFilters && (
                 <button
                   onClick={handleClearAll}
-                  className="font-body font-medium text-[14px] text-accent ml-4"
+                  className="font-body font-medium text-sm text-accent ml-4"
                   style={{ transition: "opacity var(--transition-fast)" }}
                 >
                   {LABEL_CLEAR_ALL}
@@ -553,8 +541,7 @@ export default function WorkIndex() {
         {/* Active filter tags */}
         {activeTags.length > 0 && (
           <div
-            className="bg-surface border-t border-bg"
-            style={activeTagsBarStyle}
+            className="bg-surface border-t border-bg py-3"
           >
             <div className="max-w-container mx-auto px-margin-mob md:px-margin flex flex-wrap gap-2">
               {activeTags.map((tag) => (
@@ -569,7 +556,7 @@ export default function WorkIndex() {
                       payload: tag.value,
                     })
                   }
-                  className="flex items-center gap-2 bg-surface-highest font-body font-medium text-[12px] text-accent uppercase tracking-[0.1em] px-[10px] py-1"
+                  className="flex items-center gap-2 bg-surface-highest font-body font-medium text-xs text-accent uppercase tracking-[0.1em] px-2.5 py-1"
                   style={{ transition: "background var(--transition-fast)" }}
                 >
                   {tag.value}
@@ -622,8 +609,8 @@ function FilterDropdown({
     <div className="relative" data-dropdown>
       <button
         onClick={onToggleOpen}
-        className="flex items-center justify-between w-full md:w-auto bg-bg border-b border-border font-body font-medium text-[14px] text-text-muted uppercase tracking-[0.1em] px-3 whitespace-nowrap"
-        style={{ height: "40px", transition: "color var(--transition-fast)" }}
+        className="flex items-center justify-between w-full md:w-auto bg-bg border-b border-border font-body font-medium text-sm text-text-muted uppercase tracking-[0.1em] px-3 whitespace-nowrap h-10"
+        style={{ transition: "color var(--transition-fast)" }}
       >
         {buttonLabel}
         <span className={chevronClass} style={chevronStyle}>
@@ -631,10 +618,10 @@ function FilterDropdown({
         </span>
       </button>
       {isOpen && (
-        <div className="absolute top-full left-0 z-50 bg-hover-surface border border-border w-full md:w-auto md:min-w-[220px] mt-1">
+        <div className="absolute top-full left-0 z-50 bg-hover-surface border border-border w-full md:w-auto md:min-w-55 mt-1">
           {options.map((option) => {
             const isSelected = selected.includes(option);
-            const optionClass = `flex items-center justify-between w-full text-left font-body font-normal text-[14px] px-4 py-[10px] ${
+            const optionClass = `flex items-center justify-between w-full text-left font-body font-normal text-sm px-4 py-2.5 ${
               isSelected ? "text-accent" : "text-text-primary"
             }`;
             return (
@@ -659,15 +646,14 @@ function FilterDropdown({
 function EmptyState({ onClear }: { onClear: () => void }) {
   return (
     <div
-      className="flex flex-col items-center justify-center"
-      style={emptyStateStyle}
+      className="flex flex-col items-center justify-center my-20 mx-auto"
     >
-      <p className="font-display font-light text-[24px] text-text-muted text-center">
+      <p className="font-display font-light text-2xl text-text-muted text-center">
         {LABEL_NO_RESULTS}
       </p>
       <button
         onClick={onClear}
-        className="font-body font-medium text-[14px] text-accent mt-4"
+        className="font-body font-medium text-sm text-accent mt-4"
         style={{ transition: "opacity var(--transition-fast)" }}
       >
         {LABEL_CLEAR_FILTERS}
@@ -679,7 +665,7 @@ function EmptyState({ onClear }: { onClear: () => void }) {
 function SearchIcon() {
   return (
     <svg
-      className="absolute left-[10px] text-text-muted pointer-events-none"
+      className="absolute left-2.5 text-text-muted pointer-events-none"
       width="14"
       height="14"
       viewBox="0 0 14 14"

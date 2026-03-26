@@ -43,14 +43,14 @@ export function Footer({ onOpenStyleGuide }: FooterProps) {
       style={{ background: "#0c0c0c" }}
     >
       {/* Name + year */}
-      <p className="font-body text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted">
+      <p className="font-body text-sm font-medium uppercase tracking-[0.15em] text-text-muted">
         {SITE_OWNER}{" "}
         <span style={{ color: "#333330" }}>{year}</span>
       </p>
 
       {/* Easter egg hint */}
       <p
-        className="footer-easter-egg font-body text-[14px] tracking-[0.1em] text-left md:text-center"
+        className="footer-easter-egg font-body text-sm tracking-[0.1em] text-left md:text-center"
         style={{ color: "#2a2a2a", cursor: "default", transition: "color 0.3s ease" }}
         onMouseEnter={(e) => (e.currentTarget.style.color = "#5a5a58")}
         onMouseLeave={(e) => (e.currentTarget.style.color = "#2a2a2a")}
@@ -64,7 +64,7 @@ export function Footer({ onOpenStyleGuide }: FooterProps) {
         {unlocked && onOpenStyleGuide && (
           <button
             onClick={onOpenStyleGuide}
-            className="hidden md:block bg-transparent border-0 font-body text-[14px] font-medium uppercase tracking-[0.15em] cursor-pointer p-0 transition-opacity duration-200 hover:opacity-60"
+            className="hidden md:block bg-transparent border-0 font-body text-sm font-medium uppercase tracking-[0.15em] cursor-pointer p-0 transition-opacity duration-200 hover:opacity-60"
             style={{ color: "#f5a020" }}
           >
             {LABEL_STYLE_GUIDE}
@@ -83,7 +83,7 @@ function FooterLink({ href, label }: { href: string; label: string }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="font-body text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted no-underline transition-colors duration-200 hover:text-accent"
+      className="font-body text-sm font-medium uppercase tracking-[0.15em] text-text-muted no-underline transition-colors duration-200 hover:text-accent"
     >
       {label}
     </a>

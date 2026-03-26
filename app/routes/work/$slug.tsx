@@ -15,7 +15,7 @@ export default function WorkProject({ params }: Route.ComponentProps) {
   return (
     <main className="py-section-mob md:py-section">
       <div className="max-w-container mx-auto px-margin-mob md:px-margin">
-        <p className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted mb-8">
+        <p className="text-sm font-medium uppercase tracking-[0.15em] text-text-muted mb-8">
           <a href={BREADCRUMB_HREF} className="hover:text-accent transition-colors duration-200">
             {BREADCRUMB_LABEL}
           </a>

@@ -121,6 +121,7 @@ export function StyleGuideDrawer({
         {/* Close */}
         <button
           onClick={onClose}
+          className="text-sm"
           style={{
             position: "absolute",
             top: "24px",
@@ -128,7 +129,6 @@ export function StyleGuideDrawer({
             background: "none",
             border: "none",
             color: "#737371",
-            fontSize: "14px",
             fontFamily: "Inter, sans-serif",
             fontWeight: 500,
             letterSpacing: "0.15em",
@@ -154,9 +154,9 @@ export function StyleGuideDrawer({
             }}
           >
             <p
+              className="text-2xl"
               style={{
                 fontFamily: "Space Grotesk, sans-serif",
-                fontSize: "24px",
                 fontWeight: 900,
                 color: "#f5a020",
                 margin: "0 0 8px",
@@ -165,9 +165,9 @@ export function StyleGuideDrawer({
               {UNLOCK_HEADING}
             </p>
             <p
+              className="text-sm"
               style={{
                 fontFamily: "Manrope, sans-serif",
-                fontSize: "14px",
                 color: "#737371",
                 margin: 0,
                 lineHeight: 1.6,
@@ -181,9 +181,9 @@ export function StyleGuideDrawer({
         {/* Header */}
         <div>
           <p
+            className="text-sm"
             style={{
               fontFamily: "Manrope, sans-serif",
-              fontSize: "14px",
               fontWeight: 500,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
@@ -206,9 +206,9 @@ export function StyleGuideDrawer({
             {STYLEGUIDE_OWNER}
           </h2>
           <p
+            className="text-sm"
             style={{
               fontFamily: "Manrope, sans-serif",
-              fontSize: "14px",
               color: "#737371",
               margin: 0,
             }}
@@ -236,9 +236,9 @@ export function StyleGuideDrawer({
                 />
                 <div>
                   <p
+                    className="text-sm"
                     style={{
                       fontFamily: "Manrope, sans-serif",
-                      fontSize: "14px",
                       color: "#efefec",
                       margin: "0 0 2px",
                       fontWeight: 500,
@@ -247,9 +247,9 @@ export function StyleGuideDrawer({
                     {color.name}
                   </p>
                   <p
+                    className="text-sm"
                     style={{
                       fontFamily: "monospace",
-                      fontSize: "14px",
                       color: "#737371",
                       margin: 0,
                     }}
@@ -285,9 +285,9 @@ export function StyleGuideDrawer({
                   {type.sample}
                 </p>
                 <p
+                  className="text-sm"
                   style={{
                     fontFamily: "monospace",
-                    fontSize: "14px",
                     color: "#737371",
                     margin: 0,
                   }}
@@ -313,10 +313,10 @@ export function StyleGuideDrawer({
                   paddingBottom: "8px",
                 }}
               >
-                <span style={{ fontFamily: "Manrope, sans-serif", fontSize: "14px", color: "#737371" }}>
+                <span className="text-sm" style={{ fontFamily: "Manrope, sans-serif", color: "#737371" }}>
                   {s.name}
                 </span>
-                <span style={{ fontFamily: "monospace", fontSize: "14px", color: "#f5a020" }}>
+                <span className="text-sm" style={{ fontFamily: "monospace", color: "#f5a020" }}>
                   {s.value}
                 </span>
               </div>
@@ -333,9 +333,9 @@ export function StyleGuideDrawer({
                 style={{ borderLeft: "2px solid #222220", paddingLeft: "16px" }}
               >
                 <p
+                  className="text-sm"
                   style={{
                     fontFamily: "Manrope, sans-serif",
-                    fontSize: "14px",
                     fontWeight: 500,
                     color: "#efefec",
                     margin: "0 0 4px",
@@ -344,9 +344,9 @@ export function StyleGuideDrawer({
                   {m.name}
                 </p>
                 <p
+                  className="text-sm"
                   style={{
                     fontFamily: "monospace",
-                    fontSize: "14px",
                     color: "#737371",
                     margin: 0,
                   }}
@@ -360,9 +360,9 @@ export function StyleGuideDrawer({
 
         {/* Footer */}
         <p
+          className="text-sm"
           style={{
             fontFamily: "Manrope, sans-serif",
-            fontSize: "14px",
             color: "#737371",
             letterSpacing: "0.05em",
             lineHeight: 1.6,
@@ -397,9 +397,9 @@ function Section({
         }}
       >
         <p
+          className="text-sm"
           style={{
             fontFamily: "Manrope, sans-serif",
-            fontSize: "14px",
             fontWeight: 500,
             letterSpacing: "0.18em",
             textTransform: "uppercase",

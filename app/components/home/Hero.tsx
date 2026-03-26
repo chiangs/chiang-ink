@@ -87,21 +87,9 @@ export function Hero() {
       {/* ── DESKTOP: Portrait — positioning wrapper ── */}
       <div
         data-anim="portrait"
-        className="hidden md:block"
-        style={{
-          position: "absolute",
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: "40%",
-          height: "100vh",
-          zIndex: 0,
-        }}
+        className="hidden md:block absolute top-0 right-0 bottom-0 left-[40%] h-screen z-0"
       >
-        <div
-          className="portrait"
-          style={{ height: "100%", position: "relative" }}
-        >
+        <div className="portrait h-full relative">
           <img
             src={PORTRAIT_SRC}
             alt={PORTRAIT_ALT}
@@ -116,7 +104,7 @@ export function Hero() {
         className="hidden md:block absolute inset-0 z-1 pointer-events-none"
         style={{
           background:
-            "linear-gradient(to right, #131313 40%, rgba(19,19,19,0.7) 55%, rgba(19,19,19,0.15) 72%, transparent 88%)",
+            "linear-gradient(to right, var(--color-bg) 40%, rgba(19,19,19,0.7) 55%, rgba(19,19,19,0.15) 72%, transparent 88%)",
         }}
       />
 
@@ -124,7 +112,7 @@ export function Hero() {
       <div className="hidden md:flex flex-col justify-between h-full w-[55%] py-section px-margin relative z-2">
         <p
           data-anim="eyebrow"
-          className="font-body text-[14px] font-medium uppercase tracking-[0.15em] text-accent"
+          className="font-body text-sm font-medium uppercase tracking-[0.15em] text-accent"
         >
           {EYEBROW}
         </p>
@@ -148,78 +136,61 @@ export function Hero() {
           </h1>
           <p
             data-anim="hero-sub"
-            className="font-body text-[20px] font-normal text-text-muted"
-            style={{ marginTop: "24px" }}
+            className="font-body text-xl font-normal text-text-muted mt-6"
           >
             {SUBHEAD}
           </p>
         </div>
 
         <div className="flex items-end justify-between gap-8">
-          <p className="font-body text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted w-full">
+          <p className="font-body text-sm font-medium uppercase tracking-[0.15em] text-text-muted w-full">
             {DESCRIPTOR}
           </p>
-          <p className="font-body text-[14px] font-medium uppercase tracking-[0.15em] text-accent whitespace-nowrap flex items-center gap-1">
+          <p className="font-body text-sm font-medium uppercase tracking-[0.15em] text-accent whitespace-nowrap flex items-center gap-1">
             {SCROLL_CTA} <span className="arrow-pulse">{SCROLL_ARROW}</span>
           </p>
         </div>
       </div>
 
       {/* ── DESKTOP: Technical caption — overlaid on portrait ── */}
-      <div
-        className="absolute hidden md:block z-3"
-        style={{ bottom: "80px", right: "24px" }}
-      >
+      <div className="absolute hidden md:block z-3 bottom-20 right-6">
         <p
-          className="font-body text-[14px] font-medium uppercase tracking-[0.15em]"
-          style={{ color: "#E5E2E1", opacity: 0.5 }}
+          className="font-body text-sm font-medium uppercase tracking-[0.15em] text-text-primary"
+          style={{ opacity: 0.5 }}
         >
           {CAPTION_REF}
         </p>
         <p
-          className="font-body text-[14px] font-medium uppercase tracking-[0.15em] mt-1"
-          style={{ color: "#E5E2E1", opacity: 0.5 }}
+          className="font-body text-sm font-medium uppercase tracking-[0.15em] text-text-primary mt-1"
+          style={{ opacity: 0.5 }}
         >
           {CAPTION_ISO}
         </p>
       </div>
 
       {/* ── DESKTOP: Vertical text — right edge ── */}
-      <div
-        className="absolute hidden md:block z-3 font-body text-[14px] font-medium uppercase tracking-[0.2em] text-text-muted"
-        style={{
-          right: "16px",
-          top: "50%",
-          transform: "translateY(-50%) rotate(90deg)",
-          whiteSpace: "nowrap",
-        }}
-      >
+      <div className="absolute hidden md:block z-3 font-body text-sm font-medium uppercase tracking-[0.2em] text-text-muted right-4 top-1/2 -translate-y-1/2 rotate-90 whitespace-nowrap">
         {VERTICAL_TEXT}
       </div>
 
       {/* ── MOBILE: Stacked layout ── */}
       <div
         className="md:hidden flex flex-col"
-        style={{ backgroundColor: "#c97a20" }}
+        style={{ backgroundColor: "var(--color-bg-portrait)" }}
       >
         {/* Section 1: Text content */}
-        <div style={{ background: "#131313", padding: "100px 24px 24px 24px", position: "relative", zIndex: 1 }}>
+        <div className="bg-bg pt-25 px-margin-mob pb-6 relative z-[1]">
           <p
             data-anim="eyebrow"
-            className="font-body font-medium uppercase text-accent"
-            style={{
-              fontSize: "10px",
-              letterSpacing: "0.15em",
-              marginBottom: "24px",
-            }}
+            className="font-body text-sm font-medium uppercase tracking-[0.15em] text-accent mb-6"
           >
             {EYEBROW}
           </p>
-          <h1 className="font-display" style={{ lineHeight: 1.0 }}>
+          <h1 className="font-display leading-none">
             <span
               data-anim="headline-1"
-              className="block font-light text-text-primary tracking-[0.02em]"
-              style={{ fontSize: "clamp(48px, 11vw, 72px)", lineHeight: 1.0 }}
+              className="block font-light text-text-primary tracking-[0.02em] leading-none"
+              style={{ fontSize: "clamp(48px, 11vw, 72px)" }}
             >
               {HEADLINE_1}
             </span>
@@ -233,14 +204,12 @@ export function Hero() {
           </h1>
           <p
             data-anim="hero-sub"
-            className="font-body font-normal text-text-muted"
-            style={{ fontSize: "18px", marginTop: "20px" }}
+            className="font-body text-lg font-normal text-text-muted mt-5"
           >
             {SUBHEAD}
           </p>
           <div
-            className="font-body font-medium uppercase text-text-muted flex flex-col gap-1"
-            style={{ fontSize: "10px", letterSpacing: "0.15em", marginTop: "24px" }}
+            className="font-body text-sm font-medium uppercase tracking-[0.15em] text-text-muted flex flex-col gap-1 mt-6"
           >
             <span>{DESCRIPTOR_MOB_1}</span>
             <span>{DESCRIPTOR_MOB_2}</span>
@@ -249,7 +218,7 @@ export function Hero() {
         </div>
 
         {/* Section 2: Portrait — full bleed, pulled up to overlap descriptor */}
-        <div className="portrait-mobile" style={{ marginTop: "-48px" }}>
+        <div className="portrait-mobile -mt-12">
           <img src={PORTRAIT_SRC} alt={PORTRAIT_ALT} />
           <div className="portrait-grain-mobile" />
           <div className="portrait-top-fade-mobile" />

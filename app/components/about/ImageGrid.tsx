@@ -23,10 +23,8 @@ const imgCaptionStyle: React.CSSProperties = {
   right: "12px",
   fontFamily: "var(--font-body)",
   fontWeight: 500,
-  fontSize: "14px",
   letterSpacing: "0.15em",
   textTransform: "uppercase",
-  color: "#E5E2E1",
   opacity: 0.5,
   zIndex: 5,
   pointerEvents: "none",
@@ -36,24 +34,12 @@ export function ImageGrid() {
   return (
     <>
       <p
-        className="font-body text-text-muted"
-        style={{
-          fontSize: "16px",
-          lineHeight: 1.7,
-          marginBottom: "10px",
-          maxWidth: "480px",
-        }}
+        className="font-body text-base text-text-muted leading-[1.7] mb-2.5 max-w-120"
       >
         {IMG_INTRO}
       </p>
       <p
-        className="font-body text-text-muted"
-        style={{
-          fontSize: "16px",
-          lineHeight: 1.7,
-          marginBottom: "40px",
-          maxWidth: "480px",
-        }}
+        className="font-body text-base text-text-muted mb-10 leading-[1.7] max-w-120"
       >
         {IMG_INTRO2}
       </p>
@@ -76,85 +62,57 @@ export function ImageGrid() {
             style={{ objectPosition: "center 20%" }}
           />
           <div className="portrait-fade" />
-          <p style={imgCaptionStyle}>{IMG_PRO_CAPTION}</p>
+          <p className="text-sm text-text-primary" style={imgCaptionStyle}>{IMG_PRO_CAPTION}</p>
         </div>
         {/* Small 1 */}
-        <div
-          className="relative overflow-hidden"
-          style={{ background: "#1a1a1a" }}
-        >
+        <div className="relative overflow-hidden bg-surface">
           <img
             src={IMG_P1_SRC}
             alt={IMG_P1_ALT}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              display: "block",
-            }}
+            className="w-full h-full object-cover block"
           />
-          <p style={imgCaptionStyle}>{IMG_P1_CAPTION}</p>
+          <p className="text-sm text-text-primary" style={imgCaptionStyle}>{IMG_P1_CAPTION}</p>
         </div>
         {/* Small 2 */}
-        <div
-          className="relative overflow-hidden"
-          style={{ background: "#1a1a1a" }}
-        >
+        <div className="relative overflow-hidden bg-surface">
           <img
             src={IMG_P2_SRC}
             alt={IMG_P2_ALT}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              display: "block",
-            }}
+            className="w-full h-full object-cover block"
           />
-          <p style={imgCaptionStyle}>{IMG_P2_CAPTION}</p>
+          <p className="text-sm text-text-primary" style={imgCaptionStyle}>{IMG_P2_CAPTION}</p>
         </div>
       </div>
 
       {/* Mobile: single column stack */}
       <div className="flex flex-col gap-4 md:hidden">
-        <div className="portrait relative" style={{ height: "56vw" }}>
+        <div className="portrait relative h-[56vw]">
           <img
             src={IMG_PRO_SRC}
             alt={IMG_PRO_ALT}
             style={{ objectPosition: "center 20%" }}
           />
-          <p style={imgCaptionStyle}>{IMG_PRO_CAPTION}</p>
+          <p className="text-sm text-text-primary" style={imgCaptionStyle}>{IMG_PRO_CAPTION}</p>
         </div>
         <div
-          className="relative overflow-hidden"
-          style={{ height: "56vw", background: "#1a1a1a" }}
+          className="relative overflow-hidden bg-surface h-[56vw]"
         >
           <img
             src={IMG_P1_SRC}
             alt={IMG_P1_ALT}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              display: "block",
-            }}
+            className="w-full h-full object-cover block"
           />
-          <p style={imgCaptionStyle}>{IMG_P1_CAPTION}</p>
+          <p className="text-sm text-text-primary" style={imgCaptionStyle}>{IMG_P1_CAPTION}</p>
         </div>
         <div
-          className="relative overflow-hidden"
-          style={{ height: "56vw", background: "#1a1a1a" }}
+          className="relative overflow-hidden bg-surface h-[56vw]"
         >
           <img
             src={IMG_P2_SRC}
             alt={IMG_P2_ALT}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              display: "block",
-            }}
+            className="w-full h-full object-cover block"
           />
-          <p style={imgCaptionStyle}>{IMG_P2_CAPTION}</p>
+          <p className="text-sm text-text-primary" style={imgCaptionStyle}>{IMG_P2_CAPTION}</p>
         </div>
       </div>
     </>

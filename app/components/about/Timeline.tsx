@@ -49,30 +49,20 @@ function TimelineContent({ entry }: { entry: (typeof EXPERIENCE)[number] }) {
   return (
     <div>
       <p
-        className="font-display font-bold text-text-primary"
-        style={{ fontSize: "20px", lineHeight: 1.2 }}
+        className="font-display font-bold text-xl text-text-primary"
+        style={{ lineHeight: 1.2 }}
       >
         {entry.company}
       </p>
       <p
-        className="font-body font-medium uppercase"
-        style={{
-          fontSize: "14px",
-          color: "#FFB77D",
-          letterSpacing: "0.1em",
-          marginTop: "4px",
-        }}
+        className="font-body font-medium text-sm text-accent uppercase mt-1"
+        style={{ letterSpacing: "0.1em" }}
       >
         {entry.title}
       </p>
       <p
-        className="font-body text-text-muted"
-        style={{
-          fontSize: "15px",
-          lineHeight: 1.7,
-          maxWidth: "520px",
-          marginTop: "10px",
-        }}
+        className="font-body text-base text-text-muted"
+        style={{ lineHeight: 1.7, maxWidth: "520px", marginTop: "10px" }}
       >
         {entry.description}
       </p>
@@ -85,28 +75,14 @@ export function Timeline() {
     <div className="relative">
       {/* Desktop vertical line */}
       <div
-        className="absolute hidden md:block"
-        style={{
-          left: "88px",
-          top: 0,
-          bottom: 0,
-          width: "1px",
-          background: "#222220",
-        }}
+        className="absolute hidden md:block bg-border left-22 top-0 bottom-0 w-px"
       />
       {/* Mobile vertical line */}
       <div
-        className="absolute md:hidden"
-        style={{
-          left: "0",
-          top: 0,
-          bottom: 0,
-          width: "1px",
-          background: "#222220",
-        }}
+        className="absolute md:hidden bg-border left-0 top-0 bottom-0 w-px"
       />
 
-      <div className="flex flex-col" style={{ gap: "48px" }}>
+      <div className="flex flex-col gap-12">
         {EXPERIENCE.map((entry) => (
           <div key={entry.company} data-anim="timeline-entry">
             {/* Desktop row: [year 80px] [dot 16px gap 16px] [content] */}
@@ -116,22 +92,13 @@ export function Timeline() {
             >
               {/* Year */}
               <div
-                style={{
-                  textAlign: "right",
-                  paddingRight: "16px",
-                  paddingTop: "2px",
-                }}
+                className="text-right pr-4 pt-0.5"
               >
                 {entry.years.split(" — ").map((y, j) => (
                   <span
                     key={j}
-                    className="block font-display font-bold uppercase"
-                    style={{
-                      fontSize: "14px",
-                      color: "#FFB77D",
-                      letterSpacing: "0.02em",
-                      lineHeight: 1.4,
-                    }}
+                    className="block font-display font-bold text-sm text-accent uppercase"
+                    style={{ letterSpacing: "0.02em", lineHeight: 1.4 }}
                   >
                     {y}
                   </span>
@@ -139,22 +106,10 @@ export function Timeline() {
               </div>
               {/* Dot */}
               <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  paddingTop: "4px",
-                }}
+                className="flex justify-center pt-1"
               >
                 <div
-                  className="circle"
-                  style={{
-                    width: "8px",
-                    height: "8px",
-                    background: "#FFB77D",
-                    flexShrink: 0,
-                    position: "relative",
-                    zIndex: 1,
-                  }}
+                  className="circle bg-accent w-2 h-2 shrink-0 relative z-[1]"
                 />
               </div>
               {/* Content */}
@@ -162,15 +117,10 @@ export function Timeline() {
             </div>
 
             {/* Mobile row: left-border indent, year above */}
-            <div className="md:hidden" style={{ paddingLeft: "24px" }}>
+            <div className="md:hidden pl-6">
               <p
-                className="font-display font-bold uppercase"
-                style={{
-                  fontSize: "14px",
-                  color: "#FFB77D",
-                  letterSpacing: "0.02em",
-                  marginBottom: "6px",
-                }}
+                className="font-display font-bold text-sm text-accent uppercase"
+                style={{ letterSpacing: "0.02em", marginBottom: "6px" }}
               >
                 {entry.years}
               </p>

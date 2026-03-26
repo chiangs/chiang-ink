@@ -20,24 +20,17 @@ export function LanguageList() {
             data-anim="language-row"
             className="flex items-center justify-between"
             style={{
-              borderBottom: "1px solid #1e1e1e",
+              borderBottom: "1px solid var(--color-hover-surface)",
               paddingBottom: "20px",
               marginBottom: i < LANGUAGES.length - 1 ? "20px" : 0,
             }}
           >
-            <span
-              className="font-display font-bold text-text-primary"
-              style={{ fontSize: "24px" }}
-            >
+            <span className="font-display font-bold text-2xl text-text-primary">
               {lang.name}
             </span>
             <span
-              className="font-body font-medium uppercase"
-              style={{
-                fontSize: "14px",
-                color: "#FFB77D",
-                letterSpacing: "0.15em",
-              }}
+              className="font-body font-medium text-sm text-accent uppercase"
+              style={{ letterSpacing: "0.15em" }}
             >
               {lang.proficiency}
             </span>
@@ -46,14 +39,8 @@ export function LanguageList() {
       </div>
 
       <p
-        className="font-body text-text-muted"
-        style={{
-          fontSize: "14px",
-          fontStyle: "italic",
-          lineHeight: 1.7,
-          marginTop: "32px",
-          maxWidth: "520px",
-        }}
+        className="font-body text-sm text-text-muted mt-8"
+        style={{ fontStyle: "italic", lineHeight: 1.7, maxWidth: "520px" }}
       >
         "{LANG_NOTE}"
       </p>

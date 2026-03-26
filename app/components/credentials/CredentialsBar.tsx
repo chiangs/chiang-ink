@@ -152,21 +152,21 @@ export function CredentialsBar() {
           className="bg-invert-text flex flex-col justify-between p-card md:w-[20%] flex-none"
         >
           <div className="flex items-center justify-between">
-            <span className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted">
+            <span className="text-sm font-medium uppercase tracking-[0.15em] text-text-muted">
               {STATUS_LABEL}
             </span>
             {/* Accent status indicator */}
             <span className="block w-2.5 h-2.5 bg-accent" aria-hidden="true" />
           </div>
           <div className="mt-8 flex flex-col gap-3">
-            <p className="font-body text-[15px] text-text-primary leading-[1.7]">
+            <p className="font-body text-base text-text-primary leading-[1.7]">
               {STATUS_BODY_1_A}
               <span className="text-accent-deep">{STATUS_BODY_1_HL1}</span>
               {STATUS_BODY_1_B}
               <span className="text-accent-deep">{STATUS_BODY_1_HL2}</span>
               {STATUS_BODY_1_C}
             </p>
-            <p className="font-body text-[14px] text-text-muted leading-[1.6]">
+            <p className="font-body text-sm text-text-muted leading-[1.6]">
               {STATUS_BODY_2}
             </p>
           </div>

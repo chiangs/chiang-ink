@@ -24,16 +24,16 @@ export default function Contact() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-start">
             {/* Left */}
             <div>
-              <p className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted mb-6">{SECTION_LABEL}</p>
+              <p className="text-sm font-medium uppercase tracking-[0.15em] text-text-muted mb-6">{SECTION_LABEL}</p>
               <h1 className="font-display font-black text-[clamp(40px,6vw,72px)] text-text-primary leading-[0.95] mb-8">
                 {HEADING}
               </h1>
-              <p className="text-[16px] text-text-muted leading-[1.75] mb-8">
+              <p className="text-base text-text-muted leading-[1.75] mb-8">
                 {DESCRIPTION}
               </p>
               <a
                 href={HREF_EMAIL}
-                className="text-[14px] font-medium uppercase tracking-[0.15em] text-accent border-b border-border-accent pb-0.5 hover:opacity-60 transition-opacity duration-200"
+                className="text-sm font-medium uppercase tracking-[0.15em] text-accent border-b border-border-accent pb-0.5 hover:opacity-60 transition-opacity duration-200"
               >
                 {EMAIL}
               </a>
@@ -42,41 +42,41 @@ export default function Contact() {
             {/* Right — form */}
             <form className="flex flex-col gap-10 bg-card p-10">
               <div className="flex flex-col gap-2">
-                <label className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted">{LABEL_NAME}</label>
+                <label className="text-sm font-medium uppercase tracking-[0.15em] text-text-muted">{LABEL_NAME}</label>
                 <input
                   type="text"
                   name="name"
                   required
-                  className="bg-transparent border-0 border-b border-border-accent text-text-primary text-[16px] py-2 outline-none focus:border-border-accent placeholder:text-text-muted"
+                  className="bg-transparent border-0 border-b border-border-accent text-text-primary text-base py-2 outline-none focus:border-border-accent placeholder:text-text-muted"
                   placeholder={PLACEHOLDER_NAME}
                 />
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted">{LABEL_EMAIL}</label>
+                <label className="text-sm font-medium uppercase tracking-[0.15em] text-text-muted">{LABEL_EMAIL}</label>
                 <input
                   type="email"
                   name="email"
                   required
-                  className="bg-transparent border-0 border-b border-border-accent text-text-primary text-[16px] py-2 outline-none focus:border-border-accent placeholder:text-text-muted"
+                  className="bg-transparent border-0 border-b border-border-accent text-text-primary text-base py-2 outline-none focus:border-border-accent placeholder:text-text-muted"
                   placeholder={PLACEHOLDER_EMAIL}
                 />
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted">{LABEL_MESSAGE}</label>
+                <label className="text-sm font-medium uppercase tracking-[0.15em] text-text-muted">{LABEL_MESSAGE}</label>
                 <textarea
                   name="message"
                   required
                   rows={5}
-                  className="bg-transparent border-0 border-b border-border-accent text-text-primary text-[16px] py-2 outline-none focus:border-border-accent placeholder:text-text-muted resize-none"
+                  className="bg-transparent border-0 border-b border-border-accent text-text-primary text-base py-2 outline-none focus:border-border-accent placeholder:text-text-muted resize-none"
                   placeholder={PLACEHOLDER_MESSAGE}
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-invert-bg text-invert-text font-display font-bold text-[14px] uppercase tracking-[0.15em] py-4 hover:bg-bg hover:text-accent border border-border-accent transition-colors duration-200"
+                className="w-full bg-invert-bg text-invert-text font-display font-bold text-sm uppercase tracking-[0.15em] py-4 hover:bg-bg hover:text-accent border border-border-accent transition-colors duration-200"
               >
                 {LABEL_SUBMIT}
               </button>

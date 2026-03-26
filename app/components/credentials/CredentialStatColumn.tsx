@@ -6,10 +6,7 @@ type Props = {
 
 const statNumStyle = {
   fontSize: "clamp(48px, 4.5vw, 64px)",
-  fontFamily: "var(--font-display)",
-  fontWeight: 700,
-  lineHeight: 1,
-  background: "linear-gradient(135deg, #FFB77D 0%, #D97707 50%)",
+  background: "var(--gradient-accent)",
   WebkitBackgroundClip: "text" as const,
   WebkitTextFillColor: "transparent" as const,
   backgroundClip: "text" as const,
@@ -22,10 +19,10 @@ export function CredentialStatColumn({ num, label, className }: Props) {
       className={className}
     >
       <div className="flex items-end">
-        <span style={statNumStyle}>{num}</span>
+        <span className="font-display font-bold leading-none" style={statNumStyle}>{num}</span>
       </div>
       <div className="flex-1 items-start">
-        <span className="text-[14px] md:text-[14px] font-medium uppercase tracking-[0.12em] md:tracking-[0.15em] text-text-muted mt-2 block">
+        <span className="text-sm font-medium uppercase tracking-[0.12em] md:tracking-[0.15em] text-text-muted mt-2 block">
           {label}
         </span>
       </div>

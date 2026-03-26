@@ -34,12 +34,12 @@ export function WritingList({ articles }: Props) {
     <section className="py-section-mob md:py-section border-b border-border">
       <div className="max-w-container mx-auto px-margin-mob md:px-margin">
         <div className="flex items-baseline justify-between mb-16">
-          <p className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted">
+          <p className="text-sm font-medium uppercase tracking-[0.15em] text-text-muted">
             {SECTION_LABEL}
           </p>
           <Link
             to={HREF_WRITING}
-            className="text-[14px] font-medium uppercase tracking-[0.15em] text-accent hover:opacity-60 transition-opacity duration-200"
+            className="text-sm font-medium uppercase tracking-[0.15em] text-accent hover:opacity-60 transition-opacity duration-200"
           >
             {LABEL_ALL_POSTS}
           </Link>
@@ -68,38 +68,31 @@ function WritingRow({ slug, number, title, date, readTime, category }: WritingRo
 
       {/* Ghost number */}
       <span
-        className="writing-ghost-number font-display font-black text-accent select-none pointer-events-none absolute left-0 transition-opacity duration-200 group-hover:opacity-[0.6]"
-        style={{ lineHeight: 1, opacity: 0.2, position: "absolute", zIndex: 0 }}
+        className="writing-ghost-number font-display font-black text-accent select-none pointer-events-none absolute left-0 leading-none opacity-20 z-0 transition-opacity duration-200 group-hover:opacity-[0.6]"
         aria-hidden
       >
         {number}
       </span>
 
       {/* Title */}
-      <span
-        className="font-display font-bold text-[clamp(18px,4.5vw,24px)] md:text-[32px] text-text-primary group-hover:text-accent transition-colors duration-200 ml-12 w-full md:w-auto"
-        style={{ position: "relative", zIndex: 1 }}
-      >
+      <span className="font-display font-bold text-[clamp(18px,4.5vw,24px)] md:text-[32px] text-text-primary group-hover:text-accent transition-colors duration-200 ml-12 w-full md:w-auto relative z-[1]">
         {title}
       </span>
 
       {/* Mobile meta — single condensed line below title */}
-      <span
-        className="md:hidden font-body font-medium uppercase text-text-muted ml-12 w-full"
-        style={{ fontSize: "10px", letterSpacing: "0.12em", marginTop: "8px", position: "relative", zIndex: 1 }}
-      >
+      <span className="md:hidden font-body text-sm font-medium uppercase tracking-[0.12em] text-text-muted ml-12 w-full mt-2 relative z-[1]">
         {category} · {date} · {readTime}
       </span>
 
       {/* Desktop meta — three separate spans */}
       <div className="hidden md:flex items-center gap-4 relative z-10 shrink-0 ml-8">
-        <span className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted">
+        <span className="text-sm font-medium uppercase tracking-[0.15em] text-text-muted">
           {category}
         </span>
-        <span className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted">
+        <span className="text-sm font-medium uppercase tracking-[0.15em] text-text-muted">
           {date}
         </span>
-        <span className="text-[14px] font-medium uppercase tracking-[0.15em] text-text-muted">
+        <span className="text-sm font-medium uppercase tracking-[0.15em] text-text-muted">
           {readTime}
         </span>
       </div>

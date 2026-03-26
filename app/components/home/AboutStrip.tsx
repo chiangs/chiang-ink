@@ -13,14 +13,8 @@ const BIO_4 =
 const LOCATION = SITE_LOCATION;
 const LABEL_LINKEDIN = "LinkedIn";
 
-const bio2Style = {
-  fontSize: "clamp(40px, 4vw, 48px)",
-  fontFamily: "var(--font-display)",
-  fontWeight: 700,
-  lineHeight: 1.1,
-  marginTop: "8px",
-  marginBottom: "24px",
-};
+const bio2Style = { fontSize: "clamp(40px, 4vw, 48px)" };
+const ghostNumStyle = { fontSize: "120px", opacity: 0.12 };
 
 export function AboutStrip() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -50,29 +44,29 @@ export function AboutStrip() {
     >
       {/* Ghost number clips left — unchanged */}
       <span
-        className="font-display font-black text-invert-text select-none pointer-events-none absolute -left-8 top-1/2 -translate-y-1/2"
-        style={{ fontSize: "120px", lineHeight: 1, opacity: 0.12 }}
+        className="font-display font-black text-invert-text select-none pointer-events-none absolute -left-8 top-1/2 -translate-y-1/2 leading-none"
+        style={ghostNumStyle}
         aria-hidden
       >
         {GHOST_NUMBER}
       </span>
 
       <div className="max-w-container mx-auto px-margin-mob md:px-margin relative z-10">
-        <p className="text-[14px] font-medium uppercase tracking-[0.15em] text-invert-text/60 mb-8">
+        <p className="text-sm font-medium uppercase tracking-[0.15em] text-invert-text/60 mb-8">
           {SECTION_LABEL}
         </p>
 
         <div className="flex flex-col gap-6 max-w-3xl">
-          <p className="text-[24px] md:text-[28px] font-medium text-invert-text leading-[1.4]">
+          <p className="text-2xl md:text-[28px] font-medium text-invert-text leading-[1.4]">
             {BIO_1}
           </p>
-          <p className="text-invert-text about-bio2" style={bio2Style}>
+          <p className="font-display font-bold text-invert-text leading-[1.1] mt-2 mb-6 about-bio2" style={bio2Style}>
             {BIO_2}
           </p>
-          <p className="text-[18px] md:text-[20px] font-medium text-invert-text/80 leading-[1.6]">
+          <p className="text-lg md:text-xl font-medium text-invert-text/80 leading-[1.6]">
             {BIO_3}
           </p>
-          <p className="text-[18px] md:text-[20px] font-medium text-invert-text leading-[1.6]">
+          <p className="text-lg md:text-xl font-medium text-invert-text leading-[1.6]">
             {BIO_4}
           </p>
         </div>
@@ -82,11 +76,11 @@ export function AboutStrip() {
             href={LINKEDIN_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[14px] font-medium uppercase tracking-[0.15em] text-invert-text border-b border-invert-text pb-0.5 hover:opacity-60 transition-opacity duration-200"
+            className="text-sm font-medium uppercase tracking-[0.15em] text-invert-text border-b border-invert-text pb-0.5 hover:opacity-60 transition-opacity duration-200"
           >
             {LABEL_LINKEDIN}
           </a>
-          <span className="text-[14px] font-medium uppercase tracking-[0.15em] text-invert-text/40">
+          <span className="text-sm font-medium uppercase tracking-[0.15em] text-invert-text/40">
             {LOCATION}
           </span>
         </div>

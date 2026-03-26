@@ -22,6 +22,12 @@ const STMT_POST = " — not by what was easiest to build.";
 
 const STMT_HL_CHARS = STMT_HL.split("");
 
+const quoteStyle: React.CSSProperties = {
+  fontSize: "clamp(28px, 4vw, 40px)",
+  maxWidth: "600px",
+  lineHeight: 1.3,
+};
+
 export function Skills() {
   const hlRef = useRef<HTMLSpanElement>(null);
 
@@ -76,11 +82,7 @@ export function Skills() {
       <div className="bg-border-accent p-8">
         <p
           className="font-display font-light text-invert-text"
-          style={{
-            fontSize: "clamp(28px, 4vw, 40px)",
-            maxWidth: "600px",
-            lineHeight: 1.3,
-          }}
+          style={quoteStyle}
         >
           "{STMT_PRE}
           <span ref={hlRef}>
@@ -88,7 +90,7 @@ export function Skills() {
               <span
                 key={i}
                 data-char
-                style={{ whiteSpace: "pre-wrap" }}
+                className="whitespace-pre-wrap"
               >
                 {char}
               </span>
