@@ -1,87 +1,67 @@
-# Welcome to React Router!
+# chiangs.ink
 
-A modern, production-ready template for building full-stack React applications using React Router.
+Personal portfolio site for Stephen Chiang — Design Technologist and Product & Technology Leader based in Stavanger, Norway.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## Stack
 
-## Features
-
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+- **Framework** — React Router v7 (SSR, file-based routes)
+- **Styling** — Tailwind CSS v4 (Vite plugin, token-based design system)
+- **Animations** — GSAP (timelines, ScrollTrigger, parallax)
+- **Content** — MDX with gray-matter frontmatter
+- **Data viz** — visx + D3
+- **Search** — Fuse.js (fuzzy search)
+- **Fonts** — Space Grotesk (display) + Manrope (body) via Google Fonts
+- **PWA** — Web App Manifest with maskable icons
+- **Deployment** — Vercel (`@vercel/react-router`)
+- **Language** — TypeScript (strict)
 
 ## Getting Started
 
-### Installation
-
-Install the dependencies:
-
 ```bash
 npm install
+npm run dev       # Dev server at http://localhost:5173
 ```
 
-### Development
-
-Start the development server with HMR:
+## Commands
 
 ```bash
-npm run dev
+npm run dev        # Dev server with HMR
+npm run build      # Production build
+npm run typecheck  # React Router typegen + tsc
+npm run lint       # ESLint (zero warnings enforced)
+npm start          # Serve production build
 ```
 
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
-
-```bash
-npm run build
-```
-
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
+## Project Structure
 
 ```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
+app/
+  routes/           # File-based routes (React Router v7)
+  components/       # Section components + shared layout
+  hooks/            # Client-side React hooks
+  lib/              # Utilities, constants, GSAP configs, content loaders
+  types/            # Shared TypeScript types
+  app.css           # Global styles + @theme design tokens
+content/
+  work/             # Project MDX files
+  writing/          # Article MDX files
+public/
+  manifest.json     # PWA manifest
+  icons/            # PWA icons (96–512px, maskable variants)
+.claude/
+  DESIGN.md         # Design system — tokens, component patterns, motion
+  STRUCTURE.md      # Annotated file tree
 ```
 
-## Styling
+## Design System
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+All design decisions live in `.claude/DESIGN.md`. Key rules:
 
----
+- 0px border radius everywhere
+- No border lines for section separation — tonal surface shifts only
+- Design tokens defined in `app/app.css` under `@theme` — never raw hex values
+- Space Grotesk (weights 300 + 700) for display / Manrope (400, 500, 600) for body
 
-Built with ❤️ using React Router.
+## Content
+
+Work and writing entries are MDX files in `/content`. Items are ordered by the `order` field in frontmatter. Featured items use `featured: true`.
