@@ -242,6 +242,8 @@ function WaffleChart({
     if (typeof window === "undefined") return;
     let isMounted = true;
 
+    const tweens: { kill(): void }[] = [];
+
     const run = async () => {
       const { default: gsap } = await import("gsap");
       if (!isMounted) return;
@@ -254,21 +256,23 @@ function WaffleChart({
       rects.forEach((rect) => {
         const diagonal = parseInt(rect.dataset.diagonal ?? "0", 10);
         const delay = diagonal * 0.04;
-        gsap.fromTo(
-          rect,
-          { scale: 0, opacity: 0, transformOrigin: "50% 50%" },
-          {
-            scale: 1,
-            opacity: 1,
-            duration: 0.35,
-            delay,
-            ease: "back.out(1.4)",
-            onComplete: () => {
-              gsap.set(rect, {
-                clearProps: "opacity,transform,transformOrigin",
-              });
+        tweens.push(
+          gsap.fromTo(
+            rect,
+            { scale: 0, opacity: 0, transformOrigin: "50% 50%" },
+            {
+              scale: 1,
+              opacity: 1,
+              duration: 0.35,
+              delay,
+              ease: "back.out(1.4)",
+              onComplete: () => {
+                gsap.set(rect, {
+                  clearProps: "opacity,transform,transformOrigin",
+                });
+              },
             },
-          },
+          ),
         );
       });
     };
@@ -276,6 +280,7 @@ function WaffleChart({
     run();
     return () => {
       isMounted = false;
+      tweens.forEach((t) => t.kill());
     };
   }, [animationKey]);
 
@@ -421,6 +426,8 @@ function CapabilityRadar({
     if (!width || isEmpty) return;
     let isMounted = true;
 
+    const tweens: { kill(): void }[] = [];
+
     const run = async () => {
       const { default: gsap } = await import("gsap");
       if (!isMounted) return;
@@ -429,30 +436,34 @@ function CapabilityRadar({
       const lines = axisRefs.current.filter(Boolean) as SVGLineElement[];
       lines.forEach((line, i) => {
         const pt = pointOnAxis(i, outerR);
-        gsap.fromTo(
-          line,
-          { attr: { x2: cx, y2: cy } },
-          {
-            attr: { x2: pt.x, y2: pt.y },
-            duration: 0.3,
-            delay: i * 0.04,
-            ease: "power2.out",
-            onComplete: () => {
-              if (i !== lines.length - 1 || !isMounted || !polygonRef.current)
-                return;
-              // Polygon scales in after last axis finishes
-              gsap.fromTo(
-                polygonRef.current,
-                { scale: 0 },
-                {
-                  scale: 1,
-                  duration: 0.6,
-                  ease: "power2.out",
-                  transformOrigin: `${cx}px ${cy}px`,
-                },
-              );
+        tweens.push(
+          gsap.fromTo(
+            line,
+            { attr: { x2: cx, y2: cy } },
+            {
+              attr: { x2: pt.x, y2: pt.y },
+              duration: 0.3,
+              delay: i * 0.04,
+              ease: "power2.out",
+              onComplete: () => {
+                if (i !== lines.length - 1 || !isMounted || !polygonRef.current)
+                  return;
+                // Polygon scales in after last axis finishes
+                tweens.push(
+                  gsap.fromTo(
+                    polygonRef.current,
+                    { scale: 0 },
+                    {
+                      scale: 1,
+                      duration: 0.6,
+                      ease: "power2.out",
+                      transformOrigin: `${cx}px ${cy}px`,
+                    },
+                  ),
+                );
+              },
             },
-          },
+          ),
         );
       });
     };
@@ -460,6 +471,7 @@ function CapabilityRadar({
     run();
     return () => {
       isMounted = false;
+      tweens.forEach((t) => t.kill());
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width, n, cx, cy, outerR, isEmpty, animationKey]);
@@ -699,6 +711,8 @@ function NetworkGraph({
     lastAnimatedKey.current = animationKey;
     let isMounted = true;
 
+    const tweens: { kill(): void }[] = [];
+
     const run = async () => {
       const { default: gsap } = await import("gsap");
       if (!isMounted) return;
@@ -711,25 +725,29 @@ function NetworkGraph({
       );
 
       if (links.length) {
-        gsap.fromTo(
-          links,
-          { opacity: 0 },
-          { opacity: 1, duration: 0.4, stagger: { amount: 0.3 }, ease: "power2.out" },
+        tweens.push(
+          gsap.fromTo(
+            links,
+            { opacity: 0 },
+            { opacity: 1, duration: 0.4, stagger: { amount: 0.3 }, ease: "power2.out" },
+          ),
         );
       }
 
       if (nodes.length) {
-        gsap.fromTo(
-          nodes,
-          { scale: 0, opacity: 0, transformOrigin: "0px 0px" },
-          {
-            scale: 1,
-            opacity: 1,
-            duration: 0.35,
-            stagger: { amount: 0.4 },
-            delay: 0.2,
-            ease: "back.out(1.4)",
-          },
+        tweens.push(
+          gsap.fromTo(
+            nodes,
+            { scale: 0, opacity: 0, transformOrigin: "0px 0px" },
+            {
+              scale: 1,
+              opacity: 1,
+              duration: 0.35,
+              stagger: { amount: 0.4 },
+              delay: 0.2,
+              ease: "back.out(1.4)",
+            },
+          ),
         );
       }
     };
@@ -737,6 +755,7 @@ function NetworkGraph({
     run();
     return () => {
       isMounted = false;
+      tweens.forEach((t) => t.kill());
     };
   }, [positions, animationKey]);
 
@@ -1035,6 +1054,7 @@ function TechTreemap({
   useEffect(() => {
     if (!width || !stackTree.length) return;
     let isMounted = true;
+    const tweens: { kill(): void }[] = [];
 
     const run = async () => {
       const { default: gsap } = await import("gsap");
@@ -1058,10 +1078,12 @@ function TechTreemap({
       cells.forEach((cell) => {
         const cellX = parseFloat(cell.dataset.treemapX ?? "0");
         const delay = (cellX / Math.max(maxX, 1)) * 0.5;
-        gsap.fromTo(
-          cell,
-          { opacity: 0, y: 5 },
-          { opacity: 1, y: 0, duration: 0.4, delay, ease: "power2.out" },
+        tweens.push(
+          gsap.fromTo(
+            cell,
+            { opacity: 0, y: 5 },
+            { opacity: 1, y: 0, duration: 0.4, delay, ease: "power2.out" },
+          ),
         );
       });
     };
@@ -1069,6 +1091,7 @@ function TechTreemap({
     run();
     return () => {
       isMounted = false;
+      tweens.forEach((t) => t.kill());
     };
   }, [width, stackTree.length, animationKey]);
 
@@ -1188,6 +1211,7 @@ function AvgMVPStat({
   useEffect(() => {
     if (avgMVP === null) return;
     let isMounted = true;
+    let tween: { kill(): void } | null = null;
 
     const run = async () => {
       const { default: gsap } = await import("gsap");
@@ -1197,7 +1221,7 @@ function AvgMVPStat({
       const counter = { value: startValue };
       setDisplayValue(isInt ? String(startValue) : startValue.toFixed(1));
 
-      gsap.to(counter, {
+      tween = gsap.to(counter, {
         value: avgMVP,
         duration: 1.5,
         ease: "power2.out",
@@ -1219,6 +1243,7 @@ function AvgMVPStat({
     run();
     return () => {
       isMounted = false;
+      tween?.kill();
     };
   }, [avgMVP, animationKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -1246,6 +1271,7 @@ export function InsightsPanel({
   const [mounted, setMounted] = useState(false);
   const [animationKey, setAnimationKey] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
+  const isAnimating = useRef(false);
 
   const insights = useMemo(() => computeInsights(projects), [projects]);
 
@@ -1261,13 +1287,25 @@ export function InsightsPanel({
   }, []);
 
   const handleToggle = async () => {
+    if (isAnimating.current) return;
+    isAnimating.current = true;
     const { default: gsap } = await import("gsap");
     const el = contentRef.current;
-    if (!el) return;
+    if (!el) {
+      isAnimating.current = false;
+      return;
+    }
 
     if (isExpanded) {
       gsap.set(el, { height: el.scrollHeight, overflow: "hidden" });
-      gsap.to(el, { height: 0, duration: 0.4, ease: "power2.inOut" });
+      gsap.to(el, {
+        height: 0,
+        duration: 0.4,
+        ease: "power2.inOut",
+        onComplete: () => {
+          isAnimating.current = false;
+        },
+      });
     } else {
       el.style.overflow = "hidden";
       setAnimationKey((k) => k + 1);
@@ -1277,6 +1315,7 @@ export function InsightsPanel({
         ease: "power2.inOut",
         onComplete: () => {
           el.style.overflow = "";
+          isAnimating.current = false;
         },
       });
     }

@@ -215,6 +215,8 @@ function WritingStreamgraph({
   useEffect(() => {
     if (!svgRef.current || !clipRectRef.current || width === 0) return;
     let isMounted = true;
+    const tweens: { kill(): void }[] = [];
+
     const run = async () => {
       const { default: gsap } = await import("gsap");
       if (!isMounted) return;
@@ -222,26 +224,36 @@ function WritingStreamgraph({
       // Set streams to initial hidden state before animating
       gsap.set(paths, { opacity: 0, y: 6 });
       // Clip scan left→right reveals the temporal story
-      gsap.fromTo(
-        clipRectRef.current,
-        { attr: { width: 0 } },
-        { attr: { width }, duration: 1.8, ease: "power2.inOut" },
+      tweens.push(
+        gsap.fromTo(
+          clipRectRef.current,
+          { attr: { width: 0 } },
+          { attr: { width }, duration: 1.8, ease: "power2.inOut" },
+        ),
       );
       // Streams stagger-fade in as the scan passes over them
-      gsap.to(paths, {
-        opacity: 1,
-        y: 0,
-        duration: 0.7,
-        stagger: 0.12,
-        ease: "power2.out",
-        delay: 0.1,
-      });
+      tweens.push(
+        gsap.to(paths, {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.12,
+          ease: "power2.out",
+          delay: 0.1,
+        }),
+      );
     };
     run();
     return () => {
       isMounted = false;
+      tweens.forEach((t) => t.kill());
     };
   }, [width, animationKey]);
+
+  const visibleCategories = useMemo(
+    () => categories.slice(0, STREAM_COLORS.length),
+    [categories],
+  );
 
   if (quarters.length < 2 || articles.length < 4) {
     return null;
@@ -250,8 +262,6 @@ function WritingStreamgraph({
   const innerWidth = width;
   const innerHeight = STREAM_INNER_HEIGHT;
   const svgHeight = STREAM_INNER_HEIGHT + STREAM_AXIS_HEIGHT + STREAM_MARGIN_TOP;
-
-  const visibleCategories = categories.slice(0, STREAM_COLORS.length);
 
   const xScale = scalePoint<string>({
     domain: quarters,
