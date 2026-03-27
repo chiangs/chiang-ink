@@ -685,6 +685,54 @@ function NetworkGraph({
   } | null>(null);
 
   const [hoveredNode, setHoveredNode] = useState<PositionedNode | null>(null);
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    if (!positions || hasAnimated.current) return;
+    hasAnimated.current = true;
+    let isMounted = true;
+
+    const run = async () => {
+      const { default: gsap } = await import("gsap");
+      if (!isMounted) return;
+
+      const links = Array.from(
+        svgRef.current?.querySelectorAll("[data-network-link]") ?? [],
+      );
+      const nodes = Array.from(
+        svgRef.current?.querySelectorAll("[data-network-node]") ?? [],
+      );
+
+      if (links.length) {
+        gsap.fromTo(
+          links,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.4, stagger: { amount: 0.3 }, ease: "power2.out" },
+        );
+      }
+
+      if (nodes.length) {
+        gsap.fromTo(
+          nodes,
+          { scale: 0, opacity: 0, transformOrigin: "0px 0px" },
+          {
+            scale: 1,
+            opacity: 1,
+            duration: 0.35,
+            stagger: { amount: 0.4 },
+            delay: 0.2,
+            ease: "back.out(1.4)",
+          },
+        );
+      }
+    };
+
+    run();
+    return () => {
+      isMounted = false;
+    };
+  }, [positions]);
 
   const isEmpty = rawNodes.length < 2 || rawLinks.length === 0;
 
@@ -851,6 +899,7 @@ function NetworkGraph({
           {positions && width > 0 && (
             <>
               <svg
+                ref={svgRef}
                 width={width}
                 height={NETWORK_HEIGHT}
                 style={{ display: "block" }}
@@ -862,6 +911,7 @@ function NetworkGraph({
                   return (
                     <line
                       key={i}
+                      data-network-link
                       x1={l.x1}
                       y1={l.y1}
                       x2={l.x2}
@@ -885,26 +935,28 @@ function NetworkGraph({
                       onMouseLeave={() => setHoveredNode(null)}
                     >
                       <title>{label}</title>
-                      {isRole ? (
-                        <circle r={NETWORK_SOL_R} fill="#D97707" />
-                      ) : (
-                        <circle
-                          r={NETWORK_SOL_R}
-                          fill="none"
-                          stroke="#5a5a58"
-                          strokeWidth={1.5}
-                        />
-                      )}
-                      <text
-                        y={NETWORK_SOL_R + 11}
-                        textAnchor="middle"
-                        fontSize={9}
-                        fontFamily="var(--font-body)"
-                        fontWeight={400}
-                        fill={isRole ? "#D97707" : "#5a5a58"}
-                      >
-                        {truncateLabel(label)}
-                      </text>
+                      <g data-network-node>
+                        {isRole ? (
+                          <circle r={NETWORK_SOL_R} fill="#D97707" />
+                        ) : (
+                          <circle
+                            r={NETWORK_SOL_R}
+                            fill="none"
+                            stroke="#5a5a58"
+                            strokeWidth={1.5}
+                          />
+                        )}
+                        <text
+                          y={NETWORK_SOL_R + 11}
+                          textAnchor="middle"
+                          fontSize={9}
+                          fontFamily="var(--font-body)"
+                          fontWeight={400}
+                          fill={isRole ? "#D97707" : "#5a5a58"}
+                        >
+                          {truncateLabel(label)}
+                        </text>
+                      </g>
                     </g>
                   );
                 })}
@@ -1113,12 +1165,47 @@ function TechTreemap({
 // ─── AvgMVPStat ───────────────────────────────────────────────────────────────
 
 function AvgMVPStat({ avgMVP }: { avgMVP: number | null }) {
-  const displayValue =
-    avgMVP === null
-      ? "—"
-      : Number.isInteger(avgMVP)
-        ? String(avgMVP)
-        : avgMVP.toFixed(1);
+  const isInt = avgMVP !== null && Number.isInteger(avgMVP);
+  const finalDisplay =
+    avgMVP === null ? "—" : isInt ? String(avgMVP) : avgMVP.toFixed(1);
+
+  const [displayValue, setDisplayValue] = useState(finalDisplay);
+
+  useEffect(() => {
+    if (avgMVP === null) return;
+    let isMounted = true;
+
+    const run = async () => {
+      const { default: gsap } = await import("gsap");
+      if (!isMounted) return;
+
+      const counter = { value: 0 };
+      setDisplayValue(isInt ? "0" : "0.0");
+
+      gsap.to(counter, {
+        value: avgMVP,
+        duration: 1.5,
+        ease: "power2.out",
+        onUpdate() {
+          if (!isMounted) return;
+          setDisplayValue(
+            isInt
+              ? String(Math.round(counter.value))
+              : counter.value.toFixed(1),
+          );
+        },
+        onComplete() {
+          if (!isMounted) return;
+          setDisplayValue(finalDisplay);
+        },
+      });
+    };
+
+    run();
+    return () => {
+      isMounted = false;
+    };
+  }, [avgMVP]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div style={cellStyle} className="flex flex-col justify-between h-full">
