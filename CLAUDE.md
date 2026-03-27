@@ -116,9 +116,21 @@ app/
       Skills.tsx
       LanguageList.tsx
       ImageGrid.tsx
+    work/
+      index.ts
+      WorkInsightsPanel.tsx         # Shell via common/InsightsPanel
+    writing/
+      index.ts
+      WritingInsightsPanel.tsx      # Shell via common/InsightsPanel
     common/
       index.ts
+      InsightsPanel.tsx             # Shared collapsible panel shell
       ContactStrip.tsx
+      FilterDropdown.tsx
+      SearchIcon.tsx
+      WorkRow.tsx
+      WritingRow.tsx
+      EmptyState.tsx
     credentials/
       index.ts
       CredentialsBar.tsx
@@ -129,7 +141,7 @@ app/
   lib/
     constants.ts                # Shared timing constants (ITEM_STAGGER_S etc.)
     utils.ts                    # Pure shared utilities (formatDate etc.)
-    hooks.ts                    # Shared hooks (useScrolled, useStavTime)
+    hooks.ts                    # Shared hooks (useScrolled, useStavTime, useCountDown)
     motion.ts                   # GSAP animation configs
     ripple.ts                   # Touch ripple utility
     currently.ts                # Currently drawer content — edit here to update
@@ -378,6 +390,8 @@ import("d3");
   (e.g. `formatDate`)
 - Shared timing constants → `~/lib/constants.ts`
   (e.g. `ITEM_STAGGER_S`, `CURSOR_LAG`)
+- Shared React hooks → `~/lib/hooks.ts`
+  (e.g. `useScrolled`, `useStavTime`, `useCountDown`)
 
 ---
 
@@ -406,9 +420,9 @@ ABOUT · WORK · WRITING · CONTACT
 
 ## Build Order (remaining pages)
 
-1. Work index (`work/index.tsx`)
+1. ✓ Work index — DONE
 2. Project page template (`work/$slug.tsx`)
-3. Writing index (`writing/index.tsx`)
+3. ✓ Writing index — DONE
 4. Article page template (`writing/$slug.tsx`)
 5. Contact page (`contact.tsx`)
 6. Motion layer — GSAP scroll triggers across all pages
