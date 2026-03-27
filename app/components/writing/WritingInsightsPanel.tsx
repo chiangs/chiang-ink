@@ -196,7 +196,13 @@ const READ_TIME_BUCKETS: { label: string; key: keyof ReadTimeBuckets }[] = [
 
 // ─── WritingStreamgraph ───────────────────────────────────────────────────────
 
-function WritingStreamgraph({ articles }: { articles: ArticleFrontmatter[] }) {
+function WritingStreamgraph({
+  articles,
+  animationKey,
+}: {
+  articles: ArticleFrontmatter[];
+  animationKey: number;
+}) {
   const { parentRef, width } = useParentSize({ debounceTime: 150 });
   const svgRef = useRef<SVGSVGElement>(null);
   const clipRectRef = useRef<SVGRectElement>(null);
@@ -235,7 +241,7 @@ function WritingStreamgraph({ articles }: { articles: ArticleFrontmatter[] }) {
     return () => {
       isMounted = false;
     };
-  }, [width]);
+  }, [width, animationKey]);
 
   if (quarters.length < 2 || articles.length < 4) {
     return null;
@@ -481,6 +487,7 @@ export function WritingInsightsPanel({
 }) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [animationKey, setAnimationKey] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
   const barContainerRef = useRef<HTMLDivElement>(null);
   const isAnimating = useRef(false);
@@ -504,6 +511,7 @@ export function WritingInsightsPanel({
     if (!isExpanded) {
       setIsExpanded(true);
       el.style.overflow = "hidden";
+      setAnimationKey((k) => k + 1);
       gsap.to(el, {
         height: "auto",
         duration: 0.4,
@@ -691,7 +699,7 @@ export function WritingInsightsPanel({
 
               {/* Row 2 — Streamgraph (full width) */}
               <div className="mt-6">
-                <WritingStreamgraph articles={articles} />
+                <WritingStreamgraph articles={articles} animationKey={animationKey} />
               </div>
             </>
           )}

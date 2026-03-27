@@ -229,9 +229,11 @@ function ChartLabel({ children }: { children: React.ReactNode }) {
 function WaffleChart({
   industryCounts,
   total,
+  animationKey,
 }: {
   industryCounts: [string, number][];
   total: number;
+  animationKey: number;
 }) {
   const [hoveredIndustry, setHoveredIndustry] = useState<string | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -275,7 +277,7 @@ function WaffleChart({
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [animationKey]);
 
   const { cells, cellInfo } = useMemo(() => {
     const filledCells = new Array<string>(WAFFLE_TOTAL).fill(
@@ -374,8 +376,10 @@ const radarPolygonStyle: React.CSSProperties = {
 
 function CapabilityRadar({
   axes,
+  animationKey,
 }: {
   axes: { label: string; value: number }[];
+  animationKey: number;
 }) {
   const { parentRef, width } = useParentSize({ debounceTime: 100 });
   const isMob = width > 0 && width < 400;
@@ -458,7 +462,7 @@ function CapabilityRadar({
       isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [width, n, cx, cy, outerR, isEmpty]);
+  }, [width, n, cx, cy, outerR, isEmpty, animationKey]);
 
   // Tooltip for hovered vertex
   const tooltipData = useMemo(() => {
@@ -671,11 +675,13 @@ function NetworkGraph({
   links: rawLinks,
   linkCounts,
   nodeProjectCounts,
+  animationKey,
 }: {
   nodes: NodeDatum[];
   links: LinkDatum[];
   linkCounts: Record<string, number>;
   nodeProjectCounts: Record<string, number>;
+  animationKey: number;
 }) {
   const { parentRef, width } = useParentSize({ debounceTime: 100 });
 
@@ -686,11 +692,11 @@ function NetworkGraph({
 
   const [hoveredNode, setHoveredNode] = useState<PositionedNode | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const hasAnimated = useRef(false);
+  const lastAnimatedKey = useRef(-1);
 
   useEffect(() => {
-    if (!positions || hasAnimated.current) return;
-    hasAnimated.current = true;
+    if (!positions || lastAnimatedKey.current === animationKey) return;
+    lastAnimatedKey.current = animationKey;
     let isMounted = true;
 
     const run = async () => {
@@ -732,7 +738,7 @@ function NetworkGraph({
     return () => {
       isMounted = false;
     };
-  }, [positions]);
+  }, [positions, animationKey]);
 
   const isEmpty = rawNodes.length < 2 || rawLinks.length === 0;
 
@@ -1017,8 +1023,10 @@ type TreeLeaf = { name: string; value?: number; children?: TreeLeaf[] };
 
 function TechTreemap({
   stackTree,
+  animationKey,
 }: {
   stackTree: { name: string; children: { name: string; value: number }[] }[];
+  animationKey: number;
 }) {
   const { parentRef, width } = useParentSize({ debounceTime: 100 });
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -1062,7 +1070,7 @@ function TechTreemap({
     return () => {
       isMounted = false;
     };
-  }, [width, stackTree.length]);
+  }, [width, stackTree.length, animationKey]);
 
   if (!stackTree.length) return null;
 
@@ -1164,7 +1172,13 @@ function TechTreemap({
 
 // ─── AvgMVPStat ───────────────────────────────────────────────────────────────
 
-function AvgMVPStat({ avgMVP }: { avgMVP: number | null }) {
+function AvgMVPStat({
+  avgMVP,
+  animationKey,
+}: {
+  avgMVP: number | null;
+  animationKey: number;
+}) {
   const isInt = avgMVP !== null && Number.isInteger(avgMVP);
   const finalDisplay =
     avgMVP === null ? "—" : isInt ? String(avgMVP) : avgMVP.toFixed(1);
@@ -1206,7 +1220,7 @@ function AvgMVPStat({ avgMVP }: { avgMVP: number | null }) {
     return () => {
       isMounted = false;
     };
-  }, [avgMVP]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [avgMVP, animationKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div style={cellStyle} className="flex flex-col justify-between h-full">
@@ -1230,6 +1244,7 @@ export function InsightsPanel({
 }) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [animationKey, setAnimationKey] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const insights = useMemo(() => computeInsights(projects), [projects]);
@@ -1255,6 +1270,7 @@ export function InsightsPanel({
       gsap.to(el, { height: 0, duration: 0.4, ease: "power2.inOut" });
     } else {
       el.style.overflow = "hidden";
+      setAnimationKey((k) => k + 1);
       gsap.to(el, {
         height: "auto",
         duration: 0.4,
@@ -1300,22 +1316,33 @@ export function InsightsPanel({
                 <WaffleChart
                   industryCounts={insights.industryCounts}
                   total={insights.totalProjects}
+                  animationKey={animationKey}
                 />
-                <CapabilityRadar axes={insights.radarAxes} />
+                <CapabilityRadar
+                  axes={insights.radarAxes}
+                  animationKey={animationKey}
+                />
                 <NetworkGraph
                   nodes={insights.networkNodes}
                   links={insights.networkLinks}
                   linkCounts={insights.networkLinkCounts}
                   nodeProjectCounts={insights.networkNodeProjectCounts}
+                  animationKey={animationKey}
                 />
               </div>
 
               {/* Row 2 — treemap spans 2, stat spans 1 — desktop only */}
               <div className="hidden md:grid grid-cols-3 gap-3 mt-3">
                 <div className="md:col-span-2">
-                  <TechTreemap stackTree={insights.stackTree} />
+                  <TechTreemap
+                    stackTree={insights.stackTree}
+                    animationKey={animationKey}
+                  />
                 </div>
-                <AvgMVPStat avgMVP={insights.avgMVP} />
+                <AvgMVPStat
+                  avgMVP={insights.avgMVP}
+                  animationKey={animationKey}
+                />
               </div>
             </>
           )}
