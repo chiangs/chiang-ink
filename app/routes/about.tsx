@@ -28,8 +28,7 @@ const META_DESC =
   "Senior technology and product leader at the intersection of design, engineering, and data. 20+ years. 9 industries. 6 countries. Based in Stavanger, Norway.";
 const META_URL = `${SITE_URL}/about`;
 const OG_IMAGE = `${SITE_URL}/og-image.png`;
-const OG_IMAGE_ALT =
-  "Stephen Chiang — Design Technologist & Technology Leader";
+const OG_IMAGE_ALT = "Stephen Chiang — Design Technologist & Technology Leader";
 
 /*
  * About page meta layer
@@ -83,7 +82,7 @@ export const meta: MetaFunction = () => [
       name: "Stephen Chiang",
       jobTitle: "Design Technologist / Product & Technology Leader",
       description:
-        "Senior technology and product leader with 20+ years spanning frontend engineering, design systems, human-machine interfaces, and AI integration. Former US Army Special Operations officer — 14 years of leadership across high-stakes, multifunctional environments. Has delivered across 9 industries and 8 countries.",
+        "Senior technology and product leader with 20+ years spanning frontend engineering, design systems, human-machine interfaces, and AI integration. Former US Army Special Operations officer — 10 years of leadership across high-stakes, multifunctional environments. Has delivered across 9 industries and 8 countries.",
       url: META_URL,
       sameAs: [LINKEDIN_URL, GITHUB_URL],
       nationality: "American",
@@ -462,8 +461,12 @@ export default function About() {
                 className={`shrink-0 font-body text-sm font-medium uppercase border-0 cursor-pointer transition-colors duration-200 px-3.5 py-1.5 ${isActive ? "bg-accent text-bg" : "bg-surface text-text-muted"}`}
                 style={{
                   ...pillButtonStaticStyle,
-                  background: isActive ? "var(--color-accent)" : "var(--color-surface)",
-                  color: isActive ? "var(--color-invert-text)" : "var(--color-text-muted)",
+                  background: isActive
+                    ? "var(--color-accent)"
+                    : "var(--color-surface)",
+                  color: isActive
+                    ? "var(--color-invert-text)"
+                    : "var(--color-text-muted)",
                 }}
               >
                 {label}
@@ -588,9 +591,7 @@ export default function About() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
                 {BIO_STATS.map((stat) => (
                   <div key={stat.label} data-anim="bio-stat">
-                    <p
-                      className="font-display font-bold text-accent text-[40px] leading-none"
-                    >
+                    <p className="font-display font-bold text-accent text-[40px] leading-none">
                       {stat.num}
                     </p>
                     <p className="font-body text-sm text-text-muted mt-2">
