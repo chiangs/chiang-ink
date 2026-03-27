@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { InsightsPanel } from "~/components/common";
-import { useCountDown } from "~/lib/hooks";
+import { useCountDown } from "~/hooks";
+import { STORAGE_WORK_INSIGHTS } from "~/lib/constants";
 import {
   hierarchy,
   Treemap,
@@ -1234,6 +1235,7 @@ export function WorkInsightsPanel({
   return (
     <InsightsPanel
       label={LABEL_WORK_INSIGHTS}
+      storageKey={STORAGE_WORK_INSIGHTS}
       onExpand={() => setAnimationKey((k) => k + 1)}
     >
       {({ mounted }) =>

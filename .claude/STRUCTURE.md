@@ -40,6 +40,12 @@ chiangs-ink/
     │       ├── index.tsx             ← Writing index
     │       └── $slug.tsx             ← Article page template
     │
+    ├── hooks/                        ← Client-side React hooks (never imported server-side)
+    │   ├── index.ts                  ← Barrel re-export
+    │   ├── useScrolled.ts            ← Returns true when page scrolled past threshold
+    │   ├── useStavTime.ts            ← Live Stavanger time "HH:MM TZ", updates every second
+    │   └── useCountDown.ts           ← GSAP number countdown animation; re-runs on animationKey
+    │
     ├── components/
     │   ├── index.ts                  ← Barrel: re-exports CursorFollower + layout/*
     │   ├── CursorFollower.tsx        ← RAF-driven cursor dot + ripple (desktop only)
@@ -82,7 +88,7 @@ chiangs-ink/
     │   ├── common/
     │   │   ├── index.ts              ← Barrel re-export
     │   │   ├── InsightsPanel.tsx     ← Collapsible panel shell — toggle button, GSAP
-    │   │   │                           height tween, onMount/onExpand callbacks
+    │   │   │                           height tween, onMount/onExpand/storageKey props
     │   │   │                           Shared by WorkInsightsPanel + WritingInsightsPanel
     │   │   ├── ContactStrip.tsx      ← Shared contact CTA strip
     │   │   ├── FilterDropdown.tsx    ← Multi-select dropdown (Work + Writing indexes)
@@ -101,10 +107,10 @@ chiangs-ink/
     │       └── TerminalIcon.tsx
     │
     ├── lib/
-    │   ├── constants.ts              ← Shared literals: nav links, keys, timing constants
+    │   ├── constants.ts              ← Shared literals: nav links, keys, timing constants,
+    │   │                               storage keys (STORAGE_WORK_INSIGHTS etc.)
     │   ├── utils.ts                  ← Pure utilities: formatDate, etc.
-    │   ├── hooks.ts                  ← Custom hooks: useScrolled, useStavTime,
-    │   │                               useCountDown (GSAP number countdown animation)
+    │   ├── storage.ts                ← SSR-safe localStorage utility (storage.get/set/getJSON/setJSON)
     │   ├── motion.ts                 ← GSAP animation functions (typed, return tweens)
     │   ├── ripple.ts                 ← Touch ripple effect for interactive rows
     │   ├── currently.ts              ← Currently drawer content data

@@ -138,10 +138,15 @@ app/
     icons/
       index.ts
       TerminalIcon.tsx
+  hooks/                        # Client-side hooks (never server-imported)
+    index.ts                    # Barrel re-export
+    useScrolled.ts              # Scroll position boolean
+    useStavTime.ts              # Live Stavanger time
+    useCountDown.ts             # GSAP countdown animation hook
   lib/
-    constants.ts                # Shared timing constants (ITEM_STAGGER_S etc.)
+    constants.ts                # Shared literals + storage keys (STORAGE_WORK_INSIGHTS etc.)
     utils.ts                    # Pure shared utilities (formatDate etc.)
-    hooks.ts                    # Shared hooks (useScrolled, useStavTime, useCountDown)
+    storage.ts                  # SSR-safe localStorage utility (storage.get/set/getJSON/setJSON)
     motion.ts                   # GSAP animation configs
     ripple.ts                   # Touch ripple utility
     currently.ts                # Currently drawer content — edit here to update
@@ -390,8 +395,10 @@ import("d3");
   (e.g. `formatDate`)
 - Shared timing constants → `~/lib/constants.ts`
   (e.g. `ITEM_STAGGER_S`, `CURSOR_LAG`)
-- Shared React hooks → `~/lib/hooks.ts`
+- Client-side React hooks → `~/hooks/`
   (e.g. `useScrolled`, `useStavTime`, `useCountDown`)
+- SSR-safe localStorage → `~/lib/storage.ts`
+  (`storage.get`, `storage.set`, `storage.getJSON`, `storage.setJSON`)
 
 ---
 

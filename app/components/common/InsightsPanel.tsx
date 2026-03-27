@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { storage } from "~/lib/storage";
 
 // ─── Copy ─────────────────────────────────────────────────────────────────────
 
@@ -13,6 +14,7 @@ const panelStyle = { paddingTop: "32px", paddingBottom: "32px" };
 
 type InsightsPanelProps = {
   label: string;
+  storageKey?: string;
   onMount?: () => void;
   onExpand?: () => void;
   children: (props: { mounted: boolean }) => React.ReactNode;
@@ -20,6 +22,7 @@ type InsightsPanelProps = {
 
 export function InsightsPanel({
   label,
+  storageKey,
   onMount,
   onExpand,
   children,
@@ -35,13 +38,21 @@ export function InsightsPanel({
 
   useEffect(() => {
     setMounted(true);
-    onMountRef.current?.();
-    if (window.innerWidth < 768 && contentRef.current) {
+    const el = contentRef.current;
+
+    // Restore persisted state (collapses without animation, before paint)
+    const persisted = storageKey ? storage.getJSON<boolean>(storageKey) : null;
+    const collapseOnMount =
+      persisted === false || (persisted === null && window.innerWidth < 768);
+
+    if (collapseOnMount && el) {
       setIsExpanded(false);
-      contentRef.current.style.height = "0px";
-      contentRef.current.style.overflow = "hidden";
+      el.style.height = "0px";
+      el.style.overflow = "hidden";
+    } else {
+      onMountRef.current?.();
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleToggle = async () => {
     if (isAnimating.current) return;
@@ -75,7 +86,9 @@ export function InsightsPanel({
         },
       });
     }
-    setIsExpanded((prev) => !prev);
+    const next = !isExpanded;
+    setIsExpanded(next);
+    if (storageKey) storage.setJSON(storageKey, next);
   };
 
   return (

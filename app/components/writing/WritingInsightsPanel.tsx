@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { InsightsPanel } from "~/components/common";
-import { useCountDown } from "~/lib/hooks";
+import { useCountDown } from "~/hooks";
+import { STORAGE_WRITING_INSIGHTS } from "~/lib/constants";
 import type { ArticleFrontmatter } from "~/types/content";
 import {
   AreaStack,
@@ -543,6 +544,7 @@ export function WritingInsightsPanel({
   return (
     <InsightsPanel
       label={LABEL_WRITING_INSIGHTS}
+      storageKey={STORAGE_WRITING_INSIGHTS}
       onMount={handlePanelEvent}
       onExpand={handlePanelEvent}
     >
