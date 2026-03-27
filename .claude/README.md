@@ -52,8 +52,8 @@ No local font files needed — both fonts load from Google Fonts CDN.
 
 ```bash
 # .env
-VITE_SITE_URL=https://stephenchiang.studio
-VITE_CONTACT_EMAIL=stephen@chiang.studio
+VITE_SITE_URL=https://chiang.ink
+VITE_CONTACT_EMAIL=stephen@chiang.ink
 ```
 
 ## Deploy to Vercel
