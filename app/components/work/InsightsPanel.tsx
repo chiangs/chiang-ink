@@ -1179,8 +1179,9 @@ function AvgMVPStat({ avgMVP }: { avgMVP: number | null }) {
       const { default: gsap } = await import("gsap");
       if (!isMounted) return;
 
-      const counter = { value: 0 };
-      setDisplayValue(isInt ? "0" : "0.0");
+      const startValue = Math.ceil(avgMVP * 3);
+      const counter = { value: startValue };
+      setDisplayValue(isInt ? String(startValue) : startValue.toFixed(1));
 
       gsap.to(counter, {
         value: avgMVP,
