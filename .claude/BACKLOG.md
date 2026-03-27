@@ -154,17 +154,54 @@
       Simple copper spinner or the hiker
       animation for slow connections
 
-- [ ] **CV / Resume download**
-      A downloadable PDF version of the about
-      page content. Could be a CTA on the
-      about page or contact page.
-      Would need a `data-cursor="download"`
-      cursor treatment.
-
 - [ ] **Case study password protection**
       For NDA projects — ability to password
       protect individual project pages
       rather than removing them entirely
+
+- [ ] **Console easter egg**
+      Trigger:    Opening browser DevTools on any page
+      Method:     console.log() call in root.tsx useEffect,
+                  client-side only (typeof window guard)
+      Content:    Styled ASCII-style header — "SC" monogram
+                  rendered in copper (#FFB77D) using console
+                  %c styling, followed by plain text:
+                  "You opened the console. We should talk."
+                  LinkedIn URL on the line below —
+                  linkedin.com/in/chiangs
+                  Final line: "Built with React Router v7,
+                  GSAP, and an unreasonable attention to detail."
+      Tone:       Dry, confident — not cute. Speaks directly
+                  to the technical hiring manager who opened
+                  DevTools to inspect the build.
+      Fires:      Once per session — sessionStorage flag
+                  "sc-console-shown" prevents repeat on
+                  every navigation.
+      Location:   root.tsx — fires globally, not per-route
+
+- [ ] **Project depth unlock — Work rows**
+      Trigger:    Hovering a work row for 3+ seconds
+                  (deliberate attention, not a drive-by scroll)
+      Method:     setTimeout on onMouseEnter, cleared on
+                  onMouseLeave — no libraries needed
+      Reveal:     A single line fades in below the project
+                  title, in #737371 Manrope 400 italic 13px:
+                  "What actually made this hard: [one line]"
+                  Each project MDX adds a hiddenNote field
+                  to frontmatter — the unlock surfaces it.
+      Animation:  opacity 0 → 1, translateY 4px → 0,
+                  0.3s ease — subtle, not dramatic
+      Reset:      Fades out immediately on mouse leave
+      Persistence: None — resets every hover. No storage.
+      Tone:       Honest and specific. The note should read
+                  like something you'd only say in a room
+                  with the right people. Not a boast —
+                  a signal that you understand where
+                  complexity actually lives.
+      MDX field:  hiddenNote: "Getting Snowflake and a
+                  legacy .NET BFF to agree on who owned
+                  the truth."  ← example
+      Location:   WorkRow.tsx + project MDX frontmatter
 
 ---
 

@@ -36,6 +36,17 @@ export const HREF_WRITING = "/writing";
 export const ITEM_STAGGER_S = 0.07;
 export const CURSOR_LAG = 0.15;
 
+// Easter egg hints — toast notifications triggered by navigation count
+export const STORAGE_NAV_COUNT = "sc-nav-count";
+export const STORAGE_HINT_CLOCK_SEEN = "sc-hint-clock-seen";
+export const STORAGE_HINT_MONOGRAM_SEEN = "sc-hint-monogram-seen";
+export const HINT_CLOCK_THRESHOLD = 3;
+export const HINT_MONOGRAM_THRESHOLD = 5;
+export const HINT_CLOCK_COPY =
+  "Psst — found any secrets yet? Try clicking on the clock.";
+export const HINT_MONOGRAM_COPY =
+  "Another secret hides in plain sight. Try clicking on S.Chiang / SC when on the homepage.";
+
 // Shared UI styles
 export const SEARCH_INPUT_STYLE: React.CSSProperties = {
   height: "40px",

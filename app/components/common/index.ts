@@ -1,7 +1,8 @@
 export { ContactStrip } from "./ContactStrip";
-export { InsightsPanel } from "./InsightsPanel";
 export { EmptyState } from "./EmptyState";
 export { FilterDropdown } from "./FilterDropdown";
+export { InsightsPanel } from "./InsightsPanel";
 export { SearchIcon } from "./SearchIcon";
+export { Toast } from "./Toast";
 export { WorkRow } from "./WorkRow";
 export { WritingRow } from "./WritingRow";
