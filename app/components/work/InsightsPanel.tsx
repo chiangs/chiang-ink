@@ -229,9 +229,11 @@ function ChartLabel({ children }: { children: React.ReactNode }) {
 function WaffleChart({
   industryCounts,
   total,
+  animationKey,
 }: {
   industryCounts: [string, number][];
   total: number;
+  animationKey: number;
 }) {
   const [hoveredIndustry, setHoveredIndustry] = useState<string | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -239,6 +241,8 @@ function WaffleChart({
   useEffect(() => {
     if (typeof window === "undefined") return;
     let isMounted = true;
+
+    const tweens: { kill(): void }[] = [];
 
     const run = async () => {
       const { default: gsap } = await import("gsap");
@@ -252,21 +256,23 @@ function WaffleChart({
       rects.forEach((rect) => {
         const diagonal = parseInt(rect.dataset.diagonal ?? "0", 10);
         const delay = diagonal * 0.04;
-        gsap.fromTo(
-          rect,
-          { scale: 0, opacity: 0, transformOrigin: "50% 50%" },
-          {
-            scale: 1,
-            opacity: 1,
-            duration: 0.35,
-            delay,
-            ease: "back.out(1.4)",
-            onComplete: () => {
-              gsap.set(rect, {
-                clearProps: "opacity,transform,transformOrigin",
-              });
+        tweens.push(
+          gsap.fromTo(
+            rect,
+            { scale: 0, opacity: 0, transformOrigin: "50% 50%" },
+            {
+              scale: 1,
+              opacity: 1,
+              duration: 0.35,
+              delay,
+              ease: "back.out(1.4)",
+              onComplete: () => {
+                gsap.set(rect, {
+                  clearProps: "opacity,transform,transformOrigin",
+                });
+              },
             },
-          },
+          ),
         );
       });
     };
@@ -274,8 +280,9 @@ function WaffleChart({
     run();
     return () => {
       isMounted = false;
+      tweens.forEach((t) => t.kill());
     };
-  }, []);
+  }, [animationKey]);
 
   const { cells, cellInfo } = useMemo(() => {
     const filledCells = new Array<string>(WAFFLE_TOTAL).fill(
@@ -374,8 +381,10 @@ const radarPolygonStyle: React.CSSProperties = {
 
 function CapabilityRadar({
   axes,
+  animationKey,
 }: {
   axes: { label: string; value: number }[];
+  animationKey: number;
 }) {
   const { parentRef, width } = useParentSize({ debounceTime: 100 });
   const isMob = width > 0 && width < 400;
@@ -417,6 +426,8 @@ function CapabilityRadar({
     if (!width || isEmpty) return;
     let isMounted = true;
 
+    const tweens: { kill(): void }[] = [];
+
     const run = async () => {
       const { default: gsap } = await import("gsap");
       if (!isMounted) return;
@@ -425,30 +436,34 @@ function CapabilityRadar({
       const lines = axisRefs.current.filter(Boolean) as SVGLineElement[];
       lines.forEach((line, i) => {
         const pt = pointOnAxis(i, outerR);
-        gsap.fromTo(
-          line,
-          { attr: { x2: cx, y2: cy } },
-          {
-            attr: { x2: pt.x, y2: pt.y },
-            duration: 0.3,
-            delay: i * 0.04,
-            ease: "power2.out",
-            onComplete: () => {
-              if (i !== lines.length - 1 || !isMounted || !polygonRef.current)
-                return;
-              // Polygon scales in after last axis finishes
-              gsap.fromTo(
-                polygonRef.current,
-                { scale: 0 },
-                {
-                  scale: 1,
-                  duration: 0.6,
-                  ease: "power2.out",
-                  transformOrigin: `${cx}px ${cy}px`,
-                },
-              );
+        tweens.push(
+          gsap.fromTo(
+            line,
+            { attr: { x2: cx, y2: cy } },
+            {
+              attr: { x2: pt.x, y2: pt.y },
+              duration: 0.3,
+              delay: i * 0.04,
+              ease: "power2.out",
+              onComplete: () => {
+                if (i !== lines.length - 1 || !isMounted || !polygonRef.current)
+                  return;
+                // Polygon scales in after last axis finishes
+                tweens.push(
+                  gsap.fromTo(
+                    polygonRef.current,
+                    { scale: 0 },
+                    {
+                      scale: 1,
+                      duration: 0.6,
+                      ease: "power2.out",
+                      transformOrigin: `${cx}px ${cy}px`,
+                    },
+                  ),
+                );
+              },
             },
-          },
+          ),
         );
       });
     };
@@ -456,9 +471,10 @@ function CapabilityRadar({
     run();
     return () => {
       isMounted = false;
+      tweens.forEach((t) => t.kill());
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [width, n, cx, cy, outerR, isEmpty]);
+  }, [width, n, cx, cy, outerR, isEmpty, animationKey]);
 
   // Tooltip for hovered vertex
   const tooltipData = useMemo(() => {
@@ -671,11 +687,13 @@ function NetworkGraph({
   links: rawLinks,
   linkCounts,
   nodeProjectCounts,
+  animationKey,
 }: {
   nodes: NodeDatum[];
   links: LinkDatum[];
   linkCounts: Record<string, number>;
   nodeProjectCounts: Record<string, number>;
+  animationKey: number;
 }) {
   const { parentRef, width } = useParentSize({ debounceTime: 100 });
 
@@ -685,6 +703,61 @@ function NetworkGraph({
   } | null>(null);
 
   const [hoveredNode, setHoveredNode] = useState<PositionedNode | null>(null);
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const lastAnimatedKey = useRef(-1);
+
+  useEffect(() => {
+    if (!positions || lastAnimatedKey.current === animationKey) return;
+    lastAnimatedKey.current = animationKey;
+    let isMounted = true;
+
+    const tweens: { kill(): void }[] = [];
+
+    const run = async () => {
+      const { default: gsap } = await import("gsap");
+      if (!isMounted) return;
+
+      const links = Array.from(
+        svgRef.current?.querySelectorAll("[data-network-link]") ?? [],
+      );
+      const nodes = Array.from(
+        svgRef.current?.querySelectorAll("[data-network-node]") ?? [],
+      );
+
+      if (links.length) {
+        tweens.push(
+          gsap.fromTo(
+            links,
+            { opacity: 0 },
+            { opacity: 1, duration: 0.4, stagger: { amount: 0.3 }, ease: "power2.out" },
+          ),
+        );
+      }
+
+      if (nodes.length) {
+        tweens.push(
+          gsap.fromTo(
+            nodes,
+            { scale: 0, opacity: 0, transformOrigin: "0px 0px" },
+            {
+              scale: 1,
+              opacity: 1,
+              duration: 0.35,
+              stagger: { amount: 0.4 },
+              delay: 0.2,
+              ease: "back.out(1.4)",
+            },
+          ),
+        );
+      }
+    };
+
+    run();
+    return () => {
+      isMounted = false;
+      tweens.forEach((t) => t.kill());
+    };
+  }, [positions, animationKey]);
 
   const isEmpty = rawNodes.length < 2 || rawLinks.length === 0;
 
@@ -851,6 +924,7 @@ function NetworkGraph({
           {positions && width > 0 && (
             <>
               <svg
+                ref={svgRef}
                 width={width}
                 height={NETWORK_HEIGHT}
                 style={{ display: "block" }}
@@ -862,6 +936,7 @@ function NetworkGraph({
                   return (
                     <line
                       key={i}
+                      data-network-link
                       x1={l.x1}
                       y1={l.y1}
                       x2={l.x2}
@@ -885,26 +960,28 @@ function NetworkGraph({
                       onMouseLeave={() => setHoveredNode(null)}
                     >
                       <title>{label}</title>
-                      {isRole ? (
-                        <circle r={NETWORK_SOL_R} fill="#D97707" />
-                      ) : (
-                        <circle
-                          r={NETWORK_SOL_R}
-                          fill="none"
-                          stroke="#5a5a58"
-                          strokeWidth={1.5}
-                        />
-                      )}
-                      <text
-                        y={NETWORK_SOL_R + 11}
-                        textAnchor="middle"
-                        fontSize={9}
-                        fontFamily="var(--font-body)"
-                        fontWeight={400}
-                        fill={isRole ? "#D97707" : "#5a5a58"}
-                      >
-                        {truncateLabel(label)}
-                      </text>
+                      <g data-network-node>
+                        {isRole ? (
+                          <circle r={NETWORK_SOL_R} fill="#D97707" />
+                        ) : (
+                          <circle
+                            r={NETWORK_SOL_R}
+                            fill="none"
+                            stroke="#5a5a58"
+                            strokeWidth={1.5}
+                          />
+                        )}
+                        <text
+                          y={NETWORK_SOL_R + 11}
+                          textAnchor="middle"
+                          fontSize={9}
+                          fontFamily="var(--font-body)"
+                          fontWeight={400}
+                          fill={isRole ? "#D97707" : "#5a5a58"}
+                        >
+                          {truncateLabel(label)}
+                        </text>
+                      </g>
                     </g>
                   );
                 })}
@@ -965,8 +1042,10 @@ type TreeLeaf = { name: string; value?: number; children?: TreeLeaf[] };
 
 function TechTreemap({
   stackTree,
+  animationKey,
 }: {
   stackTree: { name: string; children: { name: string; value: number }[] }[];
+  animationKey: number;
 }) {
   const { parentRef, width } = useParentSize({ debounceTime: 100 });
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -975,6 +1054,7 @@ function TechTreemap({
   useEffect(() => {
     if (!width || !stackTree.length) return;
     let isMounted = true;
+    const tweens: { kill(): void }[] = [];
 
     const run = async () => {
       const { default: gsap } = await import("gsap");
@@ -998,10 +1078,12 @@ function TechTreemap({
       cells.forEach((cell) => {
         const cellX = parseFloat(cell.dataset.treemapX ?? "0");
         const delay = (cellX / Math.max(maxX, 1)) * 0.5;
-        gsap.fromTo(
-          cell,
-          { opacity: 0, y: 5 },
-          { opacity: 1, y: 0, duration: 0.4, delay, ease: "power2.out" },
+        tweens.push(
+          gsap.fromTo(
+            cell,
+            { opacity: 0, y: 5 },
+            { opacity: 1, y: 0, duration: 0.4, delay, ease: "power2.out" },
+          ),
         );
       });
     };
@@ -1009,8 +1091,9 @@ function TechTreemap({
     run();
     return () => {
       isMounted = false;
+      tweens.forEach((t) => t.kill());
     };
-  }, [width, stackTree.length]);
+  }, [width, stackTree.length, animationKey]);
 
   if (!stackTree.length) return null;
 
@@ -1112,13 +1195,57 @@ function TechTreemap({
 
 // ─── AvgMVPStat ───────────────────────────────────────────────────────────────
 
-function AvgMVPStat({ avgMVP }: { avgMVP: number | null }) {
-  const displayValue =
-    avgMVP === null
-      ? "—"
-      : Number.isInteger(avgMVP)
-        ? String(avgMVP)
-        : avgMVP.toFixed(1);
+function AvgMVPStat({
+  avgMVP,
+  animationKey,
+}: {
+  avgMVP: number | null;
+  animationKey: number;
+}) {
+  const isInt = avgMVP !== null && Number.isInteger(avgMVP);
+  const finalDisplay =
+    avgMVP === null ? "—" : isInt ? String(avgMVP) : avgMVP.toFixed(1);
+
+  const [displayValue, setDisplayValue] = useState(finalDisplay);
+
+  useEffect(() => {
+    if (avgMVP === null) return;
+    let isMounted = true;
+    let tween: { kill(): void } | null = null;
+
+    const run = async () => {
+      const { default: gsap } = await import("gsap");
+      if (!isMounted) return;
+
+      const startValue = Math.ceil(avgMVP * 3);
+      const counter = { value: startValue };
+      setDisplayValue(isInt ? String(startValue) : startValue.toFixed(1));
+
+      tween = gsap.to(counter, {
+        value: avgMVP,
+        duration: 1.5,
+        ease: "power2.out",
+        onUpdate() {
+          if (!isMounted) return;
+          setDisplayValue(
+            isInt
+              ? String(Math.round(counter.value))
+              : counter.value.toFixed(1),
+          );
+        },
+        onComplete() {
+          if (!isMounted) return;
+          setDisplayValue(finalDisplay);
+        },
+      });
+    };
+
+    run();
+    return () => {
+      isMounted = false;
+      tween?.kill();
+    };
+  }, [avgMVP, animationKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div style={cellStyle} className="flex flex-col justify-between h-full">
@@ -1142,7 +1269,9 @@ export function InsightsPanel({
 }) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [animationKey, setAnimationKey] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
+  const isAnimating = useRef(false);
 
   const insights = useMemo(() => computeInsights(projects), [projects]);
 
@@ -1158,21 +1287,35 @@ export function InsightsPanel({
   }, []);
 
   const handleToggle = async () => {
+    if (isAnimating.current) return;
+    isAnimating.current = true;
     const { default: gsap } = await import("gsap");
     const el = contentRef.current;
-    if (!el) return;
+    if (!el) {
+      isAnimating.current = false;
+      return;
+    }
 
     if (isExpanded) {
       gsap.set(el, { height: el.scrollHeight, overflow: "hidden" });
-      gsap.to(el, { height: 0, duration: 0.4, ease: "power2.inOut" });
+      gsap.to(el, {
+        height: 0,
+        duration: 0.4,
+        ease: "power2.inOut",
+        onComplete: () => {
+          isAnimating.current = false;
+        },
+      });
     } else {
       el.style.overflow = "hidden";
+      setAnimationKey((k) => k + 1);
       gsap.to(el, {
         height: "auto",
         duration: 0.4,
         ease: "power2.inOut",
         onComplete: () => {
           el.style.overflow = "";
+          isAnimating.current = false;
         },
       });
     }
@@ -1194,7 +1337,7 @@ export function InsightsPanel({
           <span className="font-body font-medium text-sm text-accent uppercase tracking-[0.15em]">
             {LABEL_WORK_INSIGHTS}
           </span>
-          <span className="font-body font-medium text-sm text-text-muted">
+          <span className="font-body font-medium text-sm accent-glow-pulse">
             {isExpanded ? LABEL_HIDE : LABEL_SHOW}
           </span>
         </button>
@@ -1212,22 +1355,33 @@ export function InsightsPanel({
                 <WaffleChart
                   industryCounts={insights.industryCounts}
                   total={insights.totalProjects}
+                  animationKey={animationKey}
                 />
-                <CapabilityRadar axes={insights.radarAxes} />
+                <CapabilityRadar
+                  axes={insights.radarAxes}
+                  animationKey={animationKey}
+                />
                 <NetworkGraph
                   nodes={insights.networkNodes}
                   links={insights.networkLinks}
                   linkCounts={insights.networkLinkCounts}
                   nodeProjectCounts={insights.networkNodeProjectCounts}
+                  animationKey={animationKey}
                 />
               </div>
 
               {/* Row 2 — treemap spans 2, stat spans 1 — desktop only */}
               <div className="hidden md:grid grid-cols-3 gap-3 mt-3">
                 <div className="md:col-span-2">
-                  <TechTreemap stackTree={insights.stackTree} />
+                  <TechTreemap
+                    stackTree={insights.stackTree}
+                    animationKey={animationKey}
+                  />
                 </div>
-                <AvgMVPStat avgMVP={insights.avgMVP} />
+                <AvgMVPStat
+                  avgMVP={insights.avgMVP}
+                  animationKey={animationKey}
+                />
               </div>
             </>
           )}

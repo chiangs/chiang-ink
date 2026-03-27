@@ -196,7 +196,13 @@ const READ_TIME_BUCKETS: { label: string; key: keyof ReadTimeBuckets }[] = [
 
 // ─── WritingStreamgraph ───────────────────────────────────────────────────────
 
-function WritingStreamgraph({ articles }: { articles: ArticleFrontmatter[] }) {
+function WritingStreamgraph({
+  articles,
+  animationKey,
+}: {
+  articles: ArticleFrontmatter[];
+  animationKey: number;
+}) {
   const { parentRef, width } = useParentSize({ debounceTime: 150 });
   const svgRef = useRef<SVGSVGElement>(null);
   const clipRectRef = useRef<SVGRectElement>(null);
@@ -209,6 +215,8 @@ function WritingStreamgraph({ articles }: { articles: ArticleFrontmatter[] }) {
   useEffect(() => {
     if (!svgRef.current || !clipRectRef.current || width === 0) return;
     let isMounted = true;
+    const tweens: { kill(): void }[] = [];
+
     const run = async () => {
       const { default: gsap } = await import("gsap");
       if (!isMounted) return;
@@ -216,26 +224,36 @@ function WritingStreamgraph({ articles }: { articles: ArticleFrontmatter[] }) {
       // Set streams to initial hidden state before animating
       gsap.set(paths, { opacity: 0, y: 6 });
       // Clip scan left→right reveals the temporal story
-      gsap.fromTo(
-        clipRectRef.current,
-        { attr: { width: 0 } },
-        { attr: { width }, duration: 1.8, ease: "power2.inOut" },
+      tweens.push(
+        gsap.fromTo(
+          clipRectRef.current,
+          { attr: { width: 0 } },
+          { attr: { width }, duration: 1.8, ease: "power2.inOut" },
+        ),
       );
       // Streams stagger-fade in as the scan passes over them
-      gsap.to(paths, {
-        opacity: 1,
-        y: 0,
-        duration: 0.7,
-        stagger: 0.12,
-        ease: "power2.out",
-        delay: 0.1,
-      });
+      tweens.push(
+        gsap.to(paths, {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.12,
+          ease: "power2.out",
+          delay: 0.1,
+        }),
+      );
     };
     run();
     return () => {
       isMounted = false;
+      tweens.forEach((t) => t.kill());
     };
-  }, [width]);
+  }, [width, animationKey]);
+
+  const visibleCategories = useMemo(
+    () => categories.slice(0, STREAM_COLORS.length),
+    [categories],
+  );
 
   if (quarters.length < 2 || articles.length < 4) {
     return null;
@@ -244,8 +262,6 @@ function WritingStreamgraph({ articles }: { articles: ArticleFrontmatter[] }) {
   const innerWidth = width;
   const innerHeight = STREAM_INNER_HEIGHT;
   const svgHeight = STREAM_INNER_HEIGHT + STREAM_AXIS_HEIGHT + STREAM_MARGIN_TOP;
-
-  const visibleCategories = categories.slice(0, STREAM_COLORS.length);
 
   const xScale = scalePoint<string>({
     domain: quarters,
@@ -481,6 +497,7 @@ export function WritingInsightsPanel({
 }) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [animationKey, setAnimationKey] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
   const barContainerRef = useRef<HTMLDivElement>(null);
   const isAnimating = useRef(false);
@@ -503,15 +520,19 @@ export function WritingInsightsPanel({
     const { default: gsap } = await import("gsap");
     if (!isExpanded) {
       setIsExpanded(true);
+      el.style.overflow = "hidden";
+      setAnimationKey((k) => k + 1);
       gsap.to(el, {
         height: "auto",
         duration: 0.4,
         ease: "power2.out",
         onComplete: () => {
+          el.style.overflow = "";
           isAnimating.current = false;
         },
       });
     } else {
+      gsap.set(el, { height: el.scrollHeight, overflow: "hidden" });
       gsap.to(el, {
         height: 0,
         duration: 0.3,
@@ -576,7 +597,7 @@ export function WritingInsightsPanel({
           <span className="font-body font-medium text-sm text-accent uppercase tracking-[0.15em]">
             {LABEL_WRITING_INSIGHTS}
           </span>
-          <span className="font-body font-medium text-sm text-text-muted">
+          <span className="font-body font-medium text-sm accent-glow-pulse">
             {isExpanded ? LABEL_HIDE : LABEL_SHOW}
           </span>
         </button>
@@ -688,7 +709,7 @@ export function WritingInsightsPanel({
 
               {/* Row 2 — Streamgraph (full width) */}
               <div className="mt-6">
-                <WritingStreamgraph articles={articles} />
+                <WritingStreamgraph articles={articles} animationKey={animationKey} />
               </div>
             </>
           )}
