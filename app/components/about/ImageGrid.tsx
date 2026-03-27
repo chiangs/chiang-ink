@@ -5,7 +5,7 @@ import { SITE_OWNER } from "~/lib/constants";
 const IMG_INTRO =
   "Strength training, Muay Thai, hiking Norwegian fjords. Single father of three. The discipline outside work is the same discipline inside it.";
 const IMG_INTRO2 =
-  "I build mechanical keyboards and custom PCs — because the best way to understand how humans interact with machines is to build them yourself. That obsession with how things feel to use shapes how I think about HMI design and how AI should show up in the hands of real people.";
+  "I build mechanical keyboards and custom PCs — because the best way to understand how humans interact with machines is to build them yourself. That obsession with how things feel to use shapes how I think about HMI design and how software & AI should show up in the hands of real people.";
 
 const IMG_PRO_SRC = "/images/about/professional-01.jpg";
 const IMG_PRO_ALT = SITE_OWNER;
@@ -33,14 +33,10 @@ const imgCaptionStyle: React.CSSProperties = {
 export function ImageGrid() {
   return (
     <>
-      <p
-        className="font-body text-base text-text-muted leading-[1.7] mb-2.5 max-w-120"
-      >
+      <p className="font-body text-base text-text-muted leading-[1.7] mb-2.5 max-w-120">
         {IMG_INTRO}
       </p>
-      <p
-        className="font-body text-base text-text-muted mb-10 leading-[1.7] max-w-120"
-      >
+      <p className="font-body text-base text-text-muted mb-10 leading-[1.7] max-w-120">
         {IMG_INTRO2}
       </p>
 
@@ -62,7 +58,9 @@ export function ImageGrid() {
             style={{ objectPosition: "center 20%" }}
           />
           <div className="portrait-fade" />
-          <p className="text-sm text-text-primary" style={imgCaptionStyle}>{IMG_PRO_CAPTION}</p>
+          <p className="text-sm text-text-primary" style={imgCaptionStyle}>
+            {IMG_PRO_CAPTION}
+          </p>
         </div>
         {/* Small 1 */}
         <div className="relative overflow-hidden bg-surface">
@@ -71,7 +69,9 @@ export function ImageGrid() {
             alt={IMG_P1_ALT}
             className="w-full h-full object-cover block"
           />
-          <p className="text-sm text-text-primary" style={imgCaptionStyle}>{IMG_P1_CAPTION}</p>
+          <p className="text-sm text-text-primary" style={imgCaptionStyle}>
+            {IMG_P1_CAPTION}
+          </p>
         </div>
         {/* Small 2 */}
         <div className="relative overflow-hidden bg-surface">
@@ -80,7 +80,9 @@ export function ImageGrid() {
             alt={IMG_P2_ALT}
             className="w-full h-full object-cover block"
           />
-          <p className="text-sm text-text-primary" style={imgCaptionStyle}>{IMG_P2_CAPTION}</p>
+          <p className="text-sm text-text-primary" style={imgCaptionStyle}>
+            {IMG_P2_CAPTION}
+          </p>
         </div>
       </div>
 
@@ -92,27 +94,29 @@ export function ImageGrid() {
             alt={IMG_PRO_ALT}
             style={{ objectPosition: "center 20%" }}
           />
-          <p className="text-sm text-text-primary" style={imgCaptionStyle}>{IMG_PRO_CAPTION}</p>
+          <p className="text-sm text-text-primary" style={imgCaptionStyle}>
+            {IMG_PRO_CAPTION}
+          </p>
         </div>
-        <div
-          className="relative overflow-hidden bg-surface h-[56vw]"
-        >
+        <div className="relative overflow-hidden bg-surface h-[56vw]">
           <img
             src={IMG_P1_SRC}
             alt={IMG_P1_ALT}
             className="w-full h-full object-cover block"
           />
-          <p className="text-sm text-text-primary" style={imgCaptionStyle}>{IMG_P1_CAPTION}</p>
+          <p className="text-sm text-text-primary" style={imgCaptionStyle}>
+            {IMG_P1_CAPTION}
+          </p>
         </div>
-        <div
-          className="relative overflow-hidden bg-surface h-[56vw]"
-        >
+        <div className="relative overflow-hidden bg-surface h-[56vw]">
           <img
             src={IMG_P2_SRC}
             alt={IMG_P2_ALT}
             className="w-full h-full object-cover block"
           />
-          <p className="text-sm text-text-primary" style={imgCaptionStyle}>{IMG_P2_CAPTION}</p>
+          <p className="text-sm text-text-primary" style={imgCaptionStyle}>
+            {IMG_P2_CAPTION}
+          </p>
         </div>
       </div>
     </>

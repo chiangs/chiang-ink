@@ -21,6 +21,19 @@
       Contact form, availability note, LinkedIn link
       No email displayed publicly
 
+- [ ] **Contact page — drawing canvas**
+      Component: `~/components/contact/DrawingCanvas.tsx`
+      Library: `@visx/drag` (useDrag hook — add to ~/lib/visx.ts exports)
+      Interaction: freehand drawing via useDrag onDragStart/onDragMove/onDragEnd
+      Each gesture → new SVG <path> appended to strokes array
+      Controls: "Clear" button + undo (pop last stroke)
+      Export: SVG → canvas → canvas.toDataURL('image/png') → base64 PNG
+      Submission: base64 string as hidden field or JSON alongside form data
+      Note: SVG must use explicit hex #131313 background rect (not CSS var)
+            — CSS variables do not resolve when SVG is serialised for canvas
+      Touch: built into @visx/drag via pointer events — no extra handling needed
+      Revisit: when contact page (contact.tsx) is being implemented
+
 ---
 
 ## VISUALISATIONS — Deferred
@@ -48,7 +61,7 @@
       mountain + tree scroll behind
       Current state: partial prototype built in chat
       Potential locations: about page "Beyond the Brief"
-      section, loading state, 404 page
+      section, loading state (NOT 404 — built as canvas variants)
 
 ---
 
@@ -145,26 +158,58 @@
 
 ## IDEAS — Not yet decided
 
-- [ ] **404 page**
-      Could use the hiker SVG animation —
-      hiker walking endlessly, "You've gone
-      off trail" copy
-
 - [ ] **Loading state**
       Simple copper spinner or the hiker
       animation for slow connections
-
-- [ ] **CV / Resume download**
-      A downloadable PDF version of the about
-      page content. Could be a CTA on the
-      about page or contact page.
-      Would need a `data-cursor="download"`
-      cursor treatment.
 
 - [ ] **Case study password protection**
       For NDA projects — ability to password
       protect individual project pages
       rather than removing them entirely
+
+- [ ] **Console easter egg**
+      Trigger:    Opening browser DevTools on any page
+      Method:     console.log() call in root.tsx useEffect,
+                  client-side only (typeof window guard)
+      Content:    Styled ASCII-style header — "SC" monogram
+                  rendered in copper (#FFB77D) using console
+                  %c styling, followed by plain text:
+                  "You opened the console. We should talk."
+                  LinkedIn URL on the line below —
+                  linkedin.com/in/chiangs
+                  Final line: "Built with React Router v7,
+                  GSAP, and an unreasonable attention to detail."
+      Tone:       Dry, confident — not cute. Speaks directly
+                  to the technical hiring manager who opened
+                  DevTools to inspect the build.
+      Fires:      Once per session — sessionStorage flag
+                  "sc-console-shown" prevents repeat on
+                  every navigation.
+      Location:   root.tsx — fires globally, not per-route
+
+- [ ] **Project depth unlock — Work rows**
+      Trigger:    Hovering a work row for 3+ seconds
+                  (deliberate attention, not a drive-by scroll)
+      Method:     setTimeout on onMouseEnter, cleared on
+                  onMouseLeave — no libraries needed
+      Reveal:     A single line fades in below the project
+                  title, in #737371 Manrope 400 italic 13px:
+                  "What actually made this hard: [one line]"
+                  Each project MDX adds a hiddenNote field
+                  to frontmatter — the unlock surfaces it.
+      Animation:  opacity 0 → 1, translateY 4px → 0,
+                  0.3s ease — subtle, not dramatic
+      Reset:      Fades out immediately on mouse leave
+      Persistence: None — resets every hover. No storage.
+      Tone:       Honest and specific. The note should read
+                  like something you'd only say in a room
+                  with the right people. Not a boast —
+                  a signal that you understand where
+                  complexity actually lives.
+      MDX field:  hiddenNote: "Getting Snowflake and a
+                  legacy .NET BFF to agree on who owned
+                  the truth."  ← example
+      Location:   WorkRow.tsx + project MDX frontmatter
 
 ---
 
@@ -199,3 +244,16 @@
 - [x] Draft status field on content types
 - [x] Favicon SVG
 - [x] Deployed to Vercel at www.chiang.ink
+- [x] 404 page — three rotating canvas visualisation variants:
+      NetworkGraph404 (force-directed graph, RAF physics),
+      Heatmap404 (48×24 grid, 4 cell states, ghost "404"),
+      Treemap404 (squarified, 7 items, scaleY stagger).
+      Random on load; inline "click here" cycles to a different one.
+      Desktop: 12-col grid, text cols 1–7, graph cols 5–12,
+      heatmap/treemap cols 7–12, no gap, 2:1 aspect ratio panel.
+      Mobile: compact 200px panel between body text and CTA.
+- [x] Toast system — ToastContext + ToastProvider in lib/toast.tsx,
+      useToast hook, Toast component in common/Toast.tsx.
+      Used for navigation hint nudges (nav count thresholds 3 and 5).
+- [x] ButtonCta component — copper gradient primary CTA button,
+      0px radius, used on 404 page

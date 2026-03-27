@@ -298,6 +298,12 @@ export function Nav() {
   complex timelines, elastic springs with overshoot
 - CSS transitions / Tailwind for: simple hover color/opacity
   changes, single element state changes, drawer open/close
+- **react-spring** is available as a peer dependency of `@visx/*`
+  and can be used as an alternative to GSAP for React-idiomatic
+  spring/physics animations (especially inside visx chart components).
+  Import via a `~/lib/spring.ts` wrapper — never directly from
+  `@react-spring/*`. Prefer GSAP for scroll triggers and page-level
+  sequences; react-spring for component-level spring physics.
 - **Never use CSS transitions for complex sequences** —
   use GSAP timelines
 - **GSAP cleanup**: always capture tween/timeline references
@@ -374,6 +380,10 @@ export function Hero() {
   | `@visx/*` | `~/lib/visx.ts` | static re-export |
   | `fuse.js` | `~/lib/fuse.ts` | static re-export |
   | `d3` + `topojson-client` | `~/lib/d3.ts` | async `loadD3()` |
+  | `@react-spring/*` | `~/lib/spring.ts` | static re-export |
+
+  Note: `@react-spring/web` is a peer dependency of `@visx/*` and
+  is already available in the project. No separate install needed.
 
   When adding a new third-party package, create or extend the
   appropriate `~/lib/<package>.ts` wrapper before using it.
