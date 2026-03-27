@@ -21,6 +21,19 @@
       Contact form, availability note, LinkedIn link
       No email displayed publicly
 
+- [ ] **Contact page — drawing canvas**
+      Component: `~/components/contact/DrawingCanvas.tsx`
+      Library: `@visx/drag` (useDrag hook — add to ~/lib/visx.ts exports)
+      Interaction: freehand drawing via useDrag onDragStart/onDragMove/onDragEnd
+      Each gesture → new SVG <path> appended to strokes array
+      Controls: "Clear" button + undo (pop last stroke)
+      Export: SVG → canvas → canvas.toDataURL('image/png') → base64 PNG
+      Submission: base64 string as hidden field or JSON alongside form data
+      Note: SVG must use explicit hex #131313 background rect (not CSS var)
+            — CSS variables do not resolve when SVG is serialised for canvas
+      Touch: built into @visx/drag via pointer events — no extra handling needed
+      Revisit: when contact page (contact.tsx) is being implemented
+
 ---
 
 ## VISUALISATIONS — Deferred
@@ -48,7 +61,7 @@
       mountain + tree scroll behind
       Current state: partial prototype built in chat
       Potential locations: about page "Beyond the Brief"
-      section, loading state, 404 page
+      section, loading state (NOT 404 — built as canvas variants)
 
 ---
 
@@ -145,11 +158,6 @@
 
 ## IDEAS — Not yet decided
 
-- [ ] **404 page**
-      Could use the hiker SVG animation —
-      hiker walking endlessly, "You've gone
-      off trail" copy
-
 - [ ] **Loading state**
       Simple copper spinner or the hiker
       animation for slow connections
@@ -236,3 +244,16 @@
 - [x] Draft status field on content types
 - [x] Favicon SVG
 - [x] Deployed to Vercel at www.chiang.ink
+- [x] 404 page — three rotating canvas visualisation variants:
+      NetworkGraph404 (force-directed graph, RAF physics),
+      Heatmap404 (48×24 grid, 4 cell states, ghost "404"),
+      Treemap404 (squarified, 7 items, scaleY stagger).
+      Random on load; inline "click here" cycles to a different one.
+      Desktop: 12-col grid, text cols 1–7, graph cols 5–12,
+      heatmap/treemap cols 7–12, no gap, 2:1 aspect ratio panel.
+      Mobile: compact 200px panel between body text and CTA.
+- [x] Toast system — ToastContext + ToastProvider in lib/toast.tsx,
+      useToast hook, Toast component in common/Toast.tsx.
+      Used for navigation hint nudges (nav count thresholds 3 and 5).
+- [x] ButtonCta component — copper gradient primary CTA button,
+      0px radius, used on 404 page

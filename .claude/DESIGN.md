@@ -22,7 +22,7 @@ Timezone:   CET (Europe/Oslo)
 Domain:     www.chiang.ink  ← CANONICAL. Never use "chiangs.ink" (wrong).
             SITE_URL in ~/lib/constants.ts must always be "https://www.chiang.ink"
 LinkedIn:   linkedin.com/in/chiangs
-Social:     LinkedIn only — X/Twitter removed from all pages.
+Social:     LinkedIn + GitHub only — X/Twitter removed from all pages.
 
 Positioning:
   Primary audience:   Hiring managers for CTO, Head of Product,
@@ -574,6 +574,34 @@ WRITING INDEX PAGE (routes/writing/index.tsx)
     Labels: "No articles match your search." + "Clear filters →"
 
 SHARED COMMON COMPONENTS (~/components/common/)
+  ButtonCta:
+    Props:       to (string href), children (ReactNode)
+    Element:     React Router <Link> styled as a button
+    Background:  linear-gradient(135deg, #FFB77D, #D97707) — copper gradient
+    Text:        #0c0c0c (invert-text), Space Grotesk 700, 14px,
+                 uppercase, letter-spacing 0.1em
+    Padding:     16px 32px
+    Radius:      0px — no exceptions
+    Hover:       background inverts to #131313 (bg), text → #FFB77D
+                 transition: all 0.2s ease
+    Used in:     not-found.tsx (404 page CTA — "← Back to home")
+
+  Toast:
+    Position:    fixed bottom-8 left-1/2 translateX(-50%) — centered
+    z-index:     50
+    Background:  #1a1a1a (surface), 1px solid #222220 border
+    Text:        Manrope 400, 14px, #E5E2E1
+    Padding:     12px 20px
+    Radius:      0px
+    Dismiss:     × button, Manrope 500, 16px, #737371
+    Animation:   CSS opacity 0→1 + translateY 8px→0 on show;
+                 reverse on dismiss, 0.2s ease
+    Context:     ToastContext in ~/lib/toast.tsx (show/dismiss actions)
+    Hook:        useToast in ~/hooks/useToast.ts
+    Provider:    mounted in _layout.tsx wrapping all routes
+    Used for:    Navigation hint nudges — shown after nav count
+                 thresholds 3 and 5 (stored in localStorage)
+
   SearchIcon:
     14×14px SVG magnifier (circle + line), currentColor
     className="absolute left-2.5 text-text-muted pointer-events-none"
@@ -591,6 +619,101 @@ SHARED COMMON COMPONENTS (~/components/common/)
     height: "40px", padding: "0 16px 0 32px",
     transition: "border-color var(--transition-fast)"
     Used in: Work index search, Writing index search
+
+404 PAGE (routes/not-found.tsx)
+  Variant:      Random on mount — one of three canvas visualisations
+                Cycling: inline "click here" button picks a different one
+  Meta:         noindex, nofollow — never indexed
+  Copy:
+    Eyebrow:    "ERROR // 404" — Manrope 500, 14px, #FFB77D, uppercase, ls 0.15em
+    Headline:   "Page" (Space Grotesk 300, light) + "not found." (#FFB77D, bold)
+                clamp(48px, 7vw, 80px)
+    Body:       "This URL doesn't exist. Possibly never did. Head somewhere
+                more useful, or [click here] to see a different visualisation."
+                Manrope 400, 16px, #737371, lh 1.75, max-width md
+                "click here" — inline <button>, text-text-primary, underline,
+                hover → text-accent, transition 0.2s
+    CTA:        ButtonCta → "/" — "← Back to home"
+
+  Desktop layout (12-column grid):
+    Text column:  cols 1–7, row-start-1, z-10, pt-80 pb-section
+    Graph variant:   text px-margin both sides (no gap on section)
+                     right panel cols 5–12 (intentional text overlap), py-[25%]
+    Heatmap/Treemap: text pl-margin only (no pr), section gap-0
+                     right panel cols 7–12, self-start, pt-80, pr-margin
+
+  Right panel — graph variant:
+    Component:  NetworkGraph404 — fills parent absolutely
+    Panel:      cols 5–12, row-start-1, z-0, py-[25%]
+    Ghost "404": Space Grotesk 700, clamp(120px,22vw,240px), #FFB77D, opacity 6%
+                 position: absolute, top: -0.15em, left: -0.04em
+                 Only shown for graph variant
+
+  Right panel — heatmap variant:
+    Component:  Heatmap404 — inside 2:1 aspect-ratio wrapper
+    Wrapper:    width 100%, aspectRatio: "2 / 1"
+    Panel:      cols 7–12, row-start-1, self-start, pt-80, pr-margin
+
+  Right panel — treemap variant:
+    Component:  Treemap404 — inside 2:1 aspect-ratio wrapper
+    Same wrapper + panel layout as heatmap variant
+
+  Mobile layout:
+    Text column full width, stacked
+    Compact visualisation panel: 200px fixed height, md:hidden
+    Sits between body text and ButtonCta
+    All three variants supported — canvas fills full width
+
+  NetworkGraph404 (app/components/common/404/NetworkGraph404.tsx):
+    Pure RAF — no physics library
+    ~60 nodes (#FFB77D), ~90 links
+    30% dead nodes — dim pulse (alpha 0.12±0.1, sin wave)
+    50% dead links — flicker (opacity 0↔0.55, random intervals)
+    Live nodes: alpha 0.88; live links: opacity 0.45
+    Node glow halo: r×2.8, alpha×0.12
+    Physics: repulsion 1600, spring rest 100, spring K 0.008,
+             damping 0.93, centre pull 0.0005, max speed 1.8,
+             drift 0.025, bounds push 0.4, bounds pad 32px
+    Canvas: position absolute inset 0, fills parent
+    Label: "GRAPH_404 // CONNECTION LOST" — rotated 90°, bottom-right
+           right: 64px, bottom: 64px; hidden on mobile
+
+  Heatmap404 (app/components/common/404/Heatmap404.tsx):
+    Grid: 48 cols × 24 rows, 2px gap
+    Aspect ratio: 2:1 wrapper → cells are exact squares
+    Ghost: "404" — Space Grotesk 700, size min(w×0.55, 200px),
+           #FFB77D opacity 10%, centered behind cells
+    Cell states (4):
+      dead (12%):       static alpha 0.03
+      pulse (50%):      sin wave alpha 0.04–0.18, slow (speed 0.3–1.0)
+      semi-glitch (25%): sin wave alpha 0.08–0.42, fast (speed 1.2–2.4)
+      glitch (~13%):    flicker alpha 0.04 ↔ glitchPeak (0.5–0.95 per cell)
+                        on: 1–12 frames random, off: 30–90 frames random
+    Canvas: full width on mobile (label hidden); w-[calc(100%-28px)]
+            offset right-7 on desktop to leave space for label
+    Label: "DATA // NOT FOUND" — rotated 90°, right: 16px, bottom: 0
+           hidden on mobile (md:block only)
+
+  Treemap404 (app/components/common/404/Treemap404.tsx):
+    Algorithm: squarify (pure TypeScript — no d3/visx)
+    Data (7 items):
+      Wrong turn 28% — accent
+      Rogue link 22% — accent
+      Cosmic misalignment 18%
+      Operator error 14%
+      Aggressive clicking 10%
+      Expired bookmark 5%
+      Unknown forces 3%
+    Accent cells: rgba(255,183,125,0.22) fill + 1px copper border
+                  Labels: #FFB77D
+    Non-accent:   #1a1a1a fill, labels rgba(115,115,113,1)
+    Labels: Manrope 500, 11px, 8px padding; % shown if cell height > 48px
+            Only shown if cell width > 50px
+    Visual gap: 1px INSET each side → 2px between adjacent cells
+    Animation: see Motion System → Treemap404
+    Canvas: same responsive sizing as Heatmap404
+    Label: "ROOT CAUSE ANALYSIS // INCONCLUSIVE" — rotated 90°,
+           right: 16px, bottom: 0; hidden on mobile
 
 ABOUT STRIP (inverted section)
   Background:   #FFB77D (copper accent — confirmed via color dropper)
@@ -689,6 +812,7 @@ CONTACT FORM (contact page)
 FOOTER
   Content:      "STEPHEN CHIANG [year]" left
                 Easter egg hint center
+                "GITHUB · LINKEDIN" right
                 "LINKEDIN" right (LinkedIn only — no X)
                 (+ "Style Guide ↗" in #FFB77D after unlocked)
   Style:        Manrope 500, 11px, uppercase, ls 0.15em, #737371
@@ -922,6 +1046,38 @@ WORK INDEX — InsightsPanel chart animations (GSAP, client-side only):
                to match SSR; useEffect resets to start then animates
     Cleanup:  tween ref — tween?.kill() in useEffect return
 
+404 PAGE — Canvas animations (pure requestAnimationFrame, no GSAP):
+  All three variants use ResizeObserver for responsive canvas sizing.
+  All guard against SSR: typeof window !== 'undefined' in useEffect.
+  isMounted flag prevents state updates after unmount.
+
+  NetworkGraph404 (continuous physics simulation):
+    RAF loop runs every frame — no idle stopping
+    stepPhysics(): repulsion + spring + centre gravity + drift per frame
+    stepFlicker(): dead links lerp toward targetOpacity (step 0.1)
+    drawLinks(): copper rgba, lineWidth 0.5, skip opacity < 0.01
+    drawNodes(): glow halo (r×2.8, alpha×0.12) + core circle
+    dt clamped: min(dt/16.67, 2.5) to handle tab-switch lag spikes
+
+  Heatmap404 (per-frame cell state updates):
+    stepGlitch(): decrements glitchTimer each frame; on expiry toggles
+                  glitchOn and randomises next duration
+    drawGhost():  "404" text in copper at 10% opacity, drawn before cells
+    drawCells():  per-cell alpha computed each frame from state + timestamp
+    Semi-glitch alpha: 0.08 + 0.34 × (0.5 + 0.5 × sin(ts × 0.001 × speed + phase))
+    Pulse alpha:  0.04 + 0.14 × (0.5 + 0.5 × sin(ts × 0.001 × speed + phase))
+
+  Treemap404 (one-shot stagger animation):
+    squarify() runs once on init and on resize (only when dimensions change)
+    xRankMap: tiles sorted by x then y → integer rank → stagger delay
+    startFrame = xRank × STAGGER_FRAMES (6 frames per rank step)
+    progress = easeOutCubic(clamp((frame - startFrame) / ANIM_FRAMES, 0, 1))
+    ANIM_FRAMES = 18, easeOutCubic = 1 − (1−t)³
+    drawH = ih × progress — clip rect grows from top down
+    ctx.clip() constrains fill + border + labels to revealed area
+    frame counter increments every RAF tick; RAF continues indefinitely
+    (progress stays 1 after animation completes — no wasted redraws)
+
 ACCENT GLOW PULSE (toggle button — both InsightsPanels):
   Target:   "Hide ↑" / "Show ↓" <span> in both InsightsPanel
             and WritingInsightsPanel toggle buttons
@@ -1007,12 +1163,13 @@ Third-party library wrappers (~/lib/):
 9.  ✓ Writing index page — COMPLETE
 10. Article page template
 11. Contact page
-12. MDX loader + /content directory wiring
-13. Content — drop in MDX files
-14. Motion layer — GSAP scroll triggers + cursor follower
-15. Portrait duotone — CSS filter stack
-16. PWA offline support — service worker
-17. Deploy to Vercel
+12. ✓ 404 page — COMPLETE (3 canvas variants: graph, heatmap, treemap)
+13. MDX loader + /content directory wiring
+14. Content — drop in MDX files
+15. Motion layer — GSAP scroll triggers + cursor follower
+16. Portrait duotone — CSS filter stack
+17. PWA offline support — service worker
+18. Deploy to Vercel
 
 ---
 

@@ -30,9 +30,10 @@ chiangs-ink/
     ├── routes.ts                     ← File-based route definitions
     │
     ├── routes/
-    │   ├── _layout.tsx               ← Nav + Footer + drawer state wrapper
+    │   ├── _layout.tsx               ← Nav + Footer + drawer state + ToastContext provider
     │   ├── home.tsx                  ← Homepage (composes home section components)
     │   ├── contact.tsx               ← Contact page
+    │   ├── not-found.tsx             ← 404 catch-all route; random 3-way canvas variant
     │   ├── work/
     │   │   ├── index.tsx             ← Work index
     │   │   └── $slug.tsx             ← Project page template
@@ -44,7 +45,8 @@ chiangs-ink/
     │   ├── index.ts                  ← Barrel re-export
     │   ├── useScrolled.ts            ← Returns true when page scrolled past threshold
     │   ├── useStavTime.ts            ← Live Stavanger time "HH:MM TZ", updates every second
-    │   └── useCountDown.ts           ← GSAP number countdown animation; re-runs on animationKey
+    │   ├── useCountDown.ts           ← GSAP number countdown animation; re-runs on animationKey
+    │   └── useToast.ts               ← Reads ToastContext; dispatches show/dismiss toast actions
     │
     ├── components/
     │   ├── index.ts                  ← Barrel: re-exports CursorFollower + layout/*
@@ -90,12 +92,25 @@ chiangs-ink/
     │   │   ├── InsightsPanel.tsx     ← Collapsible panel shell — toggle button, GSAP
     │   │   │                           height tween, onMount/onExpand/storageKey props
     │   │   │                           Shared by WorkInsightsPanel + WritingInsightsPanel
+    │   │   ├── ButtonCta.tsx         ← Primary CTA button — copper gradient, 0px radius
+    │   │   │                           Used on 404 page (and future pages)
+    │   │   ├── Toast.tsx             ← Fixed-position toast notification (bottom-center)
+    │   │   │                           Reads from ToastContext; used for navigation hints
     │   │   ├── ContactStrip.tsx      ← Shared contact CTA strip
     │   │   ├── FilterDropdown.tsx    ← Multi-select dropdown (Work + Writing indexes)
     │   │   ├── SearchIcon.tsx        ← 14×14px SVG magnifier (shared)
     │   │   ├── WorkRow.tsx           ← Single work project row
     │   │   ├── WritingRow.tsx        ← Single writing article row
-    │   │   └── EmptyState.tsx        ← No-results state (Work + Writing indexes)
+    │   │   ├── EmptyState.tsx        ← No-results state (Work + Writing indexes)
+    │   │   └── 404/
+    │   │       ├── index.ts          ← Barrel re-export
+    │   │       ├── NetworkGraph404.tsx ← Force-directed network graph (RAF physics,
+    │   │       │                         ~60 nodes, ~90 links, 30% dead nodes pulse,
+    │   │       │                         50% dead links flicker)
+    │   │       ├── Heatmap404.tsx    ← 48×24 cell heatmap (4 cell states: dead/pulse/
+    │   │       │                         semi-glitch/glitch; ghost "404" behind cells)
+    │   │       └── Treemap404.tsx    ← Squarified treemap (7 data items, scaleY stagger
+    │   │                               animation, pure TypeScript — no libraries)
     │   │
     │   ├── credentials/
     │   │   ├── index.ts              ← Barrel re-export
@@ -118,7 +133,8 @@ chiangs-ink/
     │   ├── mdx.server.ts             ← MDX loader utilities (server-only)
     │   ├── visx.ts                   ← @visx/* static re-exports
     │   ├── fuse.ts                   ← fuse.js static re-export
-    │   └── d3.ts                     ← async loadD3() + loadD3Force() loaders
+    │   ├── d3.ts                     ← async loadD3() + loadD3Force() loaders
+    │   └── toast.tsx                 ← ToastContext + ToastProvider; manages show/dismiss state
     │
     └── types/
         └── content.ts                ← Frontmatter type definitions
