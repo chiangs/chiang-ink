@@ -13,9 +13,10 @@
       process, outcome, metrics strip, pull quotes,
       challenge callouts, related projects
 
-- [ ] Article page template (`writing/$slug.tsx`)
+- [x] Article page template (`writing/$slug.tsx`) — DONE
       Long-form article layout — hero, table of contents,
-      pull quotes, code blocks, related articles
+      pull quotes, code blocks, related articles,
+      interactive MDX components, mobile image fallback
 
 - [ ] Contact page (`contact.tsx`)
       Contact form, availability note, LinkedIn link
@@ -92,6 +93,121 @@
       shapes how I think about HMI design and how
       AI should show up in the hands of real people"
 
+- [ ] **"The Dashboard Nobody Uses"**
+      File: `content/writing/the-dashboard-nobody-uses.mdx`
+      Status: idea (not started)
+      Subtitle: "Why expensive data products get built and ignored"
+      Category: Data & AI
+      Angle: the adoption failure mode — a follow-up to
+      "Dashboards Are Not For Overview". Shifts from
+      philosophy (what dashboards are for) to pathology
+      (why they fail in practice). Org design, incentives,
+      and the gap between the person who commissions a
+      dashboard and the person who has to use it daily.
+      Direct case study material from maritime + oil & gas work.
+
+- [ ] **"What Good AI Handoff Looks Like"**
+      File: `content/writing/what-good-ai-handoff-looks-like.mdx`
+      Status: idea (not started)
+      Subtitle: "The UX of giving a decision back to a human"
+      Category: Data & AI
+      Angle: not about models or prompting — about the
+      threshold moment when AI hands control back to a person.
+      How should that feel? What does the interface communicate?
+      What does a bad handoff cost in high-stakes environments?
+      Connects HMI expertise directly to AI product design.
+      Natural companion piece to "The Best AI UX I've Seen".
+
+- [ ] **"Data Governance Isn't an IT Problem"**
+      File: `content/writing/data-governance-isnt-an-it-problem.mdx`
+      Status: idea (not started)
+      Subtitle: "The organisational design problem hiding inside your data strategy"
+      Category: Data & AI
+      Angle: most governance programmes fail because they're
+      treated as taxonomy and tooling exercises. The real
+      problem is ownership, incentives, and cross-functional
+      accountability — which are design and leadership problems.
+      Oil & gas engagement is a direct (anonymised) case study.
+
+- [ ] **"Why Prototypes Lie"**
+      File: `content/writing/why-prototypes-lie.mdx`
+      Status: idea (not started)
+      Subtitle: "The gap between what a prototype communicates and what gets built"
+      Category: Design Technology
+      Angle: prototypes are optimised for persuasion, not
+      for implementation truth. They hide edge cases, content
+      failures, motion costs, and technical constraints.
+      Connects to the design-as-development thesis from
+      "Design Is Creation With Researched Intent" — the
+      prototype is where the fiction is most expensive.
+
+- [ ] **"The Figma File Isn't the Design"**
+      File: `content/writing/the-figma-file-isnt-the-design.mdx`
+      Status: idea (not started)
+      Subtitle: "What the design actually consists of"
+      Category: Design Technology
+      Angle: the full article version of the about page thesis:
+      "doesn't show up on a Figma file". Decision logic,
+      edge cases, motion behaviour, content rules, error states,
+      handoff conventions — none of it lives in the file.
+      Strong hiring signal: this is what senior design
+      leadership actually thinks about.
+
+- [ ] **"The Interpreter Role Nobody Hires For"**
+      File: `content/writing/the-interpreter-role-nobody-hires-for.mdx`
+      Status: idea (not started)
+      Subtitle: "What happens when nobody speaks all four languages"
+      Category: Product & Leadership
+      Angle: engineering, design, data, and business strategy
+      are four languages most orgs keep in separate rooms.
+      The cost isn't missed meetings — it's translation loss
+      at every handoff. This is the Design Technologist
+      positioning made into a direct argument.
+      Strongest piece for attracting the right hiring audience.
+
+- [ ] **"How to Run a Technical Discovery"**
+      File: `content/writing/how-to-run-a-technical-discovery.mdx`
+      Status: idea (not started)
+      Subtitle: "What a good discovery actually produces — and what a bad one costs"
+      Category: Product & Leadership
+      Angle: practical and specific. Discovery is the most
+      under-specified phase in most product programmes.
+      What are the deliverables? What decisions does it
+      unlock? What does skipping it actually cost downstream?
+      Strong consulting credibility signal — shows methodology,
+      not just outcomes.
+
+- [ ] **"The Mobile Dashboard Is the Wrong Tool"**
+      File: `content/writing/the-mobile-dashboard-is-the-wrong-tool.mdx`
+      Status: idea (not started)
+      Subtitle: "Why responsive charts don't shorten the distance
+      to action — and what does"
+      Category: Data & AI
+      Angle: the dashboard-as-overview failure mode is worse on
+      mobile because the format compounds the problem. Small screens,
+      time-constrained contexts, and action-oriented users need a
+      different interface entirely — not a smaller version of the
+      desktop experience.
+      Core argument: on mobile, an AI-powered briefing layer
+      is a shorter path to decision than any chart. "MV Haldane
+      Spirit needs to be fixed by Thursday" is more actionable
+      than a red urgency score at 40px wide.
+      Design position: the assistant is not a replacement for
+      the dashboard — it is a context-appropriate entry point
+      to the same data. The question the article must answer:
+      does the mobile assistant replace the charts entirely,
+      or does it sit above them as a briefing layer with the
+      option to drill down?
+      Connections: natural follow-up to "Dashboards Are Not
+      For Overview". Overlaps with "What Good AI Handoff
+      Looks Like" — the trust threshold for acting on an
+      AI summary without seeing the underlying data is the
+      same problem.
+      Interactive component potential: a mock mobile AI
+      assistant briefing screen — startup summary, ranked
+      action list, drill-down toggle to reveal underlying data.
+      Would be the article's equivalent of VesselPriorityDashboard.
+
 ---
 
 ## DESIGN — Deferred decisions
@@ -136,6 +252,8 @@
       `/images/work/data-governance.jpg`
       `/images/work/maritime-dashboard.jpg`
       `/images/portrait/stephen-chiang.jpg` ✅ done
+      `/images/content/vessel-priority-dashboard.png` — mobile fallback
+        for VesselPriorityDashboard in dashboards-are-not-for-overview.mdx
 
 - [ ] **Work project hero images**
       Each project MDX references a heroImage path
@@ -151,8 +269,8 @@
 - [ ] **DESIGN.md sync**
       Update DESIGN.md after every significant
       build session per CLAUDE.md instructions.
-      Last updated: March 2026 (InsightsPanel refactor +
-      useCountDown hook + avg read time animation)
+      Last updated: March 2026 (article page template +
+      VesselPriorityDashboard interactive MDX component)
 
 ---
 

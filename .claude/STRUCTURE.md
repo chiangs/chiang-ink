@@ -15,8 +15,10 @@ chiangs-ink/
 │   └── images/
 │       ├── portrait/
 │       │   └── stephen-chiang.jpg
-│       └── work/
-│           └── *.jpg
+│       ├── work/
+│       │   └── *.jpg
+│       └── content/
+│           └── vessel-priority-dashboard.png  ← mobile fallback for VesselPriorityDashboard
 │
 ├── content/
 │   ├── writing/
@@ -83,12 +85,22 @@ chiangs-ink/
     │   │
     │   ├── writing/
     │   │   ├── index.ts              ← Barrel re-export
-    │   │   └── WritingInsightsPanel.tsx ← Collapsible panel: topic bars, read time,
-    │   │                               WritingStreamgraph, avg read time countdown
-    │   │                               Shell delegated to common/InsightsPanel
+    │   │   ├── WritingInsightsPanel.tsx ← Collapsible panel: topic bars, read time,
+    │   │   │                           WritingStreamgraph, avg read time countdown
+    │   │   │                           Shell delegated to common/InsightsPanel
+    │   │   ├── HeroPattern.tsx       ← Article hero background pattern (dots/lines/grid)
+    │   │   │                           Variant driven by read time via getReadTimeVariant()
+    │   │   └── VesselPriorityDashboard.tsx ← Interactive MDX embed — fictional fleet
+    │   │                               priority table, expandable per-vessel urgency
+    │   │                               breakdown. Desktop interactive / mobile PNG fallback.
     │   │
     │   ├── common/
     │   │   ├── index.ts              ← Barrel re-export
+    │   │   ├── MDX/
+    │   │   │   ├── index.ts          ← Barrel re-export
+    │   │   │   ├── ArticleImage.tsx  ← Full-width article image with caption
+    │   │   │   ├── FloatImage.tsx    ← Float-right article image with caption
+    │   │   │   └── Highlight.tsx     ← Inline text highlight (emphasis/subtle/flashy)
     │   │   ├── InsightsPanel.tsx     ← Collapsible panel shell — toggle button, GSAP
     │   │   │                           height tween, onMount/onExpand/storageKey props
     │   │   │                           Shared by WorkInsightsPanel + WritingInsightsPanel
@@ -131,6 +143,10 @@ chiangs-ink/
     │   ├── currently.ts              ← Currently drawer content data
     │   ├── styleguide.ts             ← Style guide drawer content data
     │   ├── mdx.server.ts             ← MDX loader utilities (server-only)
+    │   ├── mdx-components.tsx        ← createMdxComponents() factory — h2/h3/p/blockquote/
+    │   │                               pre/code/ul/li/hr/a/strong/em overrides + named
+    │   │                               components (PullQuote, Highlight, ArticleImage,
+    │   │                               FloatImage). TocItem type exported from here.
     │   ├── visx.ts                   ← @visx/* static re-exports
     │   ├── fuse.ts                   ← fuse.js static re-export
     │   ├── d3.ts                     ← async loadD3() + loadD3Force() loaders
