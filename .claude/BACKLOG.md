@@ -177,6 +177,37 @@
       Strong consulting credibility signal — shows methodology,
       not just outcomes.
 
+- [ ] **"The Mobile Dashboard Is the Wrong Tool"**
+      File: `content/writing/the-mobile-dashboard-is-the-wrong-tool.mdx`
+      Status: idea (not started)
+      Subtitle: "Why responsive charts don't shorten the distance
+      to action — and what does"
+      Category: Data & AI
+      Angle: the dashboard-as-overview failure mode is worse on
+      mobile because the format compounds the problem. Small screens,
+      time-constrained contexts, and action-oriented users need a
+      different interface entirely — not a smaller version of the
+      desktop experience.
+      Core argument: on mobile, an AI-powered briefing layer
+      is a shorter path to decision than any chart. "MV Haldane
+      Spirit needs to be fixed by Thursday" is more actionable
+      than a red urgency score at 40px wide.
+      Design position: the assistant is not a replacement for
+      the dashboard — it is a context-appropriate entry point
+      to the same data. The question the article must answer:
+      does the mobile assistant replace the charts entirely,
+      or does it sit above them as a briefing layer with the
+      option to drill down?
+      Connections: natural follow-up to "Dashboards Are Not
+      For Overview". Overlaps with "What Good AI Handoff
+      Looks Like" — the trust threshold for acting on an
+      AI summary without seeing the underlying data is the
+      same problem.
+      Interactive component potential: a mock mobile AI
+      assistant briefing screen — startup summary, ranked
+      action list, drill-down toggle to reveal underlying data.
+      Would be the article's equivalent of VesselPriorityDashboard.
+
 ---
 
 ## DESIGN — Deferred decisions
