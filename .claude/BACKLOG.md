@@ -236,6 +236,13 @@
 
 ## TECHNICAL — Deferred
 
+- [ ] **Favicon update**
+      Current favicon uses "SC" in Inter 900 on #131313 background
+      with a 4px #FFB77D underline bar. Needs to be updated to match
+      the live site font (Space Grotesk) and current brand refinement.
+      Regenerate PNG icons after SVG update via realfavicongenerator.net.
+      Sizes required: 32px, 180px, 192px, 512px.
+
 - [ ] **PWA service worker**
       Offline support — not yet implemented
       manifest.json exists, icons needed

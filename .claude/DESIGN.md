@@ -895,6 +895,21 @@ STYLE GUIDE DRAWER (easter egg — SC monogram click on homepage)
                 Build stack: React Router v7 · Tailwind v4 ·
                 GSAP · Space Grotesk · Manrope · Vercel
 
+DEFINITION BLOCK (MDX component — writing articles)
+  Location:     app/components/common/MDX/DefinitionBlock.tsx
+  Usage:        <DefinitionBlock label="..." definition="...">optional body</DefinitionBlock>
+                Registered in createMdxComponents — available in all MDX files
+  Props:        label (string) — shown above in small caps
+                definition (string) — primary statement in large display type
+                children (ReactNode, optional) — body text below definition
+  Background:   bg-accent (#FFB77D) — full bleed via -mx-margin-mob md:-mx-margin
+  All text:     text-invert-text (#0c0c0c)
+  Label:        Manrope 500, 14px (text-sm), uppercase, ls 0.15em, opacity 60%
+  Definition:   Space Grotesk 700, clamp(32px, 5vw, 56px), lh 1.05, mt 12px
+  Body text:    Manrope 400, 16px (text-base), lh 1.8, opacity 80%, max-w-2xl
+  Outer padding: py-16 px-margin-mob md:px-margin, my-12
+  No border radius, no shadow
+
 VESSEL PRIORITY DASHBOARD (interactive MDX component — writing articles)
   Location:     app/components/writing/VesselPriorityDashboard.tsx
   Usage:        Embedded in MDX via <VesselPriorityDashboard /> tag
@@ -1254,7 +1269,7 @@ PROJECTS (MDX in /content/work/)
 ARTICLES (MDX in /content/writing/)
   dashboards-are-not-for-overview.mdx
     — Category: Data & AI
-    — 8 min read
+    — 6 min read
     — Core argument: dashboards shorten distance between data and decision,
                      not to provide overview
     — Framework: three gaps (data, sense-making, decision)

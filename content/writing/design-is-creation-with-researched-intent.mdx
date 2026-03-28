@@ -2,7 +2,7 @@
 title: "Design Is Creation With Researched Intent"
 subtitle: "Why designers and developers misunderstand each other — and the simple reframe that fixes it"
 date: "2023-10-01"
-readTime: "7 min"
+readTime: "5 min"
 category: "Design Technology"
 tags: ["Design Technology", "Engineering Culture", "Product Development", "Design Systems",   "Design Research", "UX Strategy", "Cross-functional Teams", "Design Process"]
 featured: true
@@ -16,8 +16,10 @@ the same tension running quietly beneath the surface.
 Designers feel like developers don't respect
 the work. Developers feel like designers don't
 understand constraints. Both feel like the other
-is making their job harder. Stand-ups get
-political. Handoffs become negotiations.
+is making their job harder. 
+
+<Highlight variant="emphasis">Stand-ups get
+political.</Highlight> Handoffs become negotiations.
 The product that ships is a compromise
 nobody is proud of.
 
@@ -33,9 +35,9 @@ a surprisingly simple fix.
 Design is not aesthetics. It is not Figma files.
 It is not the phase that happens before development.
 
-Design is creation with researched intent.
+<DefinitionBlock definition="Design is creation with researched intent." />
 
-That is the whole definition. Every designed
+That is my whole definition. Every designed
 thing — a chair, a codebase, a dashboard,
 a typeface, a military operation — was
 created in response to an understood need,
@@ -69,7 +71,7 @@ Design and development are not sequential phases.
 They are the same activity with the priority
 of the audience flipped.
 
-**When a designer works, the hierarchy looks like this:**
+<Highlight variant="flashy">When a designer works, the hierarchy looks like this:</Highlight>
 
 *User first.* Every decision starts with
 the person who will interact with the product.
@@ -90,7 +92,7 @@ A feature that works perfectly but that
 no one uses or understands has failed
 regardless of its technical correctness.
 
-**When a developer works, the hierarchy inverts:**
+<Highlight variant="flashy">When a developer works, the hierarchy inverts:</Highlight>
 
 *Architecture first.* Every decision starts
 with the system. What structure will support
@@ -106,8 +108,10 @@ the end user.
 readable, documented, and consistent
 with the patterns the team has established.
 Code that works but that nobody else can
-understand is technical debt disguised
-as a deliverable.
+understand is <Highlight variant="subtle">technical debt disguised
+as a deliverable.</Highlight> The sprint velocity looks fine. 
+The damage shows up six months later when nobody can touch that 
+part of the codebase without breaking something else.
 
 *User last.* Not unimportant — but last.
 The user experiences the output of the
@@ -118,7 +122,7 @@ of all the decisions made above it.
 <PullQuote>
 Design and development are not sequential
 phases. They are the same activity with
-the priority of the audience flipped.
+the priority of the audience flipped. 
 </PullQuote>
 
 ## Why This Reframe Matters
@@ -135,6 +139,7 @@ of everything built after this feature.
 Those decisions deserve the same respect
 as a considered layout or a typographic choice.
 
+<FloatImage src="/images/content/designer-vs-developer.png" alt="Two pairs of hands working on the same surface — one sketching a mechanical drawing with a pencil, one typing on a keyboard — surrounded by gears, drafting tools and workshop equipment on a worn wooden workbench" caption="REF_001 // SAME SURFACE" side="right"/>
 When developers understand that designers
 are designing for the user first, the
 frustration of "why are they asking for
@@ -181,6 +186,25 @@ the user is fitted around the system.
 Only one of those produces a product
 people want to use.
 
+<Highlight variant="subtle">This is not hypothetical.</Highlight> Netflix built its 
+streaming architecture before it understood 
+how people browse for something to watch. The 
+system was technically impressive — optimised 
+for catalogue scale and delivery efficiency — 
+but the browse experience was so cognitively 
+overwhelming that "Netflix and chill" became 
+a joke about spending 40 minutes choosing nothing. 
+They spent the following decade engineering 
+around a paradox of choice problem that was baked 
+in from the start. 
+
+The same failure runs through most enterprise data 
+products: a schema built around what the data contains 
+rather than what decisions it needs to support, handed 
+to an analyst team who then has to do all the sense-making 
+work the product should have done. In both cases the 
+architecture was correct. The user was an afterthought.
+
 ## The Practical Implication
 
 If you are a designer working with developers
@@ -203,8 +227,7 @@ them to design well, not just hand off cleanly.
 
 The distance between design and development
 is not a gap to be managed. It is a
-perspective to be shared.
-
-When both sides understand what the other
-is designing — and for whom — the tension
-doesn't disappear. It becomes productive.
+perspective to be shared. Both sides are doing 
+the same thing — creation with researched intent. 
+<Highlight variant="emphasis">The only difference</Highlight> 
+was always who they were creating for.

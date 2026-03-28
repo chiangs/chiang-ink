@@ -4,7 +4,7 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
-import { ArticleImage, FloatImage, Highlight } from "~/components/common/MDX";
+import { ArticleImage, DefinitionBlock, FloatImage, Highlight } from "~/components/common/MDX";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type TocItem = { id: string; text: string; level: 2 | 3 };
@@ -243,6 +243,7 @@ export function createMdxComponents(onHeading: (item: TocItem) => void) {
     em: Em,
     img: Img,
     ArticleImage,
+    DefinitionBlock,
     FloatImage,
   };
 }

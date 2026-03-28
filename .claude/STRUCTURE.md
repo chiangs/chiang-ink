@@ -99,6 +99,8 @@ chiangs-ink/
     │   │   ├── MDX/
     │   │   │   ├── index.ts          ← Barrel re-export
     │   │   │   ├── ArticleImage.tsx  ← Full-width article image with caption
+    │   │   │   ├── DefinitionBlock.tsx ← Full-bleed accent block (bg-accent, inverted
+    │   │   │   │                         text): label + large display definition + body
     │   │   │   ├── FloatImage.tsx    ← Float-right article image with caption
     │   │   │   └── Highlight.tsx     ← Inline text highlight (emphasis/subtle/flashy)
     │   │   ├── InsightsPanel.tsx     ← Collapsible panel shell — toggle button, GSAP
@@ -146,7 +148,7 @@ chiangs-ink/
     │   ├── mdx-components.tsx        ← createMdxComponents() factory — h2/h3/p/blockquote/
     │   │                               pre/code/ul/li/hr/a/strong/em overrides + named
     │   │                               components (PullQuote, Highlight, ArticleImage,
-    │   │                               FloatImage). TocItem type exported from here.
+    │   │                               FloatImage, DefinitionBlock). TocItem exported here.
     │   ├── visx.ts                   ← @visx/* static re-exports
     │   ├── fuse.ts                   ← fuse.js static re-export
     │   ├── d3.ts                     ← async loadD3() + loadD3Force() loaders
