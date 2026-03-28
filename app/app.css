@@ -14,6 +14,7 @@
     --color-text-primary: #E5E2E1;
     --color-text-muted: #737371;
     --color-accent: #FFB77D;
+    --color-accent-muted: rgba(255, 183, 125, 0.5);
     --color-accent-deep: #D97707;
     --color-border: #222220;
     --color-border-accent: #FFB77D;
@@ -583,4 +584,49 @@ html {
 
 .accent-glow-pulse {
     animation: accent-glow-pulse 2.4s ease-in-out infinite;
+}
+
+/* ─── MDX components ────────────────────────────── */
+
+.float-image {
+    width: 45%;
+    shape-outside: margin-box;
+}
+
+.float-image--right {
+    float: right;
+    margin: 0 0 2rem 2.5rem;
+}
+
+.float-image--left {
+    float: left;
+    margin: 0 2.5rem 2rem 0;
+}
+
+.float-image__frame {
+    position: relative;
+    overflow: hidden;
+}
+
+.float-image__frame img {
+    display: block;
+    width: 100%;
+}
+
+.float-image__overlay {
+    position: absolute;
+    inset: 0;
+}
+
+.float-image figcaption {
+    margin-top: 8px;
+    text-align: right;
+}
+
+@media (max-width: 768px) {
+    .float-image {
+        float: none;
+        width: 100%;
+        margin: 0 0 2rem 0;
+    }
 }
