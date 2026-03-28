@@ -162,7 +162,10 @@ EXTREME WEIGHT CONTRAST (from Stitch — adopted):
 IMAGE CAPTIONS (from Stitch — adopted):
   All image captions use technical reference style:
   "REF_001 // SCALE 1:1" format
-  Manrope 500, 14px, uppercase, #FFB77D
+  Manrope 500, uppercase, #FFB77D
+  Minimum size: 10px (text-[10px]) — use when space is tight or caption is secondary
+  Default size: 10px for ArticleImage captions
+  Larger sizes (text-xs=12px, text-sm=14px) permitted when context demands more prominence
   Positioned bottom-right, overlapping image edge slightly.
 
 ---
@@ -892,6 +895,41 @@ STYLE GUIDE DRAWER (easter egg — SC monogram click on homepage)
                 Build stack: React Router v7 · Tailwind v4 ·
                 GSAP · Space Grotesk · Manrope · Vercel
 
+VESSEL PRIORITY DASHBOARD (interactive MDX component — writing articles)
+  Location:     app/components/writing/VesselPriorityDashboard.tsx
+  Usage:        Embedded in MDX via <VesselPriorityDashboard /> tag
+                Registered in createMdxComponents in lib/mdx-components.tsx
+                + spread into useMemo in writing/$slug.tsx
+  Responsive:   Desktop (md+): fully interactive
+                Mobile (<md): static PNG image fallback
+                  src="/images/content/vessel-priority-dashboard.png"
+  Outer bg:     #131313 (bg-bg), padding 24px mob / 32px desktop
+  Rows bg:      #1a1a1a (bg-surface)
+  Row hover:    #202020 (bg-surface-high) — inactive rows only
+  Active row:   3px solid #FFB77D left border
+  Row layout:   rank (w-8) | vessel info (flex-1) | score block (w-16) | button (110px)
+  Rank:         Space Grotesk 700, 18px (text-lg), #737371
+  Vessel name:  Space Grotesk 700, 18px (text-lg), #E5E2E1
+  Vessel meta:  Manrope 500, 12px, uppercase, ls 0.1em, #737371
+                Line 1: type · IMO number
+                Line 2: hire expiry
+  Score value:  Space Grotesk 700, 28px, right-aligned in fixed 64px block
+                ≥75: #E24B4A (red), 50–74: #FFB77D (amber), <50: #737371 (muted)
+  "URGENCY":    Manrope 500, 12px, uppercase, ls 0.12em, #737371
+  Action btn:   Fixed 110px width, 1px border, transparent bg, whitespace-nowrap
+                Default: #737371 border + text
+                Hover: #FFB77D border + text (0.2s ease transition)
+  Breakdown:    Expands inline on row click; one open at a time
+                "SCORE COMPOSITION" label: Manrope 500, 12px, uppercase, #737371
+                Factor row: label (w-36) | bar track (flex-1, bg-surface-highest, h-1.5)
+                  | value (w-14, text-right) | weight (w-8)
+                Bar colors: days-to-expiry matches score color,
+                            utilisation delta always #FFB77D,
+                            off-hire items #737371 unless count ≥5 → #E24B4A
+  Formula bar:  bg-surface, py-4 px-5; Manrope text-xs #737371
+                Three terms highlighted in #FFB77D
+  Footnote:     Manrope 400, 11px italic, #737371
+
 ---
 
 ## PWA & Favicon
@@ -1220,6 +1258,10 @@ ARTICLES (MDX in /content/writing/)
     — Core argument: dashboards shorten distance between data and decision,
                      not to provide overview
     — Framework: three gaps (data, sense-making, decision)
+    — Interactive component: VesselPriorityDashboard — placed in
+      "The Overview Is the Last Thing You Design" section
+      Desktop: live interactive priority table with expandable breakdown
+      Mobile: static PNG fallback (/images/content/vessel-priority-dashboard.png)
 
   design-is-creation-with-researched-intent.mdx
     — Category: Design Technology
