@@ -140,7 +140,7 @@ const BIO_P2 =
   "My background spans the full product development stack: frontend engineering, design systems, human-machine interfaces, AI and ML integration, enterprise software, and data platforms. I've held the titles of Tech Lead, Product Owner, Scrum Master, and Design Technologist — not because I couldn't specialise, but because the problems I'm hired to solve don't respect those boundaries.";
 
 const BIO_P3_PRE =
-  "What differentiates my practice is the layer that sits around the craft. I bring 14 years of US Army Special Operations leadership into every engagement — the systems thinking, the deliberate process, the ability to lead multifunctional teams through ambiguity and deliver under pressure. That discipline ";
+  "What differentiates my practice is the layer that sits around the craft. I bring 10+ years of US Army / Special Operations leadership into every engagement — the systems thinking, the deliberate process, the ability to lead multifunctional teams through ambiguity and deliver under pressure. That discipline ";
 const BIO_P3_HL = "doesn't show up on a Figma file";
 const BIO_P3_POST =
   ". It shows up in how I structure a programme, how I align stakeholders, and how I make consequential technology decisions when the stakes are high.";
