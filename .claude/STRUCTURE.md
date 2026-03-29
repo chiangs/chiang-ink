@@ -99,6 +99,15 @@ chiangs-ink/
     │   │
     │   ├── common/
     │   │   ├── index.ts              ← Barrel re-export
+    │   │   ├── Viz/
+    │   │   │   ├── index.ts          ← Barrel re-export
+    │   │   │   ├── WeeklyProportionBar.tsx ← Currently drawer — segmented proportion
+    │   │   │   │                       bar (parenting/deep work/sleep/training/reading/
+    │   │   │   │                       building). Animates 0→width on mount via RAF.
+    │   │   │   └── CareerIntensityChart.tsx ← About page — career capability intensity
+    │   │   │                           2002–2026. viewMode: vertical (columns) or
+    │   │   │                           horizontal (bars). compact prop for mobile:
+    │   │   │                           hides row labels, shows legend above chart.
     │   │   ├── MDX/
     │   │   │   ├── index.ts          ← Barrel re-export
     │   │   │   ├── ArticleImage.tsx  ← Full-width article image with caption

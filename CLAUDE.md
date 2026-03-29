@@ -131,6 +131,10 @@ app/
       WorkRow.tsx
       WritingRow.tsx
       EmptyState.tsx
+      Viz/
+        index.ts
+        WeeklyProportionBar.tsx     # Currently drawer — segmented time allocation bar
+        CareerIntensityChart.tsx    # About page — career capability intensity by year
     credentials/
       index.ts
       CredentialsBar.tsx

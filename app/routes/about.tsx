@@ -3,7 +3,7 @@
 // Layout: sticky sidebar nav (24%) + scrollable content (76%) on desktop
 // Mobile: horizontal pill nav sticky below main nav
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { MetaFunction } from "react-router";
 import {
   SITE_OWNER,
@@ -12,6 +12,7 @@ import {
   LINKEDIN_URL,
   GITHUB_URL,
 } from "~/lib/constants";
+import { storage } from "~/lib/storage";
 import { ContactStrip } from "~/components/common";
 import {
   Timeline,
@@ -20,6 +21,10 @@ import {
   LanguageList,
   ImageGrid,
 } from "~/components/about";
+import {
+  CareerIntensityChart,
+  type CareerViewMode,
+} from "~/components/common/Viz";
 
 // ── Meta ─────────────────────────────────────────────────────────
 
@@ -30,29 +35,12 @@ const META_URL = `${SITE_URL}/about`;
 const OG_IMAGE = `${SITE_URL}/og-image.png`;
 const OG_IMAGE_ALT = "Stephen Chiang — Design Technologist & Technology Leader";
 
-/*
- * About page meta layer
- * 1. Core SEO       — title, description, author, robots, canonical
- * 2. Open Graph     — og:type, og:url, og:title, og:description, og:image,
- *                     og:site_name, og:locale
- * 3. Social cards   — twitter:card/title/description/image
- *                     (parsed by LinkedIn, Slack, iMessage, and others)
- * 4. Structured data — Person JSON-LD emphasising biography, career arc,
- *                     geographic reach, and identity over skills/services
- *
- * Not in this function (already in root.tsx):
- *   - lang="en" belongs on <html> in root.tsx
- *   - viewport meta is in root.tsx
- */
 export const meta: MetaFunction = () => [
-  // ── 1. Core SEO ─────────────────────────────────────────────────────────
   { title: META_TITLE },
   { name: "description", content: META_DESC },
   { name: "author", content: "Stephen Chiang" },
   { name: "robots", content: "index, follow" },
   { tagName: "link", rel: "canonical", href: META_URL },
-
-  // ── 2. Open Graph ────────────────────────────────────────────────────────
   { property: "og:type", content: "profile" },
   { property: "og:url", content: META_URL },
   { property: "og:title", content: META_TITLE },
@@ -63,18 +51,13 @@ export const meta: MetaFunction = () => [
   { property: "og:image:alt", content: OG_IMAGE_ALT },
   { property: "og:site_name", content: "Stephen Chiang" },
   { property: "og:locale", content: "en_US" },
-  // og:profile fields
   { property: "profile:first_name", content: "Stephen" },
   { property: "profile:last_name", content: "Chiang" },
-
-  // ── 3. Social cards (parsed by LinkedIn, Slack, iMessage, and others) ───
   { name: "twitter:card", content: "summary_large_image" },
   { name: "twitter:title", content: META_TITLE },
   { name: "twitter:description", content: META_DESC },
   { name: "twitter:image", content: OG_IMAGE },
   { name: "twitter:image:alt", content: OG_IMAGE_ALT },
-
-  // ── 4. Structured data — Person, biographical emphasis ───────────────────
   {
     "script:ld+json": {
       "@context": "https://schema.org",
@@ -102,10 +85,11 @@ export const meta: MetaFunction = () => [
   },
 ];
 
-// ── Sidebar / nav ─────────────────────────────────────────────────
+// ── Constants ─────────────────────────────────────────────────────
 
 const OWNER_NAME = SITE_OWNER;
 const OWNER_LOCATION = SITE_LOCATION;
+const CAREER_VIEW_KEY = "sc-career-view";
 
 const SECTIONS = [
   { id: "bio", label: "BIO" },
@@ -118,7 +102,7 @@ const SECTIONS = [
 
 type SectionId = (typeof SECTIONS)[number]["id"];
 
-// ── BIO ──────────────────────────────────────────────────────────
+// ── Copy ──────────────────────────────────────────────────────────
 
 const PAGE_LABEL = "ABOUT";
 const HEADLINE_1 = "Stephen";
@@ -135,43 +119,25 @@ const BIO_P1_PRE =
   "I'm a senior technology and product leader operating at the intersection of design, engineering, and business strategy. Currently, I lead a national practice at a global design agency — building the capability that brings design, data, and technology together as a ";
 const BIO_P1_HL = "single integrated discipline";
 const BIO_P1_POST = ", not three separate teams talking past each other.";
-
 const BIO_P2 =
   "My background spans the full product development stack: frontend engineering, design systems, human-machine interfaces, AI and ML integration, enterprise software, and data platforms. I've held the titles of Tech Lead, Product Owner, Scrum Master, and Design Technologist — not because I couldn't specialise, but because the problems I'm hired to solve don't respect those boundaries.";
-
 const BIO_P3_PRE =
   "What differentiates my practice is the layer that sits around the craft. I bring 10+ years of US Army / Special Operations leadership into every engagement — the systems thinking, the deliberate process, the ability to lead multifunctional teams through ambiguity and deliver under pressure. That discipline ";
 const BIO_P3_HL = "doesn't show up on a Figma file";
 const BIO_P3_POST =
   ". It shows up in how I structure a programme, how I align stakeholders, and how I make consequential technology decisions when the stakes are high.";
-
 const BIO_P4 =
   "I've worked across the USA, Denmark, Norway, Laos, Sri Lanka, the Maldives, Iraq, and Korea — for enterprises, agencies, and governments. I don't fill roles. I raise the ceiling of what those roles can deliver.";
-
 const BIO_P5 = "Based in Stavanger, Norway. Operating globally.";
-
-// ── EXPERIENCE ───────────────────────────────────────────────────
 
 const EXP_LABEL = "EXPERIENCE";
 const EXP_TITLE = "Career Timeline";
-
-// ── INDUSTRIES ───────────────────────────────────────────────────
-
 const IND_LABEL = "INDUSTRIES & SECTORS";
 const IND_TITLE = "Where I've Delivered";
-
-// ── SKILLS ───────────────────────────────────────────────────────
-
 const SKILLS_LABEL = "SOLUTION TYPES";
 const SKILLS_TITLE = "What I Build";
-
-// ── LANGUAGES ────────────────────────────────────────────────────
-
 const LANG_LABEL = "LANGUAGES";
 const LANG_TITLE = "How I Communicate";
-
-// ── IMAGES ───────────────────────────────────────────────────────
-
 const IMG_LABEL = "BEYOND THE BRIEF";
 const IMG_TITLE = "The Full Picture";
 
@@ -229,12 +195,66 @@ const portraitGrainStyle: React.CSSProperties = {
   pointerEvents: "none",
 };
 
+const iconBtnStyle: React.CSSProperties = {
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+  padding: "2px",
+  display: "flex",
+  alignItems: "center",
+  lineHeight: 0,
+  transition: "opacity 0.2s ease",
+};
+
+// ── Toggle icons ──────────────────────────────────────────────────
+// Horizontal icon: three stacked bars of decreasing width
+// Vertical icon: four columns of increasing height
+
+function IconHorizontal({ active, hovered }: { active: boolean; hovered: boolean }) {
+  const c = active ? "#FFB77D" : hovered ? "#FFB77D" : "#737371";
+  const t = "fill 0.2s ease";
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <rect x="2" y="4" width="16" height="3" style={{ fill: c, opacity: active ? 0.9 : 0.5, transition: t }} />
+      <rect x="2" y="9" width="11" height="3" style={{ fill: c, opacity: active ? 0.65 : 0.35, transition: t }} />
+      <rect x="2" y="14" width="7" height="3" style={{ fill: c, opacity: active ? 0.35 : 0.2, transition: t }} />
+    </svg>
+  );
+}
+
+function IconVertical({ active, hovered }: { active: boolean; hovered: boolean }) {
+  const c = active ? "#FFB77D" : hovered ? "#FFB77D" : "#737371";
+  const t = "fill 0.2s ease";
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <rect x="2" y="4" width="3" height="13" style={{ fill: c, opacity: active ? 0.9 : 0.5, transition: t }} />
+      <rect x="7" y="7" width="3" height="10" style={{ fill: c, opacity: active ? 0.65 : 0.35, transition: t }} />
+      <rect x="12" y="10" width="3" height="7" style={{ fill: c, opacity: active ? 0.5 : 0.25, transition: t }} />
+      <rect x="17" y="12" width="3" height="5" style={{ fill: c, opacity: active ? 0.35 : 0.2, transition: t }} />
+    </svg>
+  );
+}
+
 // ── Main component ────────────────────────────────────────────────
 
 export default function About() {
   const [activeSection, setActiveSection] = useState<SectionId>("bio");
 
-  // Scroll active pill into view in the bottom nav when activeSection changes
+  // Career chart view state — persisted in localStorage via ~/lib/storage
+  const [careerView, setCareerView] = useState<CareerViewMode>("vertical");
+  const [careerAnimKey, setCareerAnimKey] = useState(0);
+  const [careerVisible, setCareerVisible] = useState(false);
+  const [careerTransitioning, setCareerTransitioning] = useState(false);
+  const [hoveredToggle, setHoveredToggle] = useState<CareerViewMode | null>(null);
+  const chartRef = useRef<HTMLDivElement>(null);
+
+  // Load persisted view preference after mount (SSR-safe)
+  useEffect(() => {
+    const saved = storage.get(CAREER_VIEW_KEY);
+    if (saved === "horizontal") setCareerView("horizontal");
+  }, []);
+
+  // Scroll active pill into view on mobile
   useEffect(() => {
     const btn = document.querySelector<HTMLElement>(
       `[data-pill="${activeSection}"]`,
@@ -246,10 +266,9 @@ export default function About() {
     });
   }, [activeSection]);
 
-  // Scroll spy — finds the bottommost section whose top is in the upper 40% of the viewport
+  // Scroll spy
   useEffect(() => {
     let rafId: number;
-
     const update = () => {
       const threshold = window.innerHeight * 0.4;
       for (let i = SECTIONS.length - 1; i >= 0; i--) {
@@ -261,22 +280,19 @@ export default function About() {
         }
       }
     };
-
     const onScroll = () => {
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(update);
     };
-
     window.addEventListener("scroll", onScroll, { passive: true });
-    update(); // set correct state on mount
-
+    update();
     return () => {
       window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(rafId);
     };
   }, []);
 
-  // GSAP animations
+  // GSAP animations — page-level
   useEffect(() => {
     let isMounted = true;
     const tweens: { kill(): void }[] = [];
@@ -287,7 +303,7 @@ export default function About() {
       if (!isMounted) return;
       gsap.registerPlugin(ScrollTrigger);
 
-      // Page headline stagger (runs on load)
+      // Page headline stagger
       const headlineTl = gsap.timeline();
       headlineTl
         .fromTo(
@@ -335,7 +351,9 @@ export default function About() {
         ),
       );
 
-      // Each content section — individual trigger
+      // Section content fade-ins
+      // Note: CareerIntensityChart is outside [data-anim='section-content'] —
+      // it manages its own ScrollTrigger via chartRef below.
       (
         ["experience", "industries", "skills", "languages", "images"] as const
       ).forEach((id) => {
@@ -398,7 +416,7 @@ export default function About() {
         ),
       );
 
-      // Portrait: B&W → color when bio is in view, faster reverse when out
+      // Portrait B&W → colour on scroll
       const toColor = () =>
         gsap.to(".portrait-circle-img", {
           filter: "grayscale(0)",
@@ -422,10 +440,25 @@ export default function About() {
           onLeaveBack: toBw,
         }) as unknown as { kill(): void },
       );
+
+      // Career chart ScrollTrigger — fires animation when chart enters viewport
+      if (chartRef.current) {
+        tweens.push(
+          ScrollTrigger.create({
+            trigger: chartRef.current,
+            start: "top 80%",
+            once: true,
+            onEnter: () => {
+              if (!isMounted) return;
+              setCareerVisible(true);
+              setCareerAnimKey((k) => k + 1);
+            },
+          }) as unknown as { kill(): void },
+        );
+      }
     };
 
     init();
-
     return () => {
       isMounted = false;
       tweens.forEach((t) => t.kill());
@@ -440,9 +473,20 @@ export default function About() {
     window.scrollTo({ top: Math.max(0, offset), behavior: "smooth" });
   };
 
+  const handleCareerViewToggle = (next: CareerViewMode) => {
+    if (next === careerView || careerTransitioning) return;
+    setCareerTransitioning(true);
+    setTimeout(() => {
+      setCareerView(next);
+      storage.set(CAREER_VIEW_KEY, next);
+      setCareerAnimKey((k) => k + 1);
+      setCareerTransitioning(false);
+    }, 200);
+  };
+
   return (
     <>
-      {/* ── Mobile pill nav — fixed bottom bar ── */}
+      {/* ── Mobile pill nav ── */}
       <nav
         className="md:hidden fixed z-90 left-0 right-0 bg-bg border-t border-border"
         style={mobileNavStyle}
@@ -458,7 +502,7 @@ export default function About() {
                 key={id}
                 data-pill={id}
                 onClick={() => scrollToSection(id)}
-                className={`shrink-0 font-body text-sm font-medium uppercase border-0 cursor-pointer transition-colors duration-200 px-3.5 py-1.5 ${isActive ? "bg-accent text-bg" : "bg-surface text-text-muted"}`}
+                className="shrink-0 font-body text-sm font-medium uppercase border-0 cursor-pointer transition-colors duration-200 px-3.5 py-1.5"
                 style={{
                   ...pillButtonStaticStyle,
                   background: isActive
@@ -476,8 +520,6 @@ export default function About() {
         </div>
       </nav>
 
-      {/* ── Page layout ── */}
-      {/* pb accounts for the fixed bottom nav on mobile */}
       <div className="max-w-container mx-auto px-margin-mob md:px-margin pb-20 md:pb-0">
         <div className="flex items-start">
           {/* ── Desktop sidebar ── */}
@@ -492,7 +534,6 @@ export default function About() {
               <p className="font-body text-sm text-text-muted mt-1">
                 {OWNER_LOCATION}
               </p>
-
               <nav className="mt-10 flex flex-col gap-4">
                 {SECTIONS.map(({ id, label }) => {
                   const isActive = activeSection === id;
@@ -500,11 +541,7 @@ export default function About() {
                     <button
                       key={id}
                       onClick={() => scrollToSection(id)}
-                      className={`text-left font-body text-sm font-medium uppercase bg-transparent border-0 cursor-pointer pl-3 transition-[color,border-color] duration-200 ${
-                        isActive
-                          ? "text-accent"
-                          : "text-text-muted hover:text-accent-deep"
-                      }`}
+                      className={`text-left font-body text-sm font-medium uppercase bg-transparent border-0 cursor-pointer pl-3 transition-[color,border-color] duration-200 ${isActive ? "text-accent" : "text-text-muted hover:text-accent-deep"}`}
                       style={{
                         ...navButtonStaticStyle,
                         borderLeft: isActive
@@ -522,7 +559,7 @@ export default function About() {
 
           {/* ── Scrollable content ── */}
           <div className="w-full md:w-[76%] pt-section-mob md:pt-section pb-0">
-            {/* ────── BIO ────── */}
+            {/* ── BIO ── */}
             <section id="bio">
               <p
                 data-anim="about-label"
@@ -531,7 +568,6 @@ export default function About() {
                 {PAGE_LABEL}
               </p>
 
-              {/* Hero row: headline left, circular portrait right */}
               <div className="flex items-center gap-12 mb-16">
                 <div className="min-w-0">
                   <h1 className="font-display leading-[0.9]">
@@ -551,8 +587,6 @@ export default function About() {
                     </span>
                   </h1>
                 </div>
-
-                {/* Circular portrait — desktop only; mobile version sits above bio text */}
                 <div
                   className="shrink-0 hidden md:block"
                   style={portraitDropShadowStyle}
@@ -587,7 +621,6 @@ export default function About() {
                 </div>
               </div>
 
-              {/* Stats strip */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
                 {BIO_STATS.map((stat) => (
                   <div key={stat.label} data-anim="bio-stat">
@@ -601,7 +634,6 @@ export default function About() {
                 ))}
               </div>
 
-              {/* Portrait — mobile only, above bio text */}
               <div
                 className="md:hidden mb-6 flex justify-center"
                 style={portraitDropShadowMobStyle}
@@ -635,7 +667,6 @@ export default function About() {
                 </div>
               </div>
 
-              {/* Bio text */}
               <div data-anim="bio-text" className="max-w-170">
                 <p className="font-body text-lg text-text-primary leading-[1.8]">
                   {BIO_P1_PRE}
@@ -659,20 +690,150 @@ export default function About() {
               </div>
             </section>
 
-            {/* ────── EXPERIENCE ────── */}
+            {/* ── EXPERIENCE ── */}
             <section id="experience" className="mt-16 md:mt-32">
-              <p className="font-body font-medium text-sm uppercase tracking-[0.15em] text-accent block mb-3">
-                {EXP_LABEL}
-              </p>
-              <h2 className="font-display font-bold text-[32px] text-text-primary mb-15 leading-[1.1]">
-                {EXP_TITLE}
-              </h2>
-              <div data-anim="section-content">
-                <Timeline />
+              {/* Section header row: label + title + view toggle */}
+              <div className="flex items-start justify-between mb-15">
+                <div>
+                  <p className="font-body font-medium text-sm uppercase tracking-[0.15em] text-accent block mb-3">
+                    {EXP_LABEL}
+                  </p>
+                  <h2 className="font-display font-bold text-[32px] text-text-primary leading-[1.1]">
+                    {EXP_TITLE}
+                  </h2>
+                </div>
+
+                {/* View toggle — icon buttons, desktop only */}
+                <div className="hidden md:flex items-center gap-1 pt-1">
+                  <button
+                    onClick={() => handleCareerViewToggle("vertical")}
+                    onMouseEnter={() => setHoveredToggle("vertical")}
+                    onMouseLeave={() => setHoveredToggle(null)}
+                    style={{
+                      ...iconBtnStyle,
+                      opacity: careerView === "vertical" ? 1 : 0.45,
+                    }}
+                    aria-label="Vertical chart view"
+                    aria-pressed={careerView === "vertical"}
+                    title="Vertical view"
+                  >
+                    <IconVertical
+                      active={careerView === "vertical"}
+                      hovered={hoveredToggle === "vertical"}
+                    />
+                  </button>
+                  <button
+                    onClick={() => handleCareerViewToggle("horizontal")}
+                    onMouseEnter={() => setHoveredToggle("horizontal")}
+                    onMouseLeave={() => setHoveredToggle(null)}
+                    style={{
+                      ...iconBtnStyle,
+                      opacity: careerView === "horizontal" ? 1 : 0.45,
+                    }}
+                    aria-label="Horizontal chart view"
+                    aria-pressed={careerView === "horizontal"}
+                    title="Horizontal view"
+                  >
+                    <IconHorizontal
+                      active={careerView === "horizontal"}
+                      hovered={hoveredToggle === "horizontal"}
+                    />
+                  </button>
+                </div>
+              </div>
+
+              {/*
+               * Two-column layout for vertical view (desktop):
+               *   Left  — Timeline entries
+               *   Right — CareerIntensityChart (sticky)
+               *
+               * Single column for horizontal view:
+               *   CareerIntensityChart full width above Timeline
+               *
+               * CareerIntensityChart sits outside [data-anim='section-content']
+               * and manages its own animation via ScrollTrigger on chartRef.
+               */}
+              {careerView === "vertical" ? (
+                <div
+                  className="hidden md:grid gap-x-12"
+                  style={{ gridTemplateColumns: "1fr 200px" }}
+                >
+                  {/* Left: timeline */}
+                  <div data-anim="section-content">
+                    <Timeline />
+                  </div>
+                  {/* Right: capability chart — sticky so it stays in view while scrolling timeline */}
+                  <div
+                    ref={chartRef}
+                    style={{
+                      position: "sticky",
+                      top: "120px",
+                      alignSelf: "flex-start",
+                      opacity: careerVisible && !careerTransitioning ? 1 : 0,
+                      transition: "opacity 0.2s ease",
+                    }}
+                  >
+                    <p
+                      className="font-body font-medium text-sm uppercase tracking-[0.15em] text-accent block mb-4"
+                      style={{ letterSpacing: "0.15em" }}
+                    >
+                      Capability
+                    </p>
+                    <CareerIntensityChart
+                      viewMode="vertical"
+                      animKey={careerAnimKey}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="hidden md:block">
+                  {/* Horizontal: chart full width above timeline */}
+                  <div
+                    ref={chartRef}
+                    className="mb-12"
+                    style={{
+                      opacity: careerVisible && !careerTransitioning ? 1 : 0,
+                      transition: "opacity 0.2s ease",
+                    }}
+                  >
+                    <CareerIntensityChart
+                      viewMode="horizontal"
+                      animKey={careerAnimKey}
+                    />
+                  </div>
+                  <div data-anim="section-content">
+                    <Timeline
+                      layout={
+                        careerView === "horizontal" ? "horizontal" : "vertical"
+                      }
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Mobile: always shows horizontal chart above timeline, no toggle */}
+              <div className="md:hidden">
+                <div
+                  ref={careerView === "vertical" ? undefined : undefined}
+                  className="mb-12"
+                  style={{
+                    opacity: careerVisible && !careerTransitioning ? 1 : 0,
+                    transition: "opacity 0.2s ease",
+                  }}
+                >
+                  <CareerIntensityChart
+                    viewMode="horizontal"
+                    animKey={careerAnimKey}
+                    compact
+                  />
+                </div>
+                <div data-anim="section-content">
+                  <Timeline />
+                </div>
               </div>
             </section>
 
-            {/* ────── INDUSTRIES ────── */}
+            {/* ── INDUSTRIES ── */}
             <section id="industries" className="mt-16 md:mt-32">
               <p className="font-body font-medium text-sm uppercase tracking-[0.15em] text-accent block mb-3">
                 {IND_LABEL}
@@ -685,7 +846,7 @@ export default function About() {
               </div>
             </section>
 
-            {/* ────── SKILLS ────── */}
+            {/* ── SKILLS ── */}
             <section id="skills" className="mt-16 md:mt-32">
               <p className="font-body font-medium text-sm uppercase tracking-[0.15em] text-accent block mb-3">
                 {SKILLS_LABEL}
@@ -698,7 +859,7 @@ export default function About() {
               </div>
             </section>
 
-            {/* ────── LANGUAGES ────── */}
+            {/* ── LANGUAGES ── */}
             <section id="languages" className="mt-16 md:mt-32">
               <p className="font-body font-medium text-sm uppercase tracking-[0.15em] text-accent block mb-3">
                 {LANG_LABEL}
@@ -711,7 +872,7 @@ export default function About() {
               </div>
             </section>
 
-            {/* ────── IMAGES ────── */}
+            {/* ── IMAGES ── */}
             <section
               id="images"
               className="mt-16 md:mt-32 pb-section-mob md:pb-section"

@@ -499,8 +499,10 @@
 
 - [ ] **About page visual upgrade**
       Current about page is functional and complete.
+      CareerIntensityChart data viz added to Experience section
+      (horizontal/vertical toggle on desktop, compact mobile layout).
       Future upgrade could include:
-      - Streamgraph in Experience section
+      - Streamgraph in Experience section (still deferred — see VISUALISATIONS)
       - Additional images in "Beyond the Brief"
         (real photos needed: professional-01.jpg,
         personal-01.jpg, personal-02.jpg)
@@ -551,8 +553,8 @@
 - [ ] **DESIGN.md sync**
       Update DESIGN.md after every significant
       build session per CLAUDE.md instructions.
-      Last updated: March 2026 (article page template +
-      VesselPriorityDashboard interactive MDX component)
+      Last updated: March 2026 (CareerIntensityChart +
+      Timeline horizontal layout + about page view toggle)
 
 ---
 

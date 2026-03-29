@@ -45,20 +45,21 @@ export const UNLOCK_BODY =
 // --- Color Palette ---
 
 export const STYLEGUIDE_COLORS: ColorEntry[] = [
-  { token: "--color-bg", hex: "#0c0c0c", name: "Background" },
-  { token: "--color-surface", hex: "#141414", name: "Surface" },
+  { token: "--color-bg", hex: "#131313", name: "Background" },
+  { token: "--color-surface", hex: "#1a1a1a", name: "Surface" },
   { token: "--color-card", hex: "#1a1a1a", name: "Card" },
-  { token: "--color-accent", hex: "#f5a020", name: "Accent" },
-  { token: "--color-text-primary", hex: "#efefec", name: "Text Primary" },
+  { token: "--color-accent", hex: "#FFB77D", name: "Accent" },
+  { token: "--color-accent-deep", hex: "#D97707", name: "Accent Deep" },
+  { token: "--color-text-primary", hex: "#E5E2E1", name: "Text Primary" },
   { token: "--color-text-muted", hex: "#737371", name: "Text Muted" },
   { token: "--color-border", hex: "#222220", name: "Border" },
-  { token: "--color-invert-bg", hex: "#f5a020", name: "Invert Background" },
+  { token: "--color-invert-bg", hex: "#D97707", name: "Invert Background" },
 ];
 
 // --- Typography Scale ---
 
 export const STYLEGUIDE_TYPE: TypeEntry[] = [
-  { name: "Display", size: "64px", weight: 900, font: "Space Grotesk", sample: "Engineering" },
+  { name: "Display", size: "64px", weight: 700, font: "Space Grotesk", sample: "Engineering" },
   { name: "Display Light", size: "48px", weight: 300, font: "Space Grotesk", sample: "Engineering" },
   { name: "H1", size: "40px", weight: 700, font: "Space Grotesk", sample: "Section Title" },
   { name: "H2", size: "32px", weight: 700, font: "Space Grotesk", sample: "Article Heading" },
