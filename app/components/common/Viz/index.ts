@@ -1,0 +1,1 @@
+export { WeeklyProportionBar } from "./WeeklyProportionBar";
