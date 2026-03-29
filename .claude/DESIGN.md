@@ -733,6 +733,92 @@ ABOUT STRIP (inverted section)
                 The dominant visual element of the section
   Mobile:       Ghost "020": clamp(80px, 18vw, 120px), opacity 0.08
 
+CAREER INTENSITY CHART (Experience section — about page)
+  Location:     app/components/common/Viz/CareerIntensityChart.tsx
+  Props:        viewMode ("vertical" | "horizontal"), animKey (number), compact? (boolean)
+  View modes:   Toggled by icon buttons in about.tsx desktop header
+                Desktop: vertical or horizontal (persisted to localStorage)
+                Mobile: horizontal only, always compact
+  Toggle icons: Two SVG icon buttons (IconVertical, IconHorizontal) in about.tsx
+                Active button: accent (#FFB77D), stays accent on hover
+                Inactive button: muted (#737371) → accent (#FFB77D) on hover
+                Fill animates via CSS fill property (not SVG attribute), 0.2s ease
+                Opacity: active 1.0, inactive 0.45
+
+  Vertical layout:
+    Height:     560px column track
+    Left axis:  72px fixed — era labels + tick marks centred within each era band
+                Labels: 9px Manrope 500, uppercase, ls 0.1em, opacity 0.55
+    Columns:    10 capability rows as flex columns, 2px gap, fills remaining width
+                Each column: position relative, full height, GSAP animates bar 0→height
+    Era bands:  Position absolute, full width behind columns
+    Legend:     Below chart — opacity key (Primary/Secondary/Substrate) + capability
+                color key, single column each, with 1px border-color divider
+
+  Horizontal layout:
+    Row labels: 180px fixed left column, 10px Manrope 500, uppercase, right-aligned
+                Hidden in compact mode
+    Era labels: Diagonal position above bar area — 10px Manrope 600, uppercase
+                Era-specific colors and vertical offsets (Schindler offset 16px)
+                Schindler tick mark: 1px line at year 2014 divider
+    Bars:       Full-width minus label margin; height 10px per row, 5px gap between rows
+                GSAP animates width 0→final, 0.55s power2.out, 0.06s base + 0.04s stagger
+    Era bands:  Behind bars — subtle tinted backgrounds per era
+    Dividers:   1px vertical lines at 2014, 2015, 2018 (#333331)
+    X axis:     Year labels at 2002/2006/2010/2014/2015/2018/2022/2026
+                10px Manrope 500, #9B9997 (intentionally lighter than text-muted)
+    compact:    Hides row labels (labelMargin → 0), shows Legend above chart
+
+  Legend (both modes):
+    Opacity key:  Primary (0.88), Secondary (0.45), Substrate (0.14)
+                  10×10px swatch in rgba(255,183,125,op), single column, 4px gap
+    Divider:      1px solid border-color between sections
+    Color key:    One row per capability, 10×10px color swatch, single column, 4px gap
+                  Labels: 9px Manrope 500, uppercase, ls 0.07em, text-muted
+    Placement:    Vertical: below chart. Horizontal: hidden (shown above if compact)
+
+  Eras:         Defence (2002–2014) #FFB77D, Schindler (2014–2015) #737371,
+                Iskilde (2015–2018) #737371, Consulting (2018–2026) #4DA6FF
+  Capabilities: 10 rows — Leadership & Strategy, Ops & Org Design,
+                Design & Development, Joint & Diplomatic, Transport & Logistics,
+                Market Dev & Sales, Oil & Gas, Consumer Products, Maritime, Construction
+  Bar colors:   Raw hex (D3/SVG context exception applies)
+  Animation:    animKey prop — incrementing triggers re-animation via GSAP useEffect
+
+TIMELINE (Experience section — about page)
+  Location:     app/components/about/Timeline.tsx
+  Props:        layout ("vertical" | "horizontal"), defaults to "vertical"
+  Mobile:       Always vertical — horizontal layout is desktop-only
+
+  Vertical layout:
+    Grid:       3 columns — 80px (years) | 32px (dot) | 1fr (content)
+                Hidden on mobile; mobile uses single-column flex with year label above
+    Spine:      1px solid border-color, absolutely positioned left of dots
+    Dot:        7×7px, bg-accent, circle class (border-radius: 50%)
+    Order:      Reverse chronological
+    Years:      Space Grotesk 700, 14px, text-accent, uppercase
+    Company:    Space Grotesk 700, 20px, text-text-primary, lh 1.2
+    Title:      Manrope 500, 14px, text-accent, uppercase, ls 0.1em
+    Body:       Manrope 400, 16px, text-text-muted, lh 1.7, max-w-[520px]
+
+  Horizontal layout:
+    Spine:      1px solid border-color, top 48px from container
+    Dots:       7×7px, bg-accent, circle — hover: scale(1.6), 0.2s ease
+    Stem:       1px vertical line below dot, 20px height, color-surface-highest
+    Labels:     Diagonal at 40°, transformOrigin "0 0"
+                Years:   10px Manrope 500, text-accent, uppercase, ls 0.1em (always accent)
+                Company: 11px Space Grotesk 700 — text-primary at rest, #ffffff on hover
+                Title:   10px Manrope 500, uppercase, ls 0.08em
+                          text-muted at rest, text-accent on hover
+    Tooltip:    Cursor-following, 240px wide, bg-hover-surface, 2px top accent border
+                Position clamped in event handlers (not during render — avoids ref read)
+                  left = min(cursorX + 16, containerW - 248)
+                  top  = max(0, cursorY - 120)
+                Years:   10px Manrope 500, text-accent, uppercase
+                Company: 14px Space Grotesk 700, text-text-primary
+                Title:   10px Manrope 500, uppercase, #9B9997 (lighter than text-muted)
+                Body:    12px Manrope 400, #B8B5B3, lh 1.65
+
 MAP (Industries section — about page)
   Library:      D3.js, geoNaturalEarth1 projection
   Data:         world-atlas countries-110m.json
@@ -903,7 +989,7 @@ STYLE GUIDE DRAWER (easter egg — SC monogram click on homepage)
   Persistence:  localStorage key "sc-styleguide-unlocked"
                 On first open: shows unlock message
                 After unlock: "Style Guide ↗" appears in footer
-  Unlock msg:   "You found it." — Space Grotesk 700, 24px, #FFB77D
+  Unlock msg:   "You found it." — Space Grotesk 700, 24px, var(--color-accent)
                 "The design system behind this site.
                 A link has been added to the footer
                 so you can return whenever you like."
@@ -914,6 +1000,11 @@ STYLE GUIDE DRAWER (easter egg — SC monogram click on homepage)
                 Motion principles (listed with values)
                 Build stack: React Router v7 · Tailwind v4 ·
                 GSAP · Space Grotesk · Manrope · Vercel
+  Token sync:   All color values in styleguide.ts match app.css @theme
+                Accent: #FFB77D, Accent deep: #D97707, Bg: #131313,
+                Surface: #1a1a1a, Text primary: #E5E2E1, Invert bg: #D97707
+                Component uses var(--color-accent) for all accent references
+                Font: Manrope throughout (Inter was removed)
 
 DEFINITION BLOCK (MDX component — writing articles)
   Location:     app/components/common/MDX/DefinitionBlock.tsx

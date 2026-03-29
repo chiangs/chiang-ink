@@ -107,7 +107,7 @@ export function StyleGuideDrawer({
           bottom: 0,
           width: "min(600px, 92vw)",
           background: "#0f0f0f",
-          borderLeft: "1px solid #f5a020",
+          borderLeft: "1px solid var(--color-accent)",
           zIndex: 999,
           transform: isOpen ? "translateX(0)" : "translateX(100%)",
           transition: "transform 0.45s cubic-bezier(0.16,1,0.3,1)",
@@ -129,7 +129,7 @@ export function StyleGuideDrawer({
             background: "none",
             border: "none",
             color: "#737371",
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Manrope, sans-serif",
             fontWeight: 500,
             letterSpacing: "0.15em",
             textTransform: "uppercase",
@@ -137,7 +137,7 @@ export function StyleGuideDrawer({
             padding: "4px 8px",
             transition: "color 0.2s ease",
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#f5a020")}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "#FFB77D")}
           onMouseLeave={(e) => (e.currentTarget.style.color = "#737371")}
         >
           ESC ✕
@@ -148,7 +148,7 @@ export function StyleGuideDrawer({
           <div
             style={{
               background: "#1a1a1a",
-              borderLeft: "4px solid #f5a020",
+              borderLeft: "4px solid var(--color-accent)",
               padding: "24px",
               marginBottom: "-16px",
             }}
@@ -157,8 +157,8 @@ export function StyleGuideDrawer({
               className="text-2xl"
               style={{
                 fontFamily: "Space Grotesk, sans-serif",
-                fontWeight: 900,
-                color: "#f5a020",
+                fontWeight: 700,
+                color: "var(--color-accent)",
                 margin: "0 0 8px",
               }}
             >
@@ -187,7 +187,7 @@ export function StyleGuideDrawer({
               fontWeight: 500,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: "#f5a020",
+              color: "var(--color-accent)",
               marginBottom: "8px",
             }}
           >
@@ -197,8 +197,8 @@ export function StyleGuideDrawer({
             style={{
               fontFamily: "Space Grotesk, sans-serif",
               fontSize: "40px",
-              fontWeight: 900,
-              color: "#efefec",
+              fontWeight: 700,
+              color: "#E5E2E1",
               margin: "0 0 4px",
               lineHeight: 1.1,
             }}
@@ -239,7 +239,7 @@ export function StyleGuideDrawer({
                     className="text-sm"
                     style={{
                       fontFamily: "Manrope, sans-serif",
-                      color: "#efefec",
+                      color: "#E5E2E1",
                       margin: "0 0 2px",
                       fontWeight: 500,
                     }}
@@ -275,7 +275,7 @@ export function StyleGuideDrawer({
                     fontFamily: `${type.font}, sans-serif`,
                     fontSize: type.size,
                     fontWeight: type.weight,
-                    color: "#efefec",
+                    color: "#E5E2E1",
                     margin: "0 0 4px",
                     lineHeight: 1.1,
                     textTransform: type.uppercase ? "uppercase" : "none",
@@ -316,7 +316,7 @@ export function StyleGuideDrawer({
                 <span className="text-sm" style={{ fontFamily: "Manrope, sans-serif", color: "#737371" }}>
                   {s.name}
                 </span>
-                <span className="text-sm" style={{ fontFamily: "monospace", color: "#f5a020" }}>
+                <span className="text-sm" style={{ fontFamily: "monospace", color: "var(--color-accent)" }}>
                   {s.value}
                 </span>
               </div>
@@ -337,7 +337,7 @@ export function StyleGuideDrawer({
                   style={{
                     fontFamily: "Manrope, sans-serif",
                     fontWeight: 500,
-                    color: "#efefec",
+                    color: "#E5E2E1",
                     margin: "0 0 4px",
                   }}
                 >
@@ -403,7 +403,7 @@ function Section({
             fontWeight: 500,
             letterSpacing: "0.18em",
             textTransform: "uppercase",
-            color: "#f5a020",
+            color: "var(--color-accent)",
             margin: 0,
             whiteSpace: "nowrap",
           }}
