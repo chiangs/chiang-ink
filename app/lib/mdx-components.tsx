@@ -4,7 +4,13 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
-import { ArticleImage, DefinitionBlock, FloatImage, Highlight } from "~/components/common/MDX";
+import {
+  ArticleImage,
+  DefinitionBlock,
+  FloatImage,
+  Highlight,
+  MdxLink,
+} from "~/components/common/MDX";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type TocItem = { id: string; text: string; level: 2 | 3 };
@@ -213,12 +219,14 @@ export function createMdxComponents(onHeading: (item: TocItem) => void) {
 
   function Strong({ children }: { children?: ReactNode }) {
     return (
-      <strong className="font-medium text-text-primary">{children}</strong>
+      <strong className="text-accent-deep font-medium not-italic">
+        {children}
+      </strong>
     );
   }
 
   function Em({ children }: { children?: ReactNode }) {
-    return <em className="italic text-text-muted">{children}</em>;
+    return <em className="text-accent italic">{children}</em>;
   }
 
   // Default img override — plain markdown ![]() gets the same duotone treatment
@@ -245,5 +253,6 @@ export function createMdxComponents(onHeading: (item: TocItem) => void) {
     ArticleImage,
     DefinitionBlock,
     FloatImage,
+    MdxLink,
   };
 }

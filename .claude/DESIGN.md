@@ -78,9 +78,14 @@ VISUALIZATION PALETTE (used sparingly in charts only — not UI chrome):
   These values are canonical — STREAM_COLORS in WritingInsightsPanel.tsx
   must stay in sync with these tokens.
   Defined in app.css @theme. Import as Tailwind class or CSS var.
-  Rule: do not use viz palette colors in UI chrome, buttons, or text.
-        Exception: --gradient-viz may be used as a text gradient on
-        key stat values (e.g. Avg. Time to MVP in InsightsPanel).
+  Rule: Do not use viz palette colors in UI chrome, buttons,
+        navigation, labels, or text outside article body content.
+  Exception 1: --gradient-viz on key stat values in InsightsPanel
+               (e.g. Avg. Time to MVP).
+  Exception 2: --color-viz-blue (#4DA6FF) for prose links in MDX
+               articles (MdxLink component only). The semantic
+               distinction between "emphasis" (copper) and
+               "navigation" (blue) requires a second colour axis.
 
   VISUALIZATION GRADIENT:
   --gradient-viz: linear-gradient(90deg, #FF9A3C, #00E5C7, #4DA6FF)
