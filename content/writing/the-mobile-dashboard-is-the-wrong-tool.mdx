@@ -2,11 +2,10 @@
 title: "The Mobile Dashboard Is the Wrong Tool"
 subtitle: "Why the constraints of mobile don't just demand better design — they demand a different interface entirely"
 category: "Data & AI"
-date: "2026-02-27"
+date: "2025-03-10"
 readTime: "15 min"
 tags: ["Data & AI", "Product Development", "Design & AI", "Mobile UX", "Dashboard Design"]
-featured: true
-order: 1
+featured: false
 status: "published"
 ---
 
@@ -56,7 +55,7 @@ Those are completely different design problems.
 
 ## The constraint forces a better question
 
-"How do we make this dashboard work on mobile?" is the wrong question. It accepts the dashboard as the answer and treats mobile as the constraint to be overcome. The right question is: 
+"How do we make this dashboard work on mobile?" is the wrong question. It accepts the dashboard as the answer and treats mobile as the constraint to be overcome. The right question is:
 
 <DefinitionBlock definition="What does this person need from this data, right now, on this device, with these stakes?"/>
 
@@ -74,11 +73,15 @@ In <Highlight variant="accent">The UX of AI</Highlight>, Greg Nudelman argues th
 
 The briefing layer is:
 
-<DefinitionBlock definition="that moment of understanding, made into an interface pattern."/>
+<PullQuote>
+That moment of understanding, made into an interface pattern.
+</PullQuote>
 
 It is not a chatbot. It is not a search interface. It is not a summary tab bolted onto a dashboard. It is a fundamentally different entry point to the same underlying data — one that puts synthesis before exploration, action before analysis, and the user's context before the system's structure.
 
-But that reordering of priorities carries its own weight. When a system synthesises before it shows, the quality of that synthesis becomes load-bearing. An AI briefing layer that surfaces the wrong priority, misreads a trend, or omits a critical signal isn't just unhelpful — in an operational environment, it is actively dangerous. The trust that makes the format work is not given freely. It is earned through data quality, model accuracy, and transparent reasoning. The OIM who acts on a briefing they cannot verify is extending trust to a system that must deserve it. This is why the <Highlight variant="strong">human in the loop</Highlight> is not an optional feature of the briefing layer — <Highlight variant="cite">it is the point of it.</Highlight> The AI reads the data. The human makes the decision. That division of responsibility is not a limitation of the technology. It is the design intent. A briefing layer that removes the human from the decision is not a better interface. It is a different — and far more dangerous — product entirely. What the data foundation needs to look like to support a briefing layer reliably — consistent definitions, governed sources, understood limitations — is a separate problem, and not a small one. But it is the prerequisite that makes everything else possible. An AI that briefs confidently from ungoverned data is not a briefing layer. It is a liability dressed as a feature.
+But that reordering of priorities carries its own weight. When a system synthesises before it shows, the quality of that synthesis becomes load-bearing. An AI briefing layer that surfaces the wrong priority, misreads a trend, or omits a critical signal isn't just unhelpful — in an operational environment, it is actively dangerous. The trust that makes the format work is not given freely. It is earned through data quality, model accuracy, and transparent reasoning. The OIM who acts on a briefing they cannot verify is extending trust to a system that must deserve it. This is why the <Highlight variant="strong">human in the loop</Highlight> is not an optional feature of the briefing layer — <Highlight variant="cite">it is the point of it.</Highlight> The AI reads the data. The human makes the decision. That division of responsibility is not a limitation of the technology. It is the design intent. A briefing layer that removes the human from the decision is not a better interface. It is a different — and far more dangerous — product entirely.
+
+What the data foundation needs to look like to support a briefing layer reliably — consistent definitions, governed sources, understood limitations — is a separate problem, and not a small one. But it is the prerequisite that makes everything else possible. An AI that briefs confidently from ungoverned data is not a briefing layer. It is a liability dressed as a feature.
 
 Where a dashboard surfaces data and nudges the user toward the conclusions it contains, the briefing layer brings those conclusions forward — presenting not just what the data shows, but what it means for the decision at hand. The data is still there. The charts still exist. Progressive disclosure — the UX principle of revealing complexity only when the user asks for it — means the full dashboard remains accessible for those who need it. But it is no longer the first thing. It is the thing you reach for when you need more than the briefing can give you.
 
@@ -115,27 +118,24 @@ Everything the user needs is somewhere in here. The back-and-forth required to p
 
 The labelled failure points are not bugs. They are the predictable consequence of taking an interface designed for one context and forcing it to serve a completely different one. The development team built exactly what they were asked to build. The problem was never the implementation. It was the assumption that making something technically accessible on a smaller screen is the same as designing for the person holding it.
 
+What the AI sees in the same moment is not a dashboard at all. It is a pattern — three signals degrading across the same shift window, each individually unremarkable, together telling a single story.
+
 <ShiftConvergencePattern/>
 
-The same underlying data. A different entry point. Every item drawn directly from the situation that woke the OIM up — not a generalised operational summary, but a precise answer to the question the moment is actually asking. The AI has read the same data that fills the dashboard. It has applied the same logic that an experienced OIM would apply if they had thirty minutes to review the system properly. It has surfaced the three things that require human judgment and action, ranked them by urgency, and placed the right action one tap away from each.
+Three signals. One window. A pattern that only becomes visible when you read across all three data sources simultaneously — which is exactly what a rules engine cannot do, and exactly what AI can.
 
-## The Briefing layer in action
+---
+
+## The briefing layer in action
+
+The same underlying data. A different entry point. Every item drawn directly from the situation that woke the OIM up — not a generalised operational summary, but a precise answer to the question the moment is actually asking.
 
 <MobileBriefingDemo/>
 
-Tapping the first item reveals the data summary alongside an immediate decision — two clear options, each one action away. The chart is available if the OIM wants it, but it is not the first thing they are asked to process. If the data raises further questions, the next layer is one deliberate tap away. This is the progressive disclosure principle in practice — the briefing layer answers the primary question: *what needs my attention?* The detail answers the secondary question: *what do I need to know to act on it?* And if that raises further questions still, the full dashboard remains accessible — not as the starting point the user is forced to navigate, but as the end of a chain they choose to follow.
-
-<DefinitionBlock
-  label="What you're seeing"
-  definition="Three layers. One decision."
->
+*Three layers. One decision.*
 The briefing surfaces what matters. Tapping an item reveals the data summary and two immediate actions — act now, or escalate. The drill-down is a third tap away for the OIM who wants to see the underlying trend before deciding. Each layer is a deliberate choice, not a forced starting point.
-</DefinitionBlock>
 
-A note on what you just saw — and what you didn't.
 The briefing layer in this example could be built with AI, but it doesn't have to be. A sufficiently well-designed rules engine, a priority algorithm, and a structured data layer could produce something that looks similar. That is not a weakness of the pattern. It is the point. The best AI feature is often the one the user never notices — not because it is hidden, but because it is so well integrated into the experience that it feels like the product simply working as it should.
-
-*What AI should be doing*
 
 Where AI earns its place in a briefing layer is in the synthesis. Rules engines are good at surfaces — they can flag when a value crosses a threshold. AI is good at context — it can recognise that three individually unremarkable signals, taken together, constitute a pattern worth surfacing. The pit volume gain in this example is not remarkable on its own. Combined with the open permit-to-work and the incomplete POB list, it tells a story about a shift handover that has gone wrong in three simultaneous ways — and that story only becomes visible when you read across all three data sources at once.
 
@@ -145,7 +145,7 @@ And yes — a conversational layer can augment this. The OIM who wants to ask "w
 
 <BriefingConversation/>
 
-That is a fundamentally different relationship between the user and the data. And a fundamentally different design assumption about what the interface owes the person holding it.
+The conversation doesn't replace the briefing. It extends it — handling what the briefing couldn't anticipate, without requiring the OIM to navigate a dashboard to get there. That is a fundamentally different relationship between the user and the data. And a fundamentally different design assumption about what the interface owes the person holding it.
 
 Nudelman writes about the importance of designing AI outputs that match the user's *decision horizon* — the timescale and scope within which they need to act. At 02:17 on an offshore platform, the decision horizon is immediate and narrow. One alert. One decision. One action. That is the interface the moment requires, and it is the interface the briefing layer delivers.
 
@@ -172,11 +172,12 @@ If you are building for both — and most operational data products serve both �
 The mistake is not building dashboards. The mistake is assuming that a responsive version of a dashboard is the same as designing for the context in which it will actually be used.
 
 This is not an argument for replacing dashboards. It is an argument for being deliberate about when they are the right tool and when they are not.
+
 The dashboard earns its place in the moments that require depth — when an engineer needs to understand why an anomaly occurred, when an analyst needs to trace a pattern across weeks of operational data, when a team needs to build a shared picture of what is happening across an asset. That work is investigative, unhurried, and screen-dependent. The dashboard is the right instrument for it.
 
 The briefing layer earns its place in the moments that require speed — when a decision cannot wait, when the context demands action over analysis, when the user is already carrying the weight of an operational situation and needs the data to meet them where they are rather than requiring them to come looking for it.
 
-These are not competing interfaces. They are complementary ones, drawing on the same data, serving different moments in the same operational reality. The failure is not building dashboards, it is assuming that a responsive version of a dashboard covers both moments — and discovering, at 02:17 on a live well, that it does not.
+These are not competing interfaces. They are complementary ones, drawing on the same data, serving different moments in the same operational reality. The failure is not building dashboards — it is assuming that a responsive version of a dashboard covers both moments, and discovering, at 02:17 on a live well, that it does not.
 
 Start with the person. The decision they need to make. The context they're in when they need to make it. The device in their hand. The stakes attached to getting it right.
 
@@ -186,6 +187,6 @@ The offshore OIM at 02:17 doesn't need a dashboard. They need an answer. Buildin
 
 ---
 
-*Greg Nudelman's  [The UX of AI](https://www.oreilly.com/library/view/the-ux-of/9781098154929/) is the most grounded treatment of AI interface design I've encountered. If you are working on AI-powered products and thinking seriously about how humans experience AI outputs — not just what the AI can produce — it belongs on your desk.*
+*Greg Nudelman's [The UX of AI](https://www.oreilly.com/library/view/the-ux-of/9781098154929/) is the most grounded treatment of AI interface design I've encountered. If you are working on AI-powered products and thinking seriously about how humans experience AI outputs — not just what the AI can produce — it belongs on your desk.*
 
 *This article is a companion piece to [Dashboards Are Not For Overview](/writing/dashboards-are-not-for-overview). If the argument above resonated, that one sets up the design philosophy that this one builds on.*
