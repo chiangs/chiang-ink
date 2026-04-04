@@ -33,7 +33,7 @@ const SUBHEAD = "Leading product delivery.";
 const DESCRIPTOR = "DESIGN TECHNOLOGIST · PRODUCT LEAD · UX ENGINEER";
 const SCROLL_CTA = "SCROLL TO EXPLORE";
 const SCROLL_ARROW = "↓";
-const PORTRAIT_SRC = "/images/portrait/stephen-chiang.jpg";
+const PORTRAIT_SRC = "/images/portrait/stephen-chiang.webp";
 const PORTRAIT_ALT = SITE_OWNER;
 const CAPTION_REF = "REF_016 // PORTRAIT";
 const CAPTION_ISO = "ISO 400 // 85MM";
@@ -208,9 +208,7 @@ export function Hero() {
           >
             {SUBHEAD}
           </p>
-          <div
-            className="font-body text-sm font-medium uppercase tracking-[0.15em] text-text-muted flex flex-col gap-1 mt-6"
-          >
+          <div className="font-body text-sm font-medium uppercase tracking-[0.15em] text-text-muted flex flex-col gap-1 mt-6">
             <span>{DESCRIPTOR_MOB_1}</span>
             <span>{DESCRIPTOR_MOB_2}</span>
             <span>{DESCRIPTOR_MOB_3}</span>

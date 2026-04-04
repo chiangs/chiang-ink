@@ -12,13 +12,18 @@ chiangs-ink/
 ├── package.json
 │
 ├── public/
+│   ├── manifest.json                         ← PWA manifest (hand-authored; vite-plugin-pwa reads as-is)
+│   ├── sw.js                                 ← [generated at build] Workbox service worker
+│   ├── workbox-*.js                          ← [generated at build] Workbox runtime chunk
+│   ├── icons/                                ← PWA icons (96–512px, maskable variants)
 │   └── images/
 │       ├── portrait/
-│       │   └── stephen-chiang.jpg
+│       │   ├── stephen-chiang.jpg            ← LCP image; preloaded via home.tsx links export
+│       │   └── stephen-chiang-color.jpg
 │       ├── work/
 │       │   └── *.jpg
 │       └── content/
-│           └── vessel-priority-dashboard.png  ← mobile fallback for VesselPriorityDashboard
+│           └── vessel-priority-dashboard.webp  ← mobile fallback for VesselPriorityDashboard
 │
 ├── content/
 │   ├── writing/

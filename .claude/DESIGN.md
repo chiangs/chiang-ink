@@ -78,9 +78,14 @@ VISUALIZATION PALETTE (used sparingly in charts only — not UI chrome):
   These values are canonical — STREAM_COLORS in WritingInsightsPanel.tsx
   must stay in sync with these tokens.
   Defined in app.css @theme. Import as Tailwind class or CSS var.
-  Rule: do not use viz palette colors in UI chrome, buttons, or text.
-        Exception: --gradient-viz may be used as a text gradient on
-        key stat values (e.g. Avg. Time to MVP in InsightsPanel).
+  Rule: Do not use viz palette colors in UI chrome, buttons,
+        navigation, labels, or text outside article body content.
+  Exception 1: --gradient-viz on key stat values in InsightsPanel
+               (e.g. Avg. Time to MVP).
+  Exception 2: --color-viz-blue (#4DA6FF) for prose links in MDX
+               articles (MdxLink component only). The semantic
+               distinction between "emphasis" (copper) and
+               "navigation" (blue) requires a second colour axis.
 
   VISUALIZATION GRADIENT:
   --gradient-viz: linear-gradient(90deg, #FF9A3C, #00E5C7, #4DA6FF)
@@ -1027,8 +1032,8 @@ VESSEL PRIORITY DASHBOARD (interactive MDX component — writing articles)
                 Registered in createMdxComponents in lib/mdx-components.tsx
                 + spread into useMemo in writing/$slug.tsx
   Responsive:   Desktop (md+): fully interactive
-                Mobile (<md): static PNG image fallback
-                  src="/images/content/vessel-priority-dashboard.png"
+                Mobile (<md): static WEPB image fallback
+                  src="/images/content/vessel-priority-dashboard.webp"
   Outer bg:     #131313 (bg-bg), padding 24px mob / 32px desktop
   Rows bg:      #1a1a1a (bg-surface)
   Row hover:    #202020 (bg-surface-high) — inactive rows only
@@ -1094,7 +1099,7 @@ Favicon:        /public/favicon.svg
                 Pure SVG — no font dependency issues
                 512×512 viewBox, scales to all sizes
 
-PWA setup:      manifest.json — create in IDE
+PWA setup:      manifest.json — hand-authored in public/
                 Required icons: 192×192, 512×512 PNG
                 (generate from favicon.svg via realfavicongenerator.net)
                 apple-touch-icon: 180×180 PNG
@@ -1102,6 +1107,20 @@ PWA setup:      manifest.json — create in IDE
                 Background color: #131313
                 Display: standalone
                 Start URL: /
+
+Service worker: vite-plugin-pwa (Workbox) — configured in vite.config.ts
+                Generates sw.js + workbox-*.js at build time
+                registerType: "autoUpdate" — silent updates on new deploy
+                injectRegister: "auto" — no manual registration code needed
+                manifest: false — preserves hand-authored public/manifest.json
+                Cache strategies:
+                  - Built JS/CSS/HTML: precached with content-hash busting
+                  - /images/**: CacheFirst, 30-day TTL, 60-entry cap
+                  - Everything else: NetworkFirst with cache fallback
+
+LCP preload:    home.tsx exports a links function with:
+                { rel: "preload", href: "/images/portrait/stephen-chiang.jpg", as: "image" }
+                Ensures the portrait is fetched before render on the homepage.
 
 root.tsx links:
   { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }
@@ -1415,7 +1434,7 @@ ARTICLES (MDX in /content/writing/)
     — Interactive component: VesselPriorityDashboard — placed in
       "The Overview Is the Last Thing You Design" section
       Desktop: live interactive priority table with expandable breakdown
-      Mobile: static PNG fallback (/images/content/vessel-priority-dashboard.png)
+      Mobile: static WEBP fallback (/images/content/vessel-priority-dashboard.webp)
 
   design-is-creation-with-researched-intent.mdx
     — Category: Design Technology

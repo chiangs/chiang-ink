@@ -1,5 +1,6 @@
 import type { MetaFunction } from "react-router";
 import { useLoaderData } from "react-router";
+import type { Route } from "./+types/home";
 import { ContactStrip } from "~/components/common";
 import {
   AboutStrip,
@@ -10,6 +11,13 @@ import {
 } from "~/components/home";
 import { GITHUB_URL, LINKEDIN_URL, SITE_URL } from "~/lib/constants";
 import { getFeaturedArticles, getFeaturedProjects } from "~/lib/mdx.server";
+
+const PORTRAIT_SRC = "/images/portrait/stephen-chiang.jpg";
+
+export const links: Route.LinksFunction = () => [
+  // Preload LCP image so the browser fetches it before render
+  { rel: "preload", href: PORTRAIT_SRC, as: "image" },
+];
 
 export async function loader() {
   const [projects, articles] = await Promise.all([

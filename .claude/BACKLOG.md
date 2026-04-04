@@ -145,7 +145,7 @@
       Strong hiring signal: this is what senior design
       leadership actually thinks about.
 
-- [ ] **"The Interpreter Role Nobody Hires For"**
+- [x] **"The Interpreter Role Nobody Hires For"**
       File: `content/writing/the-interpreter-role-nobody-hires-for.mdx`
       Status: idea (not started)
       Subtitle: "What happens when nobody speaks all four languages"
@@ -487,7 +487,7 @@
 
 ## DESIGN — Deferred decisions
 
-- [ ] **Pattern header — fade transitions**
+- [x] **Pattern header — fade transitions**
       The three-segment chaos→waves→order pattern
       on the work page header currently has hard cuts
       between segments. Fade transition version was
@@ -497,7 +497,7 @@
       living with them for a while.
       Prompt is saved in chat history.
 
-- [ ] **About page visual upgrade**
+- [x] **About page visual upgrade**
       Current about page is functional and complete.
       CareerIntensityChart data viz added to Experience section
       (horizontal/vertical toggle on desktop, compact mobile layout).
@@ -520,12 +520,10 @@
       Regenerate PNG icons after SVG update via realfavicongenerator.net.
       Sizes required: 32px, 180px, 192px, 512px.
 
-- [ ] **PWA service worker**
-      Offline support — not yet implemented
-      manifest.json exists, icons needed
-      Generate PNG icons from favicon.svg via
-      realfavicongenerator.net
-      Required sizes: 32px, 180px, 192px, 512px
+- [x] **PWA service worker** — DONE
+      vite-plugin-pwa (Workbox) configured in vite.config.ts.
+      CacheFirst for /images/**, NetworkFirst for everything else.
+      Portrait preloaded via home.tsx links export for LCP.
 
 - [ ] **Real images**
       Placeholder paths still in use:
@@ -534,15 +532,24 @@
       `/images/about/personal-02.jpg`
       `/images/work/maritime-intelligence.jpg`
       `/images/work/data-governance.jpg`
-      `/images/work/maritime-dashboard.jpg`
-      `/images/portrait/stephen-chiang.jpg` ✅ done
-      `/images/content/vessel-priority-dashboard.png` — mobile fallback
+      `/images/work/maritime-dashboard.webp`
+      `/images/portrait/stephen-chiang.webp` ✅ done
+      `/images/content/vessel-priority-dashboard.webp` — mobile fallback
         for VesselPriorityDashboard in dashboards-are-not-for-overview.mdx
 
 - [ ] **Work project hero images**
       Each project MDX references a heroImage path
       that doesn't exist yet. Add real screenshots
       or mockups before launching project pages.
+
+- [ ] **Route-level ErrorBoundary for slug routes**
+      `writing/$slug.tsx` and `work/$slug.tsx` loaders throw
+      `new Response("Not Found", { status: 404 })` for missing slugs,
+      but this hits the root ErrorBoundary instead of rendering the
+      custom NotFound page. Fix: export an `ErrorBoundary` from each
+      slug route that checks `isRouteErrorResponse(error) && error.status === 404`
+      and renders the `NotFound` default export from `routes/not-found.tsx`.
+      Re-throw non-404 errors so root catches them.
 
 - [ ] **Motion layer audit**
       GSAP scroll triggers exist on homepage and

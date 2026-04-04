@@ -1,11 +1,20 @@
 import type { ComponentType, CSSProperties } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link, useLoaderData } from "react-router";
+import {
+  isRouteErrorResponse,
+  Link,
+  useLoaderData,
+  useRouteError,
+} from "react-router";
+import { ErrorDisplay } from "~/components/common/error";
 import { ContactStrip } from "~/components/common";
 import {
   getReadTimeVariant,
   HeroPattern,
+  MobileBriefingDemo,
   VesselPriorityDashboard,
+  ShiftConvergencePattern,
+  BriefingConversation,
 } from "~/components/writing";
 import { useScrolled } from "~/hooks";
 import { HREF_WRITING, SITE_OWNER } from "~/lib/constants";
@@ -64,7 +73,10 @@ export async function loader({ params }: Route.LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  if (article.frontmatter.status === "draft") {
+  if (
+    article.frontmatter.status === "draft" &&
+    process.env.NODE_ENV !== "development"
+  ) {
     throw new Response("Not Found", { status: 404 });
   }
 
@@ -81,6 +93,14 @@ export function meta({ data }: Route.MetaArgs) {
     { title: `${data.frontmatter.title} ${SITE_SUFFIX}` },
     { name: "description", content: data.frontmatter.subtitle },
   ];
+}
+
+// ─── Error boundary ───────────────────────────────────────────────────────────
+export function ErrorBoundary() {
+  const error = useRouteError();
+  const code =
+    isRouteErrorResponse(error) && error.status === 404 ? "404" : "500";
+  return <ErrorDisplay code={code} />;
 }
 
 // ─── Route component ──────────────────────────────────────────────────────────
@@ -107,7 +127,13 @@ export default function Article() {
 
   // MDX component overrides — stable for lifetime of page
   const mdxComponents = useMemo(
-    () => ({ ...createMdxComponents(onHeading), VesselPriorityDashboard }),
+    () => ({
+      ...createMdxComponents(onHeading),
+      VesselPriorityDashboard,
+      MobileBriefingDemo,
+      ShiftConvergencePattern,
+      BriefingConversation,
+    }),
     [onHeading],
   );
 
@@ -118,8 +144,10 @@ export default function Article() {
     const handleScroll = () => {
       const total = document.documentElement.scrollHeight - window.innerHeight;
       const pct = total > 0 ? Math.min((window.scrollY / total) * 100, 100) : 0;
-      if (tocProgressRef.current) tocProgressRef.current.style.width = `${pct}%`;
-      if (mobileProgressRef.current) mobileProgressRef.current.style.width = `${pct}%`;
+      if (tocProgressRef.current)
+        tocProgressRef.current.style.width = `${pct}%`;
+      if (mobileProgressRef.current)
+        mobileProgressRef.current.style.width = `${pct}%`;
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
@@ -290,8 +318,20 @@ export default function Article() {
           aria-label={ARIA_SCROLL_TOP}
           className="w-10 h-10 flex items-center justify-center bg-surface border border-border hover:bg-surface-high transition-colors duration-200"
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M3 10 L8 5 L13 10" stroke="var(--color-accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M3 10 L8 5 L13 10"
+              stroke="var(--color-accent)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </button>
         <Link
@@ -299,8 +339,20 @@ export default function Article() {
           aria-label={ARIA_BACK_WRITING}
           className="w-10 h-10 flex items-center justify-center bg-surface border border-border hover:bg-surface-high transition-colors duration-200"
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M11 3 L6 8 L11 13" stroke="var(--color-accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M11 3 L6 8 L11 13"
+              stroke="var(--color-accent)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </Link>
       </div>
@@ -313,15 +365,8 @@ export default function Article() {
         )}
         <div
           ref={heroRef}
-          className="relative z-[1] max-w-container mx-auto px-margin-mob md:px-margin"
+          className="relative z-1 max-w-container mx-auto px-margin-mob md:px-margin"
         >
-          <Link
-            to={BACK_HREF}
-            data-hero-el
-            className="inline-block font-body font-medium text-sm uppercase tracking-[0.15em] text-text-muted hover:text-accent transition-colors duration-200 mb-10"
-          >
-            {BACK_LABEL}
-          </Link>
           <p
             data-hero-el
             className="font-body font-medium text-sm uppercase tracking-[0.15em] text-accent mb-4"

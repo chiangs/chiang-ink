@@ -10,14 +10,6 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 
-const SW_REGISTRATION_SCRIPT = `
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js');
-    });
-  }
-`;
-
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
@@ -53,7 +45,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
         <ScrollRestoration />
         <Scripts />
-        <script dangerouslySetInnerHTML={{ __html: SW_REGISTRATION_SCRIPT }} />
       </body>
     </html>
   );

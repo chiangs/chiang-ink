@@ -141,7 +141,7 @@ const LANG_TITLE = "How I Communicate";
 const IMG_LABEL = "BEYOND THE BRIEF";
 const IMG_TITLE = "The Full Picture";
 
-const PORTRAIT_SRC = "/images/portrait/stephen-chiang-color.jpg";
+const PORTRAIT_SRC = "/images/portrait/stephen-chiang-color.webp";
 const PORTRAIT_ALT = SITE_OWNER;
 
 // ── Module-level style objects ────────────────────────────────────
@@ -210,27 +210,93 @@ const iconBtnStyle: React.CSSProperties = {
 // Horizontal icon: three stacked bars of decreasing width
 // Vertical icon: four columns of increasing height
 
-function IconHorizontal({ active, hovered }: { active: boolean; hovered: boolean }) {
+function IconHorizontal({
+  active,
+  hovered,
+}: {
+  active: boolean;
+  hovered: boolean;
+}) {
   const c = active ? "#FFB77D" : hovered ? "#FFB77D" : "#737371";
   const t = "fill 0.2s ease";
   return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <rect x="2" y="4" width="16" height="3" style={{ fill: c, opacity: active ? 0.9 : 0.5, transition: t }} />
-      <rect x="2" y="9" width="11" height="3" style={{ fill: c, opacity: active ? 0.65 : 0.35, transition: t }} />
-      <rect x="2" y="14" width="7" height="3" style={{ fill: c, opacity: active ? 0.35 : 0.2, transition: t }} />
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      aria-hidden="true"
+    >
+      <rect
+        x="2"
+        y="4"
+        width="16"
+        height="3"
+        style={{ fill: c, opacity: active ? 0.9 : 0.5, transition: t }}
+      />
+      <rect
+        x="2"
+        y="9"
+        width="11"
+        height="3"
+        style={{ fill: c, opacity: active ? 0.65 : 0.35, transition: t }}
+      />
+      <rect
+        x="2"
+        y="14"
+        width="7"
+        height="3"
+        style={{ fill: c, opacity: active ? 0.35 : 0.2, transition: t }}
+      />
     </svg>
   );
 }
 
-function IconVertical({ active, hovered }: { active: boolean; hovered: boolean }) {
+function IconVertical({
+  active,
+  hovered,
+}: {
+  active: boolean;
+  hovered: boolean;
+}) {
   const c = active ? "#FFB77D" : hovered ? "#FFB77D" : "#737371";
   const t = "fill 0.2s ease";
   return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <rect x="2" y="4" width="3" height="13" style={{ fill: c, opacity: active ? 0.9 : 0.5, transition: t }} />
-      <rect x="7" y="7" width="3" height="10" style={{ fill: c, opacity: active ? 0.65 : 0.35, transition: t }} />
-      <rect x="12" y="10" width="3" height="7" style={{ fill: c, opacity: active ? 0.5 : 0.25, transition: t }} />
-      <rect x="17" y="12" width="3" height="5" style={{ fill: c, opacity: active ? 0.35 : 0.2, transition: t }} />
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      aria-hidden="true"
+    >
+      <rect
+        x="2"
+        y="4"
+        width="3"
+        height="13"
+        style={{ fill: c, opacity: active ? 0.9 : 0.5, transition: t }}
+      />
+      <rect
+        x="7"
+        y="7"
+        width="3"
+        height="10"
+        style={{ fill: c, opacity: active ? 0.65 : 0.35, transition: t }}
+      />
+      <rect
+        x="12"
+        y="10"
+        width="3"
+        height="7"
+        style={{ fill: c, opacity: active ? 0.5 : 0.25, transition: t }}
+      />
+      <rect
+        x="17"
+        y="12"
+        width="3"
+        height="5"
+        style={{ fill: c, opacity: active ? 0.35 : 0.2, transition: t }}
+      />
     </svg>
   );
 }
@@ -245,7 +311,9 @@ export default function About() {
   const [careerAnimKey, setCareerAnimKey] = useState(0);
   const [careerVisible, setCareerVisible] = useState(false);
   const [careerTransitioning, setCareerTransitioning] = useState(false);
-  const [hoveredToggle, setHoveredToggle] = useState<CareerViewMode | null>(null);
+  const [hoveredToggle, setHoveredToggle] = useState<CareerViewMode | null>(
+    null,
+  );
   const chartRef = useRef<HTMLDivElement>(null);
 
   // Load persisted view preference after mount (SSR-safe)
