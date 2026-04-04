@@ -8,3 +8,4 @@ export { SearchIcon } from "./SearchIcon";
 export { Toast } from "./Toast";
 export { WorkRow } from "./WorkRow";
 export { WritingRow } from "./WritingRow";
+export { CareerIntensityChart, WeeklyProportionBar } from "./Viz";

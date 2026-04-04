@@ -1032,8 +1032,8 @@ VESSEL PRIORITY DASHBOARD (interactive MDX component — writing articles)
                 Registered in createMdxComponents in lib/mdx-components.tsx
                 + spread into useMemo in writing/$slug.tsx
   Responsive:   Desktop (md+): fully interactive
-                Mobile (<md): static PNG image fallback
-                  src="/images/content/vessel-priority-dashboard.png"
+                Mobile (<md): static WEPB image fallback
+                  src="/images/content/vessel-priority-dashboard.webp"
   Outer bg:     #131313 (bg-bg), padding 24px mob / 32px desktop
   Rows bg:      #1a1a1a (bg-surface)
   Row hover:    #202020 (bg-surface-high) — inactive rows only
@@ -1434,7 +1434,7 @@ ARTICLES (MDX in /content/writing/)
     — Interactive component: VesselPriorityDashboard — placed in
       "The Overview Is the Last Thing You Design" section
       Desktop: live interactive priority table with expandable breakdown
-      Mobile: static PNG fallback (/images/content/vessel-priority-dashboard.png)
+      Mobile: static WEBP fallback (/images/content/vessel-priority-dashboard.webp)
 
   design-is-creation-with-researched-intent.mdx
     — Category: Design Technology

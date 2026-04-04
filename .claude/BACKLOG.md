@@ -532,9 +532,9 @@
       `/images/about/personal-02.jpg`
       `/images/work/maritime-intelligence.jpg`
       `/images/work/data-governance.jpg`
-      `/images/work/maritime-dashboard.jpg`
-      `/images/portrait/stephen-chiang.jpg` ✅ done
-      `/images/content/vessel-priority-dashboard.png` — mobile fallback
+      `/images/work/maritime-dashboard.webp`
+      `/images/portrait/stephen-chiang.webp` ✅ done
+      `/images/content/vessel-priority-dashboard.webp` — mobile fallback
         for VesselPriorityDashboard in dashboards-are-not-for-overview.mdx
 
 - [ ] **Work project hero images**

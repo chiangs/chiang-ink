@@ -15,7 +15,7 @@ const FORMULA_TERM_3 = "(open off-hire items × 0.25)";
 const FORMULA_SUFFIX = " — normalised 0–100";
 const FOOTNOTE =
   "* Vessel names, IMO numbers, and all data are fictional and used for illustrative purposes only.";
-const MOBILE_IMG_SRC = "/images/content/vessel-priority-dashboard.png";
+const MOBILE_IMG_SRC = "/images/content/vessel-priority-dashboard.webp";
 const MOBILE_IMG_ALT =
   "Fleet operations vessel priority dashboard — three vessels ranked by urgency score with action buttons";
 

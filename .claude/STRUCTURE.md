@@ -23,7 +23,7 @@ chiangs-ink/
 │       ├── work/
 │       │   └── *.jpg
 │       └── content/
-│           └── vessel-priority-dashboard.png  ← mobile fallback for VesselPriorityDashboard
+│           └── vessel-priority-dashboard.webp  ← mobile fallback for VesselPriorityDashboard
 │
 ├── content/
 │   ├── writing/

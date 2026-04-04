@@ -1,6 +1,11 @@
 import type { ComponentType, CSSProperties } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { isRouteErrorResponse, Link, useLoaderData, useRouteError } from "react-router";
+import {
+  isRouteErrorResponse,
+  Link,
+  useLoaderData,
+  useRouteError,
+} from "react-router";
 import { ErrorDisplay } from "~/components/common/error";
 import { ContactStrip } from "~/components/common";
 import {
@@ -93,7 +98,8 @@ export function meta({ data }: Route.MetaArgs) {
 // ─── Error boundary ───────────────────────────────────────────────────────────
 export function ErrorBoundary() {
   const error = useRouteError();
-  const code = isRouteErrorResponse(error) && error.status === 404 ? "404" : "500";
+  const code =
+    isRouteErrorResponse(error) && error.status === 404 ? "404" : "500";
   return <ErrorDisplay code={code} />;
 }
 
@@ -359,15 +365,8 @@ export default function Article() {
         )}
         <div
           ref={heroRef}
-          className="relative z-[1] max-w-container mx-auto px-margin-mob md:px-margin"
+          className="relative z-1 max-w-container mx-auto px-margin-mob md:px-margin"
         >
-          <Link
-            to={BACK_HREF}
-            data-hero-el
-            className="inline-block font-body font-medium text-sm uppercase tracking-[0.15em] text-text-muted hover:text-accent transition-colors duration-200 mb-10"
-          >
-            {BACK_LABEL}
-          </Link>
           <p
             data-hero-el
             className="font-body font-medium text-sm uppercase tracking-[0.15em] text-accent mb-4"
