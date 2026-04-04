@@ -28,6 +28,58 @@ export const links: Route.LinksFunction = () => [
   { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
 ];
 
+const PERSON_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Stephen Chiang",
+  url: "https://www.chiang.ink",
+  image: "https://www.chiang.ink/images/portrait/stephen-chiang.jpg",
+  sameAs: [
+    "https://www.linkedin.com/in/chiangs",
+    "https://github.com/chiangs",
+  ],
+  jobTitle: "Design Technologist",
+  description:
+    "Senior product technology leader working at the intersection of design, data, and technology. 20+ years experience in maritime, oil & gas, financial services, and enterprise software.",
+  knowsAbout: [
+    "Design Technology",
+    "Product Strategy",
+    "Human-Machine Interfaces",
+    "AI Design",
+    "Data Governance",
+    "UX Engineering",
+    "Dashboard Design",
+    "React",
+    "TypeScript",
+    "Snowflake",
+  ],
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Stavanger",
+    addressCountry: "NO",
+  },
+  alumniOf: {
+    "@type": "Organization",
+    name: "United States Army Special Operations",
+  },
+};
+
+const WEBSITE_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Stephen Chiang — Design Technologist",
+  url: "https://www.chiang.ink",
+  description:
+    "Portfolio and writing of Stephen Chiang — Design Technologist and senior product technology leader working at the intersection of design, data, and technology.",
+  author: {
+    "@type": "Person",
+    name: "Stephen Chiang",
+  },
+  inLanguage: "en",
+  copyrightYear: new Date().getFullYear(),
+  license: "https://creativecommons.org/licenses/by-nc/4.0/",
+};
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -40,6 +92,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="apple-mobile-web-app-title" content="SC" />
         <Meta />
         <Links />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON_SCHEMA) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_SCHEMA) }}
+        />
       </head>
       <body className="bg-bg text-text-primary">
         {children}

@@ -1,3 +1,4 @@
+export { ArticleSchema } from "./ArticleSchema";
 export { ButtonCta } from "./ButtonCta";
 export { ContactStrip } from "./ContactStrip";
 export { EmptyState } from "./EmptyState";

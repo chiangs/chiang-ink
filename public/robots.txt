@@ -1,0 +1,31 @@
+User-agent: *
+Allow: /
+
+# Disallow admin, API, and internal routes
+Disallow: /api/
+Disallow: /_build/
+Disallow: /__manifest
+
+# AI crawlers — explicitly welcome
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+Sitemap: https://www.chiang.ink/sitemap.xml

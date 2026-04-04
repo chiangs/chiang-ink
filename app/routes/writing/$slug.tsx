@@ -7,7 +7,7 @@ import {
   useRouteError,
 } from "react-router";
 import { ErrorDisplay } from "~/components/common/error";
-import { ContactStrip } from "~/components/common";
+import { ArticleSchema, ContactStrip } from "~/components/common";
 import {
   getReadTimeVariant,
   HeroPattern,
@@ -306,6 +306,14 @@ export default function Article() {
 
   return (
     <main>
+      <ArticleSchema
+        title={frontmatter.title}
+        description={frontmatter.subtitle ?? frontmatter.title}
+        slug={slug}
+        publishedDate={frontmatter.date}
+        category={frontmatter.category}
+        readTime={frontmatter.readTime}
+      />
       {/* Mobile reading progress bar — fixed below nav, hidden on md+ */}
       <div className="md:hidden fixed top-16 left-0 right-0 h-0.5 bg-border z-[49]">
         <div ref={mobileProgressRef} style={mobileProgressFillStyle} />
