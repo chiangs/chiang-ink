@@ -14,30 +14,38 @@ export type ArticleFrontmatter = {
 export type ProjectMetric = {
   value: string;
   label: string;
+  animate?: "count" | "fade";
 };
 
 export type ProjectStack = {
-  frameworks: string[];
-  languages: string[];
-  platforms: string[];
+  frameworks?: string[];
+  languages?: string[];
+  platforms?: string[];
 };
 
 export type ProjectFrontmatter = {
   title: string;
+  positioning: string;
   client: string;
-  clientContext: string;
+  clientContext?: string;
   roles: string[];
-  year: string;
-  status: string;
-  tags: string[];
-  industry: string[];
+  year: number;
+  status: "Live" | "Delivered" | "Ongoing" | "Confidential";
+  tags?: string[];
+  industry?: string[];
   industries?: string[];
-  solutionType: string[];
-  metrics: ProjectMetric[];
+  solutionType?: string[];
+  metrics?: ProjectMetric[];
   stack?: ProjectStack;
-  heroImage: string;
-  featured: boolean;
-  order: number;
-  publishStatus?: "draft" | "published";
+  heroImage?: string;
+  heroPattern?: "dots" | "lines" | "crosshatch" | "waves" | "none";
+  featured?: boolean;
+  order?: number;
+  publishStatus?: "published" | "draft";
   slug?: string;
+  nda?: boolean;
+  team?: {
+    delivery?: string[];
+    client?: string[];
+  };
 };

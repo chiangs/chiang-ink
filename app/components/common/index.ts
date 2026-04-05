@@ -10,3 +10,14 @@ export { Toast } from "./Toast";
 export { WorkRow } from "./WorkRow";
 export { WritingRow } from "./WritingRow";
 export { CareerIntensityChart, WeeklyProportionBar } from "./Viz";
+export {
+  Challenge,
+  Situation,
+  WhatWasHard,
+  WhatWasBuilt,
+  ProjectImage,
+  ProjectImagePair,
+  Outcomes,
+  ProjectPullQuote,
+  SectionDivider,
+} from "./MDX/projects";

@@ -1,6 +1,6 @@
 // mdx-components.tsx
-// Shared MDX component factory used by all article/project page routes.
-// Import createMdxComponents and TocItem from here — never duplicate in routes.
+// MDX component factories for all content routes.
+// Import createWritingMdxComponents, createProjectMdxComponents, and TocItem from here.
 
 import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
@@ -9,8 +9,20 @@ import {
   DefinitionBlock,
   FloatImage,
   Highlight,
+  ImageGrid,
   MdxLink,
 } from "~/components/common/MDX";
+import {
+  Challenge,
+  Outcomes,
+  ProjectImage,
+  ProjectImagePair,
+  ProjectPullQuote,
+  SectionDivider,
+  Situation,
+  WhatWasBuilt,
+  WhatWasHard,
+} from "~/components/common/MDX/projects";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type TocItem = { id: string; text: string; level: 2 | 3 };
@@ -52,10 +64,10 @@ export function slugify(text: string): string {
     .replace(/\s+/g, "-");
 }
 
-// ─── MDX component factory ────────────────────────────────────────────────────
+// ─── Writing MDX component factory ───────────────────────────────────────────
 // Returns stable component overrides passed to the Content MDX component.
 // onHeading must be stable (useCallback) so the components object never changes.
-export function createMdxComponents(onHeading: (item: TocItem) => void) {
+export function createWritingMdxComponents(onHeading: (item: TocItem) => void) {
   function H2({ children }: { children?: ReactNode }) {
     const text = getNodeText(children);
     const id = slugify(text);
@@ -254,5 +266,57 @@ export function createMdxComponents(onHeading: (item: TocItem) => void) {
     DefinitionBlock,
     FloatImage,
     MdxLink,
+    ImageGrid,
+  };
+}
+
+// ─── Project MDX component factory ───────────────────────────────────────────
+// No TOC — project pages don't need heading registration.
+export function createProjectMdxComponents() {
+  return {
+    Situation,
+    WhatWasHard,
+    WhatWasBuilt,
+    ProjectImage,
+    ProjectImagePair,
+    Outcomes,
+    ProjectPullQuote,
+    PullQuote: ProjectPullQuote,
+    Challenge,
+    SectionDivider,
+    ImageGrid,
+
+    h2: ({ children }: { children?: ReactNode }) => (
+      <h2
+        className="font-display font-bold text-text-primary mt-14 mb-5"
+        style={{ fontSize: "clamp(22px, 3vw, 32px)" }}
+      >
+        {children}
+      </h2>
+    ),
+    h3: ({ children }: { children?: ReactNode }) => (
+      <h3 className="font-display font-bold text-text-primary text-xl mt-10 mb-4">
+        {children}
+      </h3>
+    ),
+    p: ({ children }: { children?: ReactNode }) => (
+      <p
+        className="font-body mb-5 max-w-2xl"
+        style={{ fontSize: "16px", lineHeight: 1.8 }}
+      >
+        {children}
+      </p>
+    ),
+    ul: ({ children }: { children?: ReactNode }) => (
+      <ul className="font-body mb-5 max-w-2xl space-y-2 pl-5 list-disc marker:text-accent">
+        {children}
+      </ul>
+    ),
+    li: ({ children }: { children?: ReactNode }) => (
+      <li style={{ fontSize: "16px", lineHeight: 1.8 }}>{children}</li>
+    ),
+    strong: ({ children }: { children?: ReactNode }) => (
+      <strong className="font-medium">{children}</strong>
+    ),
   };
 }

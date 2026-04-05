@@ -18,7 +18,7 @@ import {
 } from "~/components/writing";
 import { useScrolled } from "~/hooks";
 import { HREF_WRITING, SITE_OWNER } from "~/lib/constants";
-import { createMdxComponents, type TocItem } from "~/lib/mdx-components";
+import { createWritingMdxComponents, type TocItem } from "~/lib/mdx-components";
 import { getAllArticles, getArticle } from "~/lib/mdx.server";
 import { formatDate } from "~/lib/utils";
 import type { Route } from "./+types/$slug";
@@ -128,7 +128,7 @@ export default function Article() {
   // MDX component overrides — stable for lifetime of page
   const mdxComponents = useMemo(
     () => ({
-      ...createMdxComponents(onHeading),
+      ...createWritingMdxComponents(onHeading),
       VesselPriorityDashboard,
       MobileBriefingDemo,
       ShiftConvergencePattern,

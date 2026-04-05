@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useReducer, useRef } from "react";
 import { useLoaderData } from "react-router";
-import { EmptyState, FilterDropdown, SearchIcon, WritingRow } from "~/components/common";
+import {
+  EmptyState,
+  FilterDropdown,
+  SearchIcon,
+  WritingRow,
+} from "~/components/common";
 import { WritingInsightsPanel } from "~/components/writing";
 import { ITEM_STAGGER_S, SEARCH_INPUT_STYLE } from "~/lib/constants";
 import { Fuse } from "~/lib/fuse";
@@ -556,4 +561,3 @@ export default function WritingIndex() {
     </main>
   );
 }
-
