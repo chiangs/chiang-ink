@@ -14,7 +14,7 @@ Sub-title:  Leading a national practice integrating design,
             and product leadership roles.
 Descriptor: Design Technology · Product Strategy ·
             Human-Machine Interfaces · AI Design & Integration
-Email:      stephen@chiang.studio
+Email:      stephen@chiang.ink
             NOTE: Email is NOT displayed publicly on the site.
             Contact is via the contact form or LinkedIn only.
 Location:   Stavanger, Norway
