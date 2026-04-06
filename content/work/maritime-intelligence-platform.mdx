@@ -1,146 +1,151 @@
 ---
 title: "Maritime Intelligence Platform"
+positioning: "Two workstreams, one timeline. The data foundation and the product that depended on it — delivered together."
 client: "Global Maritime Services Provider"
-clientContext: "One of the world's largest maritime services companies, headquartered in Norway with 8 global offices"
+clientContext: "One of the world's largest maritime services companies, headquartered in Norway"
+year: 2026
+status: Delivered
 roles:
   - "Product Owner"
   - "Scrum Lead"
+  - "Solution Architect"
   - "Tech Lead"
   - "Frontend Lead"
-year: "2024"
-status: "Launched"
 tags: ["Enterprise", "Data Strategy", "Full-Stack", "Snowflake", "React", "ISO27001"]
-industry: ["Maritime"]
-industries: ["Maritime"]
+industry: "Maritime"
 solutionType: ["Data & Analytics Platforms", "Enterprise Software"]
 stack:
-  frameworks: ["React Router v7", "TypeScript"]
-  languages: ["TypeScript", "SQL"]
-  platforms: ["Snowflake", ".NET", "Vercel"]
+  frameworks: ["React Router v7", ".NET", "Tailwind"]
+  languages: ["TypeScript", "HTML", "CSS", "C#"]
+  platforms: ["Snowflake", "Azure"]
 metrics:
-  - value: "200+"
+  - value: "100+"
     label: "Active users at launch"
+    animate: count
   - value: "300+"
     label: "Vessels in live deployment"
+    animate: count
   - value: "5"
     label: "Months from zero to MVP"
+    animate: count
   - value: "2"
     label: "Legacy applications sunsetted"
+    animate: count
   - value: "AI-ready"
     label: "Data foundation structured for intelligent systems"
-heroImage: "/images/work/maritime-intelligence.jpg"
+    animate: fade
+team:
+  delivery:
+    - "UX Designer"
+    - "Backend Developer"
+    - "Backend Developer"
+    - "Data Engineer"
+    - "Data Engineer"
+  client:
+    - "Domain SME"
+    - "Infrastructure SME"
+    - "Data Engineer"
+heroImage: "/images/content/cargo-vessel-1.webp"
 featured: true
 order: 1
 publishStatus: "published"
+nda: true
 ---
 
-## The Infrastructure Debt
+<Situation>
+  Maritime ship services sits on a wealth of untapped operational data. With growth resulting from bringing together businesses and systems, the opportunity has never been greater. By establishing a unified data foundation, there is a clear path to transforming fragmented information into a strategic asset –driving smarter decisions, stronger customer outcomes, and sustainable competitive advantage.
 
-Maritime is one of the world's most data-rich
-industries — and one of the least equipped to act
-on it. Vessels generate continuous streams of
-operational, performance, and services data.
-Most of it sits in warehouses, siloed in legacy
-systems, or never makes it off the ship at all.
-The business value is there. The infrastructure
-to surface it rarely is.
+  Multiple internal platforms. None talked directly to the other. Data of all type being ingested from various sources with varying dependencies creating a maze for data lineage. The brief was unusually direct: start from scratch and deliver something the organisation could own, extend, and create new business value.
+  
+  Shape client's data platform strategy by building a modern maritime services intelligence platform that replaces legacy applications, architecture, and fragmented data flows. Drive new business and ways of working. Scaleup of resources as a business, data, & tech strategy partner.
+</Situation>
 
-One of the world's largest maritime services
-providers was no exception. Business-critical
-vessel performance data and ship services metrics
-were fragmented across legacy applications that
-couldn't communicate — leaving operational
-decision-makers without clarity, and the business
-without the data foundation it needed to grow
-and create new commercial opportunities.
+<ProjectImagePair 
+  images={[
+      {
+        src: "/images/content/cargo-vessel-2.webp",
+        alt: "Vessel tracking and operational data interface",
+        caption: "REF_002 // VESSEL TRACKING"
+      },
+      {
+        src: "/images/content/world-map-network.webp",
+        alt: "Financial intelligence and services overview",
+        caption: "REF_003 // FINANCIAL INTELLIGENCE"
+      }
+    ]}
+  />
 
-The brief was unusually broad: start from scratch.
-Design, build, and deliver an MVP the organisation
-could own, extend, and eventually monetise —
-including a path to exposing APIs as a future
-revenue stream. No existing codebase. No existing
-data strategy. A blank slate, a multifunctional
-team, and five months.
+<WhatWasHard callout="We were handed a goal. The scope, the data strategy, and the architecture were ours to define.">
+  Discovery surfaced the full picture quickly. The data warehouse needed
+  significant structural work before it could support the queries a modern
+  application would demand — which meant defining and executing a new data
+  strategy in parallel with building a product that assumed that strategy
+  was already in place. Both workstreams ran simultaneously from the start.
 
-<Challenge>
-How do you build a business-critical platform
-for global maritime operations — with offline
-capability, a consolidated data strategy, and
-a path to API monetisation — from zero, and
-hand it over ready to scale in five months?
-</Challenge>
+  The lack of initial feature definition created scope pressure as requirements
+  were shaped through real use and user feedback. But it was the design-led
+  discovery process that surfaced the two most valuable features in the first
+  release — neither of which appeared in the original brief.
 
-## The Process
+  The first was a configurable cross-fleet analysis table. Users could define
+  the columns to match the question they were trying to answer at that moment —
+  comparing scheduling, crew, positioning, and operational data across any
+  selection of vessels simultaneously. The data architecture that made it
+  possible also opened a direct path to a future where a user asks an AI a
+  question and receives the answer in text summary and a table configures itself in response.
 
-I led the engagement across four concurrent
-workstreams simultaneously — product ownership,
-scrum delivery, technical architecture, and
-frontend engineering. Not sequentially. All at once.
+  The second was role-based vessel favouriting — operations managers, fleet
+  teams, and individuals each maintaining their own curated group of vessels
+  for fast navigation across a fleet of 300. A feature that sounds simple
+  until you consider that eight global offices and multiple management layers
+  each have a different answer to the question: which vessels matter to me
+  right now.
+</WhatWasHard>
 
-**Product & Delivery**
-We built the backlog from the ground up, ran scrum
-ceremonies across a multifunctional team of designers,
-backend developers, and data engineers, and maintained
-the delivery rhythm that kept stakeholders aligned
-across time zones and disciplines.
+<WhatWasBuilt>
+  A unified full-stack web application — built three capability layers and 
+  across four concurrent workstreams:
 
-**Data Strategy**
-The client's Snowflake data warehouse was
-underutilised — data existed but wasn't structured
-to deliver business value. We assessed the full
-data landscape, mapped source-to-downstream
-dependencies, and prescribed and executed a
-strategy to extract clarity and quality from
-what already existed. Critically, the work didn't
-just serve the immediate platform — it structured
-and positioned the business's data as a foundation
-for future AI-powered experiences, moving from
-raw operational data to an asset ready to be
-reasoned over by intelligent systems.
+  - **Vessel intelligence.** — everything that
+    answers where a vessel is and what is known about it.
 
-**Technical Architecture**
-The stack was chosen for longevity and ownership:
-React Router v7 with a Backend-for-Frontend (BFF)
-layer sitting in front of a .NET backend as the
-single gateway to Snowflake. Offline capability
-was built in from day one — not retrofitted —
-because vessel operations don't wait for connectivity.
+  - **Operational context.** — everything that answers who is accountable and how each
+    role navigates their specific view across a fleet of 300.
+  
+  - **Cross-fleet analysis.** — structured on a data foundation designed to
+      support AI-driven querying as the next evolution.
 
-**Documentation & Compliance**
-We produced extensive technical documentation that
-directly supported the client's successful path
-toward ISO27001 certification. Every architectural
-decision, data flow, and system dependency was
-mapped and documented to the standard required
-for certification — a deliverable that outlasted
-the engagement.
+  - **Product & delivery.** Backlog built from zero. Scrum ceremonies run
+    across a multifunctional team of designers, backend developers, and data
+    engineers. Delivery rhythm maintained across time zones for five months.
 
-<PullQuote>
-The platform didn't just replace two legacy systems.
-It gave the business a data foundation it could
-build a commercial strategy on top of.
-</PullQuote>
+  - **Data strategy.** The client's Snowflake environment was assessed,
+    source-to-downstream dependencies mapped, and a full data quality and
+    governance strategy prescribed and executed. The result wasn't just a
+    cleaner warehouse — it was a data foundation structured for future
+    AI-driven analysis.
 
-## The Outcome
+  - **Technical architecture.** React Router v7 with a BFF layer in front
+    of a .NET backend as the single gateway to Snowflake. Offline capability
+    built in from day one — vessel operations don't wait for connectivity.
 
-The MVP launched to internal users across all 8 global
-offices, covering over 300 vessels in live operation.
-Two legacy applications were consolidated and retired.
-The client took full ownership of the codebase with
-the documentation, architecture, and backlog in place
-to continue building and extending — including a
-clear pathway to exposing and monetising APIs as
-a future revenue stream.
+  - **Documentation.** Extensive technical documentation produced across
+    the engagement directly supported the client's successful path to
+    ISO27001 certification.
+</WhatWasBuilt>
+<ImageGrid
+  images={[]}
+/>
 
-The data strategy work repositioned Snowflake from
-a passive warehouse into an active business asset —
-with the data landscape fully mapped, quality
-improvements prescribed, and the foundation laid
-for three future opportunities: downstream data
-products, API monetisation, and AI-powered
-experiences built on clean, structured,
-trustworthy data.
+<Outcomes>
+  100+ users across global offices moved off their workarounds within weeks of launch. Two legacy applications were consolidated and retired. The client took full ownership of the codebase with the documentation, architecture, and backlog in place to continue building — including a clear pathway for AI-powered experiences and future revenue opportunities.
 
-The engagement delivered three things most projects
-deliver one of: a working product, a data strategy,
-and an organisation ready to own and scale both.
+  <ProjectPullQuote>
+    The gap between what data the business had and what decisions it could
+    accelerate narrowed by several years in five months.
+  </ProjectPullQuote>
+
+  Snowflake moved from passive warehouse to active business asset — with the data landscape mapped, quality improvements in place, and the foundation laid for three things the business is now building toward: downstream data products, API monetisation, and AI-powered experiences built on clean, structured, trustworthy data.
+  
+  The application launched successfully to internal users, with a clear path to onboarding customers and vendors, and a data warehouse strategy built for long-term scale. Setting a new standard for how the organisation approaches digital products was an explicit expectation of the engagement — the design, engineering, and data principles delivered were built to be the foundation everything that follows is measured against.
+</Outcomes>

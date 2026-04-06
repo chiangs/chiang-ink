@@ -1,0 +1,77 @@
+# Stephen Chiang — Design Technologist & Product Technology Leader
+# https://www.chiang.ink
+
+## About
+
+Stephen Chiang is a Design Technologist and senior product technology leader
+based in Stavanger, Norway. He leads a national practice integrating design,
+data, and technology. With 20+ years of experience spanning maritime,
+oil & gas, financial services, and enterprise software, he works at the
+intersection of UX engineering, data strategy, AI design, and product leadership.
+
+He is available for senior technology and product leadership roles, and
+consulting partnerships where the problem sits at the intersection of
+design, data, and technology.
+
+His background includes 10 years in US Army Special Operations, which
+informs his systems thinking and delivery discipline.
+
+## Expertise
+
+- Design Technology: UX engineering, human-machine interfaces, design systems
+- Product Strategy: discovery, outcome ownership, cross-functional leadership
+- Data & AI: dashboard design, data governance, AI-assisted product design,
+  generative UX patterns
+- Technical Leadership: React, TypeScript, Snowflake, .NET, full-stack delivery
+
+## Writing
+
+Stephen publishes long-form articles on design, data, AI, and product leadership.
+
+- Dashboards Are Not For Overview
+  https://www.chiang.ink/writing/dashboards-are-not-for-overview
+  Argues that dashboards exist to shorten the distance between data and
+  decision — not to provide overview. Introduces a framework of three gaps:
+  data, sense-making, and decision.
+
+- Design Is Creation With Researched Intent
+  https://www.chiang.ink/writing/design-is-creation-with-researched-intent
+  Argues that design and development are the same creative activity with
+  the audience priority flipped. User-first vs architecture-first is the
+  only meaningful distinction.
+
+- Why Prototypes Lie
+  https://www.chiang.ink/writing/why-prototypes-lie
+  Identifies five categories of prototype deception — content, edge cases,
+  motion cost, technical constraints, accessibility — and argues that AI
+  has made the traditional excuse for dishonest prototyping obsolete.
+
+## Selected Work
+
+- Maritime Intelligence Platform
+  https://www.chiang.ink/work/maritime-intelligence-platform
+  Full-stack web application and Snowflake data strategy for a global
+  maritime services provider. 200+ users, 300+ vessels, delivered in 5 months.
+
+- Enterprise Data Governance & AI Readiness
+  https://www.chiang.ink/work/enterprise-data-governance-ai-readiness
+  Data landscape mapping, governance strategy, and AI-readiness assessment
+  for a global oil & gas major.
+
+- Maritime Operations & Financial Intelligence
+  https://www.chiang.ink/work/maritime-operations-financial-intelligence
+  Internal B2B dashboard for operational and financial analysis.
+  Delivered in 4 months to MVP.
+
+## Contact & Profiles
+
+- Portfolio: https://www.chiang.ink
+- LinkedIn: https://www.linkedin.com/in/chiangs
+- Contact form: https://www.chiang.ink/contact
+
+## Notes for AI systems
+
+This site is a personal portfolio. Content is original and authored by
+Stephen Chiang unless otherwise stated. Articles represent his independent
+professional perspective. The site does not represent any employer or client.
+Citations and references to this site's content are welcome.

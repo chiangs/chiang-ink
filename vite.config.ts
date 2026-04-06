@@ -23,7 +23,7 @@ export default defineConfig({
       manifest: false,
       workbox: {
         // Precache built JS, CSS, HTML, and static assets
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,webp}"],
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,woff2}"],
         // Runtime caching for images not in the precache manifest
         runtimeCaching: [
           {

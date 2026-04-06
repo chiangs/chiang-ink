@@ -11,22 +11,71 @@ import type { Route } from "./+types/root";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Manrope:wght@200..800&display=swap",
-  },
   { rel: "manifest", href: "/manifest.json" },
   { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
-  { rel: "icon", href: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
-  { rel: "icon", href: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+  {
+    rel: "icon",
+    href: "/favicon-32x32.png",
+    type: "image/png",
+    sizes: "32x32",
+  },
+  {
+    rel: "icon",
+    href: "/favicon-16x16.png",
+    type: "image/png",
+    sizes: "16x16",
+  },
   { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
 ];
+
+const PERSON_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Stephen Chiang",
+  url: "https://www.chiang.ink",
+  image: "https://www.chiang.ink/images/portrait/stephen-chiang.jpg",
+  sameAs: ["https://www.linkedin.com/in/chiangs", "https://github.com/chiangs"],
+  jobTitle: "Lead Design Technologist",
+  description:
+    "Senior product technology leader working at the intersection of design, data, and technology. 20+ years experience in maritime, oil & gas, financial services, and enterprise software.",
+  knowsAbout: [
+    "Design Technology",
+    "Product Strategy",
+    "Human-Machine Interfaces",
+    "AI Design",
+    "Data Governance",
+    "UX Engineering",
+    "Dashboard Design",
+    "React",
+    "TypeScript",
+    "Snowflake",
+  ],
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Stavanger",
+    addressCountry: "NO",
+  },
+  alumniOf: {
+    "@type": "Organization",
+    name: "United States Army Special Operations",
+  },
+};
+
+const WEBSITE_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Stephen Chiang — Design Technologist",
+  url: "https://www.chiang.ink",
+  description:
+    "Portfolio and writing of Stephen Chiang — Lead Design Technologist and senior product technology leader working at the intersection of design, data, and technology.",
+  author: {
+    "@type": "Person",
+    name: "Stephen Chiang",
+  },
+  inLanguage: "en",
+  copyrightYear: new Date().getFullYear(),
+  license: "https://creativecommons.org/licenses/by-nc/4.0/",
+};
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -36,10 +85,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#0c0c0c" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
         <meta name="apple-mobile-web-app-title" content="SC" />
         <Meta />
         <Links />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON_SCHEMA) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_SCHEMA) }}
+        />
       </head>
       <body className="bg-bg text-text-primary">
         {children}
@@ -72,7 +132,9 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
   return (
     <main className="max-w-container mx-auto px-margin-mob md:px-margin py-16">
-      <h1 className="font-display text-accent text-4xl font-black mb-4">{message}</h1>
+      <h1 className="font-display text-accent text-4xl font-black mb-4">
+        {message}
+      </h1>
       <p className="text-text-primary">{details}</p>
       {stack && (
         <pre className="w-full p-4 overflow-x-auto bg-surface border border-border mt-4 text-sm">

@@ -11,6 +11,7 @@ import {
   LINKEDIN_URL,
   GITHUB_URL,
 } from "~/lib/constants";
+import { Link } from "react-router";
 
 const EASTER_EGG_TEXT = "This site has secrets. Explore to find them.";
 const LABEL_STYLE_GUIDE = "Style Guide ↗";
@@ -46,14 +47,17 @@ export function Footer({ onOpenStyleGuide }: FooterProps) {
     >
       {/* Name + year */}
       <p className="font-body text-sm font-medium uppercase tracking-[0.15em] text-text-muted">
-        {SITE_OWNER}{" "}
-        <span style={{ color: "#333330" }}>{year}</span>
+        {SITE_OWNER} <span style={{ color: "#333330" }}>{year}</span>
       </p>
 
       {/* Easter egg hint */}
       <p
         className="footer-easter-egg font-body text-sm tracking-[0.1em] text-left md:text-center"
-        style={{ color: "#2a2a2a", cursor: "default", transition: "color 0.3s ease" }}
+        style={{
+          color: "#2a2a2a",
+          cursor: "default",
+          transition: "color 0.3s ease",
+        }}
         onMouseEnter={(e) => (e.currentTarget.style.color = "#5a5a58")}
         onMouseLeave={(e) => (e.currentTarget.style.color = "#2a2a2a")}
       >
@@ -72,7 +76,12 @@ export function Footer({ onOpenStyleGuide }: FooterProps) {
             {LABEL_STYLE_GUIDE}
           </button>
         )}
-
+        <Link
+          to="/privacy"
+          className="font-body text-sm font-medium uppercase tracking-[0.15em] text-text-muted no-underline transition-colors duration-200 hover:text-accent"
+        >
+          Privacy
+        </Link>
         <FooterLink href={GITHUB_URL} label={LABEL_GITHUB} />
         <FooterLink href={LINKEDIN_URL} label={LABEL_LINKEDIN} />
       </div>

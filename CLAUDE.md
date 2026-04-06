@@ -442,7 +442,7 @@ ABOUT · WORK · WRITING · CONTACT
 ## Build Order (remaining pages)
 
 1. ✓ Work index — DONE
-2. Project page template (`work/$slug.tsx`)
+2. ✓ Project page template (`work/$slug.tsx`) — DONE
 3. ✓ Writing index — DONE
 4. ✓ Article page template (`writing/$slug.tsx`) — DONE
 5. Contact page (`contact.tsx`)
