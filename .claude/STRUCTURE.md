@@ -23,13 +23,16 @@ chiangs-ink/
 │       ├── work/
 │       │   └── *.jpg
 │       └── content/
-│           └── vessel-priority-dashboard.webp  ← mobile fallback for VesselPriorityDashboard
+│           ├── vessel-priority-dashboard.webp  ← mobile fallback for VesselPriorityDashboard
+│           └── *.webp                          ← project hero + body images
 │
 ├── content/
 │   ├── writing/
 │   │   └── *.mdx
 │   └── work/
-│       └── *.mdx
+│       └── *.mdx                             ← maritime-intelligence-platform,
+│                                               enterprise-data-governance-ai-readiness,
+│                                               maritime-operations-financial-intelligence
 │
 └── app/
     ├── app.css                       ← Design tokens (@theme) + base styles + component CSS
@@ -43,7 +46,11 @@ chiangs-ink/
     │   ├── not-found.tsx             ← 404 catch-all route; random 3-way canvas variant
     │   ├── work/
     │   │   ├── index.tsx             ← Work index
-    │   │   └── $slug.tsx             ← Project page template
+    │   │   └── $slug.tsx             ← Project page: hero (72vh, heroImage or SVG pattern
+    │   │                               fallback), ContributionBar, TeamComposition,
+    │   │                               MetricsStrip, MDX body, NdaDisclosure, footer nav.
+    │   │                               MDX loaded via import.meta.glob eager registry.
+    │   │                               GSAP entrance: eyebrow→title→positioning→client.
     │   └── writing/
     │       ├── index.tsx             ← Writing index
     │       └── $slug.tsx             ← Article page template; mobile reading progress
@@ -114,12 +121,33 @@ chiangs-ink/
     │   │   │                           horizontal (bars). compact prop for mobile:
     │   │   │                           hides row labels, shows legend above chart.
     │   │   ├── MDX/
-    │   │   │   ├── index.ts          ← Barrel re-export
-    │   │   │   ├── ArticleImage.tsx  ← Full-width article image with caption
-    │   │   │   ├── DefinitionBlock.tsx ← Full-bleed accent block (bg-accent, inverted
-    │   │   │   │                         text): label + large display definition + body
-    │   │   │   ├── FloatImage.tsx    ← Float-right article image with caption
-    │   │   │   └── Highlight.tsx     ← Inline text highlight (emphasis/subtle/flashy)
+    │   │   │   ├── index.ts          ← Barrel re-export (re-exports writing/* + projects/* + MdxLink)
+    │   │   │   ├── MdxLink.tsx       ← Shared styled anchor for MDX prose links
+    │   │   │   ├── writing/          ← Writing article MDX components
+    │   │   │   │   ├── index.ts      ← Barrel re-export
+    │   │   │   │   ├── ArticleImage.tsx  ← Full-width article image with caption
+    │   │   │   │   ├── DefinitionBlock.tsx ← Full-bleed accent block (bg-accent, inverted
+    │   │   │   │   │                         text): label + large display definition + body
+    │   │   │   │   ├── FloatImage.tsx    ← Float-right article image with caption
+    │   │   │   │   └── Highlight.tsx     ← Inline text highlight (emphasis/subtle/flashy)
+    │   │   │   └── projects/         ← Work project MDX components
+    │   │   │       ├── index.ts      ← Barrel re-export
+    │   │   │       ├── Situation.tsx         ← Project context section wrapper
+    │   │   │       ├── WhatWasHard.tsx       ← Full-bleed accent section: ghost letter +
+    │   │   │       │                           callout slide-in + body. overflow visible
+    │   │   │       │                           (ghost bleeds off viewport right edge).
+    │   │   │       ├── WhatWasBuilt.tsx      ← Delivery detail section wrapper
+    │   │   │       ├── Outcomes.tsx          ← Results section wrapper
+    │   │   │       ├── Challenge.tsx         ← Callout block: bg-surface, 4px accent border
+    │   │   │       ├── ProjectPullQuote.tsx  ← Pull quote: Space Grotesk 300, italic,
+    │   │   │       │                           bg-surface, 4px accent border
+    │   │   │       ├── ContributionBar.tsx   ← Roles pills, GSAP stagger fade-in
+    │   │   │       ├── MetricsStrip.tsx      ← Metrics grid: count-up or fade per metric,
+    │   │   │       │                           IntersectionObserver trigger
+    │   │   │       ├── TeamComposition.tsx   ← Delivery + client team member lists
+    │   │   │       ├── NdaDisclosure.tsx     ← NDA notice (shown when nda: true)
+    │   │   │       ├── ProjectImagePair.tsx  ← Two images side-by-side with captions
+    │   │   │       └── ImageGrid.tsx         ← Project image grid
     │   │   ├── InsightsPanel.tsx     ← Collapsible panel shell — toggle button, GSAP
     │   │   │                           height tween, onMount/onExpand/storageKey props
     │   │   │                           Shared by WorkInsightsPanel + WritingInsightsPanel
@@ -130,7 +158,7 @@ chiangs-ink/
     │   │   ├── ContactStrip.tsx      ← Shared contact CTA strip
     │   │   ├── FilterDropdown.tsx    ← Multi-select dropdown (Work + Writing indexes)
     │   │   ├── SearchIcon.tsx        ← 14×14px SVG magnifier (shared)
-    │   │   ├── WorkRow.tsx           ← Single work project row
+    │   │   ├── WorkRow.tsx           ← Single work project row (industry: string)
     │   │   ├── WritingRow.tsx        ← Single writing article row
     │   │   ├── EmptyState.tsx        ← No-results state (Work + Writing indexes)
     │   │   └── 404/
@@ -162,10 +190,14 @@ chiangs-ink/
     │   ├── currently.ts              ← Currently drawer content data
     │   ├── styleguide.ts             ← Style guide drawer content data
     │   ├── mdx.server.ts             ← MDX loader utilities (server-only)
-    │   ├── mdx-components.tsx        ← createMdxComponents() factory — h2/h3/p/blockquote/
+    │   ├── mdx-components.tsx        ← createWritingMdxComponents() — h2/h3/p/blockquote/
     │   │                               pre/code/ul/li/hr/a/strong/em overrides + named
     │   │                               components (PullQuote, Highlight, ArticleImage,
-    │   │                               FloatImage, DefinitionBlock). TocItem exported here.
+    │   │                               FloatImage, DefinitionBlock, VesselPriorityDashboard).
+    │   │                               createProjectMdxComponents({ industry }) — project
+    │   │                               MDX overrides + Situation/WhatWasHard/WhatWasBuilt/
+    │   │                               Outcomes/Challenge/ProjectPullQuote/ProjectImagePair/
+    │   │                               ImageGrid components. TocItem exported here.
     │   ├── visx.ts                   ← @visx/* static re-exports
     │   ├── fuse.ts                   ← fuse.js static re-export
     │   ├── d3.ts                     ← async loadD3() + loadD3Force() loaders
@@ -173,3 +205,5 @@ chiangs-ink/
     │
     └── types/
         └── content.ts                ← Frontmatter type definitions
+                                        ProjectFrontmatter: industry (string, not string[]),
+                                        nda?: boolean, metrics[].animate?: "count" | "fade"

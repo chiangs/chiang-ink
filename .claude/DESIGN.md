@@ -1012,9 +1012,9 @@ STYLE GUIDE DRAWER (easter egg — SC monogram click on homepage)
                 Font: Manrope throughout (Inter was removed)
 
 DEFINITION BLOCK (MDX component — writing articles)
-  Location:     app/components/common/MDX/DefinitionBlock.tsx
+  Location:     app/components/common/MDX/writing/DefinitionBlock.tsx
   Usage:        <DefinitionBlock label="..." definition="...">optional body</DefinitionBlock>
-                Registered in createMdxComponents — available in all MDX files
+                Registered in createWritingMdxComponents — available in writing MDX files
   Props:        label (string) — shown above in small caps
                 definition (string) — primary statement in large display type
                 children (ReactNode, optional) — body text below definition
@@ -1088,6 +1088,146 @@ ARTICLE PAGE — FLOATING SCROLL + BACK BUTTONS (writing/$slug.tsx)
   No border radius, no shadow
   Top button:   Scroll to top — upward chevron SVG 16×16, stroke #FFB77D
   Bottom button: Back to /writing — React Router Link, leftward chevron SVG 16×16
+
+PROJECT PAGE TEMPLATE (routes/work/$slug.tsx)
+  Layout order:
+    1. Hero section (full-bleed, 72vh min-height)
+    2. ContributionBar (roles)
+    3. TeamComposition (if team in frontmatter)
+    4. MetricsStrip (if metrics in frontmatter)
+    5. MDX body (max-w-container, py-16 md:py-24)
+    6. NdaDisclosure (if nda: true in frontmatter)
+    7. ProjectFooterNav
+
+  HERO (ProjectHero component)
+    Min height:   72vh
+    Background:   If heroImage — img absolute inset-0 w-full h-full object-cover
+                    filter: grayscale(100%) contrast(1.25) brightness(0.65)
+                    + gradient overlay: linear-gradient(135deg,
+                      rgba(19,19,19,0.88) 0%, rgba(19,19,19,0.55) 100%)
+                  If no heroImage — HeroPatternFallback (SVG pattern)
+    Bottom fade:  linear-gradient to bottom, transparent → #131313, height 220px
+    Content:      relative z-10, max-w-container, flex-col justify-end,
+                  pb-16 md:pb-24, pt-32 md:pt-48
+    Eyebrow:      Industry (text-accent) // Status (color per status) // Year
+                  Manrope 500, text-sm, uppercase, ls 0.15em
+    Status colors: Live → #00E5C7, Delivered → text-text-muted,
+                   Ongoing → text-accent, Confidential → text-text-muted
+    Title:        Space Grotesk 700, clamp(36px, 6vw, 80px), lh 1.05, text-text-primary
+    Positioning:  Space Grotesk 300, clamp(17px, 2.2vw, 24px), lh 1.45, text-accent
+    Client:       Manrope 500, text-sm, uppercase, ls 0.15em, text-text-muted
+    Client context: Manrope 400, text-sm, text-text-muted, opacity 60%, max-w-md
+    Entrance anim: GSAP timeline, 0.1s delay:
+                   eyebrow: opacity 0, y:12 → opacity 1, y:0, 0.5s power2.out
+                   title: opacity 0, y:20 → opacity 1, y:0, 0.65s, −0.3s overlap
+                   positioning: opacity 0, y:16 → opacity 1, y:0, 0.55s, −0.3s overlap
+                   client: opacity 0 → opacity 1, 0.4s, −0.2s overlap
+                   All elements start with opacity-0 in JSX (Tailwind)
+
+  HERO PATTERN FALLBACK (HeroPatternFallback)
+    Background:   #161616 (bg-surface-low-adjacent)
+    SVG:          opacity 0.3, fills 100% width/height
+    Pattern id:   "ph-pattern" (shared — one pattern per instance)
+    Patterns:
+      dots:       PatternCircle cx:2 cy:2 r:1.4, fill #FFB77D, 24×24 cell
+      lines:      vertical line x1:0 y1:0 x2:0 y2:20, stroke #FFB77D, 0.5
+                  rotate(45), 20×20 cell
+      crosshatch: two diagonal lines (default), stroke #FFB77D, 0.5, 20×20 cell
+      waves:      path Q bezier wave, stroke #FFB77D, 0.6, 40×20 cell
+      none:       solid bg-surface-low div
+    Frontmatter:  heroPattern?: "dots" | "lines" | "crosshatch" | "waves" | "none"
+
+  CONTRIBUTION BAR (ContributionBar component)
+    Location:     app/components/common/MDX/projects/ContributionBar.tsx
+    Layout:       max-w-container mx-auto, px-margin-mob md:px-margin, py-8
+                  flex flex-wrap gap-2
+    Label:        "CONTRIBUTIONS" — Manrope 500, text-xs, uppercase, ls 0.15em, text-text-muted
+    Pills:        Each role → pill: bg-surface-high, px-3 py-1, Manrope 500, text-sm
+                  text-text-primary, border border-border, no border-radius
+    Animation:    GSAP stagger from opacity:0, y:8 → opacity:1, y:0
+                  delay: 0.7s from mount, stagger: 0.07s, 0.4s power2.out
+
+  TEAM COMPOSITION (TeamComposition component)
+    Location:     app/components/common/MDX/projects/TeamComposition.tsx
+    Layout:       max-w-container mx-auto, px-margin-mob md:px-margin, py-6
+                  flex flex-wrap gap-x-12 gap-y-4 md:items-center
+    Groups:       "DELIVERY TEAM" and "CLIENT TEAM" — Manrope 500, text-xs,
+                  uppercase, ls 0.15em, text-text-muted, mb-2
+    Members:      Manrope 400, text-sm, text-text-muted — list per group
+    Frontmatter:  team: { delivery?: string[], client?: string[] }
+
+  METRICS STRIP (MetricsStrip component)
+    Location:     app/components/common/MDX/projects/MetricsStrip.tsx
+    Layout:       bg-surface-low, full bleed, py-10
+                  Inner: max-w-container mx-auto, px-margin-mob md:px-margin
+                  Flex wrap, gap-x-12 gap-y-8
+    Number:       Space Grotesk 700, clamp(40px, 5vw, 56px), text-accent
+    Label:        Manrope 400, text-sm, text-text-muted, mt-1, max-w-[160px]
+    Animation:    IntersectionObserver (threshold 0.3), triggers once on enter:
+                  animate:"count" — GSAP count-up: 0 → numeric value, 1.2s power2.out
+                    stagger 0.1s per metric
+                  animate:"fade" — GSAP opacity 0 → 1, y:8 → y:0, 0.6s, with stagger
+    Frontmatter:  metrics: [{ value: string, label: string, animate?: "count" | "fade" }]
+                  Numeric detection: parseInt(value) check — falls back to fade
+
+  WHAT WAS HARD (WhatWasHard component)
+    Location:     app/components/common/MDX/projects/WhatWasHard.tsx
+    Background:   bg-accent (#FFB77D)
+    Layout:       Full bleed: -mx-margin-mob md:-mx-margin
+                  py-14 md:py-16, px-margin-mob md:px-margin
+                  position: relative (no overflow-hidden — ghost bleeds off viewport)
+    Label:        "WHAT WAS HARD" — Manrope 500, text-sm, uppercase, ls 0.15em,
+                  text-invert-text, opacity 60%, mb-5
+    Callout:      Space Grotesk 700, clamp(24px, 3.5vw, 40px), lh 1.15, text-invert-text
+                  Animation: IntersectionObserver (0.2 threshold), GSAP slide from right:
+                  opacity:0, x:48 → opacity:1, x:0, 0.75s power3.out
+                  Starts opacity-0 in JSX (Tailwind class)
+    Body text:    Manrope 400, clamp(16px, 1.8vw, 18px), lh 1.8, text-invert-text,
+                  opacity 85%, max-w-2xl
+    Ghost letter: First character of industry prop, uppercased
+                  Position: absolute, right-0, bottom-0, translate-y-1/4
+                  Font: Space Grotesk 700, clamp(160px, 22vw, 240px)
+                  Color: #0c0c0c, opacity 8%, ls -0.05em
+                  No overflow-hidden on section — letter bleeds off viewport right edge
+    Frontmatter:  callout?: string, industry?: string (passed via createProjectMdxComponents)
+    Props:        children (ReactNode), callout?, industry?
+
+  MDX SECTION COMPONENTS (projects — available in work/*.mdx)
+    Registered via: createProjectMdxComponents({ industry }) in lib/mdx-components.tsx
+    All in app/components/common/MDX/projects/
+
+    Situation:    Introductory context section
+                  No special styling — inherits MDX body prose
+    WhatWasBuilt: Delivery detail section — inherits MDX body prose
+    Outcomes:     Results section — inherits MDX body prose
+    WhatWasHard:  See full spec above
+    Challenge:    bg-surface, 4px left border border-accent, p-8 my-8
+                  Text: Manrope 600, text-xl, text-text-primary
+                  Container: <div> (not <p> — avoids nested p tag)
+    ProjectPullQuote:
+                  bg-surface, 4px left border border-accent, p-8 my-8
+                  Text: Space Grotesk 300, text-3xl, italic, text-text-primary
+                  Container: <div> (not <p> — avoids nested p tag)
+    ProjectImagePair:
+                  Two images side-by-side, gap-4, my-12
+                  Caption: Manrope 500, text-xs, uppercase, ls 0.15em, text-text-muted, mt-2
+    ImageGrid:    Grid of project images — my-12
+    NdaDisclosure:
+                  bg-surface-low, -mx-margin-mob md:-mx-margin,
+                  px-margin-mob md:px-margin, py-8
+                  Manrope 400, text-sm, text-text-muted
+                  Shown when nda: true in frontmatter
+
+  PROJECT FOOTER NAV
+    Border:       1px solid #222220 top
+    Layout:       max-w-container mx-auto, px-margin-mob md:px-margin, py-12
+                  flex items-center justify-between
+    Left:         "← All work" → /work
+                  Manrope 500, text-sm, uppercase, ls 0.15em, text-text-muted
+                  hover: text-accent, transition: color var(--transition-fast)
+    Right:        "Work together →" → /contact
+                  Manrope 500, text-sm, uppercase, ls 0.15em, text-accent
+                  hover: text-text-primary, transition: color var(--transition-fast)
 
 ---
 
@@ -1330,6 +1470,42 @@ About strip reveal:
   Animation:    clip-path wipes in left to right
   Duration:     0.6s ease-out, once: true
 
+PROJECT PAGE — Hero entrance (GSAP timeline, client-side only):
+  Delay:        0.1s before timeline starts
+  Sequence:
+    eyebrow:    opacity 0, y:12 → opacity 1, y:0, 0.5s, power2.out
+    title:      opacity 0, y:20 → opacity 1, y:0, 0.65s, power2.out, -=0.3
+    positioning: opacity 0, y:16 → opacity 1, y:0, 0.55s, power2.out, -=0.3
+    client:     opacity 0 → opacity 1, 0.4s, power2.out, -=0.2
+  Guard:        typeof window !== 'undefined'
+  Cleanup:      tl?.kill() in useEffect return, isMounted flag
+
+PROJECT PAGE — ContributionBar pills (GSAP stagger):
+  Trigger:      Mount (no scroll trigger — near top of page)
+  Delay:        0.7s from mount (after hero completes)
+  Target:       All pill elements inside bar
+  From:         opacity 0, y:8
+  To:           opacity 1, y:0, 0.4s, power2.out, stagger 0.07s
+
+PROJECT PAGE — MetricsStrip (IntersectionObserver + GSAP):
+  Trigger:      IntersectionObserver threshold 0.3, fires once
+  animate:"count" — count-up from 0 to numeric value:
+    Object:     const counter = { value: 0 }
+    gsap.to:    counter.value → parsed int, 1.2s, power2.out
+    onUpdate:   sets display to Math.round(counter.value)
+    Stagger:    0.1s between metric cells
+  animate:"fade" — opacity+y slide:
+    gsap.fromTo: opacity 0, y:8 → opacity 1, y:0, 0.6s, with stagger
+  Guard:        isMounted flag, observer.disconnect() on trigger + cleanup
+
+PROJECT PAGE — WhatWasHard callout (IntersectionObserver + GSAP):
+  Trigger:      IntersectionObserver threshold 0.2, fires once
+  Target:       Callout <p> element (ref)
+  From:         opacity 0, x:48
+  To:           opacity 1, x:0, 0.75s, power3.out
+  Guard:        isMounted flag, observer.disconnect() on trigger + cleanup
+  Note:         Callout starts as opacity-0 via Tailwind class; no FOUC
+
 ---
 
 ## Tech Stack
@@ -1371,9 +1547,9 @@ Third-party library wrappers (~/lib/):
 6.  Homepage — Hero, Work rows, About strip,
     Writing list, Contact strip
 7.  ✓ Work index page — COMPLETE
-8.  Project page template
+8.  ✓ Project page template — COMPLETE
 9.  ✓ Writing index page — COMPLETE
-10. Article page template
+10. ✓ Article page template — COMPLETE
 11. Contact page
 12. ✓ 404 page — COMPLETE (3 canvas variants: graph, heatmap, treemap)
 13. MDX loader + /content directory wiring
@@ -1388,17 +1564,23 @@ Third-party library wrappers (~/lib/):
 ## Content Inventory
 
 PROJECTS (MDX in /content/work/)
+  Note: industry is a single string (not array). metrics entries include
+        animate: "count" | "fade". nda: true shows NdaDisclosure component.
+
   maritime-intelligence-platform.mdx
     — Global maritime services provider, Norway
     — Full-stack web app + Snowflake data strategy
-    — Roles: Product Owner, Scrum Lead, Tech Lead, Frontend Lead
-    — Stack: React Router v7, BFF → .NET → Snowflake
-    — Metrics: 200+ users, 300+ vessels, 5 months, 2 legacy apps sunsetted
+    — Roles: Product Owner, Scrum Lead, Solution Architect, Tech Lead, Frontend Lead
+    — Stack: React Router v7, .NET, Tailwind / Snowflake / Azure
+    — Metrics: 100+ users at launch (count), 300+ vessels (count),
+               5 months to MVP (count), 2 legacy apps sunsetted (count),
+               AI-ready (fade)
     — AI angle: data structured and positioned for future AI experiences
-    — industries: ["Maritime"]
-    — stack: { frameworks: ["React Router v7", "TypeScript"],
-               languages: ["TypeScript", "SQL"],
-               platforms: ["Snowflake", ".NET", "Vercel"] }
+    — industry: "Maritime"
+    — nda: true
+    — stack: { frameworks: ["React Router v7", ".NET", "Tailwind"],
+               languages: ["TypeScript", "HTML", "CSS", "C#"],
+               platforms: ["Snowflake", "Azure"] }
 
   enterprise-data-governance-ai-readiness.mdx
     — Anonymous global oil & gas major
@@ -1406,7 +1588,7 @@ PROJECTS (MDX in /content/work/)
     — Role: Design Technologist (service design team)
     — Focus: federated governance model, AI-ready master data management
     — No hard metrics — scope and client scale carry the proof
-    — industries: ["Oil & Gas / Energy"]
+    — industry: "Oil & Gas / Energy"
     — stack: { frameworks: ["Service Design"],
                languages: [],
                platforms: ["Snowflake", "Collibra"] }
@@ -1416,10 +1598,10 @@ PROJECTS (MDX in /content/work/)
     — Internal B2B dashboard — operational + financial analysis
     — Roles: Tech Lead, Frontend Lead, Design Lead
     — Stack: Remix v2 / React
-    — Metrics: 4 months to MVP
+    — Metrics: 4 months to MVP (count)
     — Notable: waffle charts, maps with near-real time updates,
                bar charts, typographic hierarchy as visualisation tool
-    — industries: ["Maritime"]
+    — industry: "Maritime"
     — stack: { frameworks: ["Remix v2", "React", "D3.js"],
                languages: ["TypeScript"],
                platforms: ["Tailwind CSS", "Vercel"] }

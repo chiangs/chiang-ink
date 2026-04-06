@@ -3,8 +3,6 @@ const SECTION_LABEL = "Contact";
 const HEADING = "Let's talk.";
 const DESCRIPTION =
   "Available for consulting engagements, advisory roles, and interesting problems. Based in Stavanger, Norway — CET timezone.";
-const EMAIL = "stephen@chiang.studio";
-const HREF_EMAIL = `mailto:${EMAIL}`;
 const LABEL_NAME = "Name";
 const LABEL_EMAIL = "Email";
 const LABEL_MESSAGE = "Message";
@@ -27,18 +25,12 @@ export default function Contact() {
             <p className="text-sm font-medium uppercase tracking-[0.15em] text-text-muted mb-6">
               {SECTION_LABEL}
             </p>
-            <h1 className="font-display font-black text-[clamp(40px,6vw,72px)] text-text-primary leading-[0.95] mb-8">
+            <h1 className="font-display font-black text-[clamp(40px,6vw,72px)] text-accent leading-[0.95] mb-8">
               {HEADING}
             </h1>
             <p className="text-base text-text-muted leading-[1.75] mb-8">
               {DESCRIPTION}
             </p>
-            <a
-              href={HREF_EMAIL}
-              className="text-sm font-medium uppercase tracking-[0.15em] text-accent border-b border-border-accent pb-0.5 hover:opacity-60 transition-opacity duration-200"
-            >
-              {EMAIL}
-            </a>
           </div>
 
           {/* Right — form */}
