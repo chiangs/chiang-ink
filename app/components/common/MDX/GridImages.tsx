@@ -31,6 +31,7 @@ export type GridImage = {
 
 type ImageGridProps = {
   images: GridImage[];
+  float?: "left" | "right";
 };
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -45,7 +46,7 @@ const GAP = "2px";
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-export function ImageGrid({ images }: ImageGridProps) {
+export function GridImages({ images, float }: ImageGridProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
 
@@ -76,10 +77,27 @@ export function ImageGrid({ images }: ImageGridProps) {
 
   if (count === 0) return null;
 
+  const floatStyle: React.CSSProperties | undefined = float
+    ? {
+        float,
+        width: "50%",
+        marginRight: float === "left" ? "2rem" : undefined,
+        marginLeft: float === "right" ? "2rem" : undefined,
+        marginBottom: "1.5rem",
+        marginTop: "2rem",
+        padding: "10px",
+        boxShadow: "0 0 0 1px rgba(255,183,125,0.10), 0 2px 8px rgba(0,0,0,0.5), 0 4px 16px rgba(255,183,125,0.10), 0 8px 28px rgba(255,183,125,0.06)",
+      }
+    : undefined;
+
+  const wrapperClass = float
+    ? "mb-0"
+    : "mb-12 md:mb-16 -mx-margin-mob md:-mx-margin";
+
   return (
     <>
       {/* ── Grid ── */}
-      <div className="mb-12 md:mb-16 -mx-margin-mob md:-mx-margin">
+      <div className={wrapperClass} style={floatStyle}>
         <GridLayout
           images={clamped}
           count={count}

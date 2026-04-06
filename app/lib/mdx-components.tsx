@@ -9,7 +9,7 @@ import {
   DefinitionBlock,
   FloatImage,
   Highlight,
-  ImageGrid,
+  GridImages,
   MdxLink,
 } from "~/components/common/MDX";
 import {
@@ -266,7 +266,7 @@ export function createWritingMdxComponents(onHeading: (item: TocItem) => void) {
     DefinitionBlock,
     FloatImage,
     MdxLink,
-    ImageGrid,
+    GridImages,
   };
 }
 
@@ -287,7 +287,7 @@ export function createProjectMdxComponents(ctx: ProjectMdxContext = {}) {
     PullQuote: ProjectPullQuote,
     Challenge,
     SectionDivider,
-    ImageGrid,
+    GridImages,
 
     WhatWasHard: ({
       children,

@@ -18,9 +18,11 @@
       pull quotes, code blocks, related articles,
       interactive MDX components, mobile image fallback
 
-- [ ] Contact page (`contact.tsx`)
+- [x] Contact page (`contact.tsx`) — DONE
       Contact form, availability note, LinkedIn link
       No email displayed publicly
+      Form connected: Resend REST API, Cloudflare Turnstile (invisible),
+      honeypot spam protection, inline success/error feedback
 
 - [ ] **Contact page — drawing canvas**
       Component: `~/components/contact/DrawingCanvas.tsx`
@@ -512,6 +514,16 @@
 ---
 
 ## TECHNICAL — Deferred
+
+- [ ] **Analytics — Umami**
+      Add Umami for privacy-friendly analytics.
+      Self-hosted or Umami Cloud. Inject script tag via root.tsx links export
+      or a useEffect — script is client-side only.
+      Track page views automatically; optionally add custom events for
+      contact form success and outbound LinkedIn clicks.
+      No cookie banner needed — Umami is cookieless by design.
+
+
 
 - [ ] **Favicon update**
       Current favicon uses "SC" in Inter 900 on #131313 background
