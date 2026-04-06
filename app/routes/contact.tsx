@@ -84,7 +84,8 @@ export async function action({
   try {
     await sendContactEmail({ name, email, message });
     return { status: "success" };
-  } catch {
+  } catch (err) {
+    console.error("[contact action]", err);
     return { status: "error", message: ERROR_SEND };
   }
 }
