@@ -24,8 +24,9 @@ const ERROR_EMAIL = "Please enter a valid email address.";
 const ERROR_CAPTCHA = "Verification failed. Please try again.";
 const ERROR_SEND = "Something went wrong. Please try again later.";
 
+// render=explicit prevents auto-rendering; onload fires when the API is ready
 const TURNSTILE_SCRIPT =
-  "https://challenges.cloudflare.com/turnstile/v0/api.js";
+  "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=_onTurnstileReady";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -33,8 +34,16 @@ type ActionResult =
   | { status: "success" }
   | { status: "error"; message: string };
 
-type WindowWithTurnstile = typeof window & {
-  turnstile?: { reset: (container?: string | HTMLElement) => void };
+type TurnstileWindow = typeof window & {
+  turnstile?: {
+    render: (
+      container: HTMLElement,
+      opts: Record<string, unknown>,
+    ) => string;
+    execute: (widgetId: string) => void;
+    reset: (widgetId: string) => void;
+  };
+  _onTurnstileReady?: () => void;
 };
 
 // ─── Loader ───────────────────────────────────────────────────────────────────
@@ -92,27 +101,97 @@ export default function Contact() {
   const { turnstileSiteKey } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
+
   const formRef = useRef<HTMLFormElement>(null);
+  // Uncontrolled ref for the hidden token input — updated directly by the
+  // Turnstile callback so the value is always current when FormData is collected
+  const tokenInputRef = useRef<HTMLInputElement>(null);
+  // Container div that Turnstile renders its invisible iframe into
+  const containerRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | undefined>(undefined);
+  // True while waiting for Turnstile to return a token after execute()
+  const pendingSubmitRef = useRef(false);
 
   const isSubmitting = navigation.state === "submitting";
 
-  // Reset form and refresh Turnstile token on successful submission
+  // Init Turnstile with explicit render so we control when it executes
+  useEffect(() => {
+    if (!turnstileSiteKey || typeof window === "undefined") return;
+
+    const w = window as TurnstileWindow;
+
+    const init = () => {
+      if (widgetIdRef.current !== undefined || !containerRef.current) return;
+      widgetIdRef.current = w.turnstile!.render(containerRef.current, {
+        sitekey: turnstileSiteKey,
+        size: "invisible",
+        // Called when Turnstile issues a token after execute()
+        callback: (token: string) => {
+          if (tokenInputRef.current) tokenInputRef.current.value = token;
+          if (pendingSubmitRef.current) {
+            pendingSubmitRef.current = false;
+            formRef.current?.requestSubmit();
+          }
+        },
+        // Token expired — clear so next submit triggers a fresh execute()
+        "expired-callback": () => {
+          if (tokenInputRef.current) tokenInputRef.current.value = "";
+        },
+        "error-callback": () => {
+          if (tokenInputRef.current) tokenInputRef.current.value = "";
+        },
+      });
+
+      // If a submit was attempted before the script finished loading, run now
+      if (pendingSubmitRef.current) {
+        w.turnstile!.execute(widgetIdRef.current);
+      }
+    };
+
+    if (w.turnstile) {
+      init();
+    } else {
+      w._onTurnstileReady = init;
+      if (!document.querySelector('script[src*="turnstile"]')) {
+        const script = document.createElement("script");
+        script.src = TURNSTILE_SCRIPT;
+        script.async = true;
+        document.head.appendChild(script);
+      }
+    }
+
+    return () => {
+      delete (window as TurnstileWindow)._onTurnstileReady;
+    };
+  }, [turnstileSiteKey]);
+
+  // Reset form and clear token after successful submission
   useEffect(() => {
     if (actionData?.status !== "success") return;
     formRef.current?.reset();
-    (window as WindowWithTurnstile).turnstile?.reset();
+    if (tokenInputRef.current) tokenInputRef.current.value = "";
+    if (widgetIdRef.current !== undefined) {
+      (window as TurnstileWindow).turnstile?.reset(widgetIdRef.current);
+    }
   }, [actionData]);
 
-  // Inject Turnstile script once, client-side only
-  useEffect(() => {
-    if (!turnstileSiteKey) return;
-    if (document.querySelector(`script[src*="turnstile"]`)) return;
-    const script = document.createElement("script");
-    script.src = TURNSTILE_SCRIPT;
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
-  }, [turnstileSiteKey]);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    if (!turnstileSiteKey) return; // Turnstile not configured — submit normally
+
+    const token = tokenInputRef.current?.value ?? "";
+    if (token) return; // Token already present — React Router handles from here
+
+    // No token yet: intercept, execute Turnstile, resubmit once token arrives
+    e.preventDefault();
+    pendingSubmitRef.current = true;
+
+    const w = window as TurnstileWindow;
+    if (widgetIdRef.current !== undefined) {
+      w.turnstile?.execute(widgetIdRef.current);
+    }
+    // If widgetId is undefined the script is still loading; init() will
+    // call execute() once it fires
+  };
 
   return (
     <main className="py-section-mob md:py-section">
@@ -135,6 +214,7 @@ export default function Contact() {
           <Form
             method="post"
             ref={formRef}
+            onSubmit={handleSubmit}
             className="flex flex-col gap-10 bg-card p-10"
           >
             {/* Honeypot — hidden from real users, invisible to screen readers */}
@@ -146,6 +226,15 @@ export default function Contact() {
               aria-hidden="true"
               style={{ display: "none" }}
             />
+
+            {/* Turnstile token — uncontrolled, written directly by the callback */}
+            {turnstileSiteKey && (
+              <input
+                type="hidden"
+                name="cf-turnstile-response"
+                ref={tokenInputRef}
+              />
+            )}
 
             <div className="flex flex-col gap-2">
               <label className="text-sm font-medium uppercase tracking-[0.15em] text-text-muted">
@@ -186,12 +275,12 @@ export default function Contact() {
               />
             </div>
 
-            {/* Cloudflare Turnstile invisible widget — auto-executes on load */}
+            {/* Invisible Turnstile container — exists in DOM but takes no space */}
             {turnstileSiteKey && (
               <div
-                className="cf-turnstile"
-                data-sitekey={turnstileSiteKey}
-                data-size="invisible"
+                ref={containerRef}
+                aria-hidden="true"
+                className="absolute overflow-hidden w-0 h-0"
               />
             )}
 
