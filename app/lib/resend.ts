@@ -1,20 +1,8 @@
-import { Resend } from "resend";
+// Calls the Resend REST API directly — no SDK, no @react-email/render peer dependency.
+// contact.chiang.ink must be verified as a sender domain in the Resend dashboard.
 
-// chiang.ink domain must be verified in Resend dashboard before deploying.
-// DNS records: SPF, DKIM, DMARC on chiang.ink.
-
+const RESEND_API = "https://api.resend.com/emails";
 const SUBJECT = "contact from chiang.ink";
-
-let _client: Resend | null = null;
-
-function getClient(): Resend {
-  if (!_client) {
-    const key = process.env.RESEND_API_KEY;
-    if (!key) throw new Error("RESEND_API_KEY environment variable is not set");
-    _client = new Resend(key);
-  }
-  return _client;
-}
 
 export async function sendContactEmail({
   name,
@@ -25,18 +13,31 @@ export async function sendContactEmail({
   email: string;
   message: string;
 }): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.CONTACT_FROM;
   const to = process.env.CONTACT_TO;
+
+  if (!apiKey) throw new Error("RESEND_API_KEY environment variable is not set");
   if (!from) throw new Error("CONTACT_FROM environment variable is not set");
   if (!to) throw new Error("CONTACT_TO environment variable is not set");
 
-  const { error } = await getClient().emails.send({
-    from,
-    to,
-    replyTo: email,
-    subject: SUBJECT,
-    text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+  const res = await fetch(RESEND_API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      from,
+      to,
+      reply_to: email,
+      subject: SUBJECT,
+      text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+    }),
   });
 
-  if (error) throw new Error(error.message);
+  if (!res.ok) {
+    const body = (await res.json().catch(() => ({}))) as { message?: string };
+    throw new Error(body.message ?? `Resend API error ${res.status}`);
+  }
 }
