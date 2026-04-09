@@ -334,9 +334,9 @@
       technical credibility gap. Synthesis in
       "When the PM and the Designer Are the Same Person".
 
-- [ ] **"Discovery Debt"**
+- [x] **"Discovery Debt"** — PUBLISHED
       File: `content/writing/discovery-debt.mdx`
-      Status: idea (not started)
+      Status: published
       Subtitle: "What teams get wrong about the most
       consequential phase in product development"
       Category: Product & Leadership
@@ -687,6 +687,6 @@
 - [x] Article mobile UX — reading progress bar (fixed top-16, h-0.5,
       accent fill, no transition) + floating scroll-to-top / back-to-writing
       buttons (fixed bottom-right, visible after 400px, opacity transition)
-- [x] MDX content — 3 projects, 3 articles published:
+- [x] MDX content — 3 projects, 4 articles published:
       dashboards-are-not-for-overview, design-is-creation-with-researched-intent,
-      why-prototypes-lie
+      why-prototypes-lie, discovery-debt
