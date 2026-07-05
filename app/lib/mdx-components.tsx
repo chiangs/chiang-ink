@@ -12,6 +12,7 @@ import {
   GridImages,
   MdxLink,
 } from "~/components/common/MDX";
+import { RiskMatrix } from "~/components/common/Viz";
 import {
   Challenge,
   Outcomes,
@@ -267,6 +268,7 @@ export function createWritingMdxComponents(onHeading: (item: TocItem) => void) {
     FloatImage,
     MdxLink,
     GridImages,
+    RiskMatrix,
   };
 }
 
@@ -288,6 +290,7 @@ export function createProjectMdxComponents(ctx: ProjectMdxContext = {}) {
     Challenge,
     SectionDivider,
     GridImages,
+    RiskMatrix,
 
     WhatWasHard: ({
       children,
