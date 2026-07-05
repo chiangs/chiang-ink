@@ -69,6 +69,64 @@ This is not a staffing oversight. It is a structural assumption about when techn
 
 All three perspectives feed into business strategy. All three feed into delivery. Missing any one of them produces a discovery that looks complete from the outside and isn't.
 
+<RiskMatrix
+  columnAxisLabel="Stopped at"
+  columns={["Scope creep", "Rework", "Tech debt", "Delivery slip", "Pivot risk"]}
+  rows={[
+    {
+      heading: "OKRs only",
+      subheading: "Skip everything else",
+      cells: [
+        { level: "high", label: "High", note: "No problem defined" },
+        { level: "high", label: "High", note: "No solution tested" },
+        { level: "high", label: "High", note: "Constraints mapped" },
+        { level: "high", label: "High", note: "No context for build" },
+        { level: "very-high", label: "Very high", note: "Building blind" },
+      ],
+    },
+    {
+      heading: "+ Perspectives",
+      subheading: "Skip OST + Experiment",
+      cells: [
+        { level: "medium", label: "Medium", note: "Problem understood" },
+        { level: "high", label: "High", note: "Solutions unvalidated" },
+        { level: "high", label: "High", note: "Tech still unknown" },
+        { level: "high", label: "High", note: "Constraints surfaced" },
+        { level: "medium", label: "Medium", note: "Direction is clearer" },
+      ],
+    },
+    {
+      heading: "+ OST",
+      subheading: "Skip Experiment only",
+      cells: [
+        { level: "low", label: "Low", note: "Opportunity mapped" },
+        { level: "medium", label: "Medium", note: "Solutions not tested" },
+        { level: "medium", label: "Medium", note: "Assumptions surfaced" },
+        { level: "medium", label: "Medium", note: "Some unknowns remain" },
+        { level: "low", label: "Low", note: "Right direction" },
+      ],
+    },
+    {
+      heading: "+ Experiment",
+      subheading: "Full discovery",
+      cells: [
+        { level: "eliminated", label: "Eliminated", note: "Validated solution" },
+        { level: "eliminated", label: "Eliminated", note: "Built what works" },
+        { level: "eliminated", label: "Eliminated", note: "Constraints resolved" },
+        { level: "low", label: "Low", note: "Some iteration normal" },
+        { level: "eliminated", label: "Eliminated", note: "De-risked backlog" },
+      ],
+    },
+  ]}
+  legend={[
+    { level: ["high", "very-high"], label: "High / Very high risk" },
+    { level: "medium", label: "Medium risk" },
+    { level: ["low", "eliminated"], label: "Low / Eliminated" },
+  ]}
+  caption="Each stage systematically de-risks the delivery. Skipping a stage does not save time — it defers the cost."
+/>
+
+
 ## The Framework That Holds All Three
 
 The integration of Objectives and Key Results with the Opportunity Solution Tree is not a new idea. What is consistently underestimated is how much the OST depends on technical fluency to function properly.
