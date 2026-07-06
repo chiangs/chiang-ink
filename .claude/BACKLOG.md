@@ -147,9 +147,9 @@
       Strong hiring signal: this is what senior design
       leadership actually thinks about.
 
-- [x] **"The Interpreter Role Nobody Hires For"**
+- [x] **"The Interpreter Role Nobody Hires For"** — PUBLISHED ✓
       File: `content/writing/the-interpreter-role-nobody-hires-for.mdx`
-      Status: idea (not started)
+      Status: published
       Subtitle: "What happens when nobody speaks all four languages"
       Category: Product & Leadership
       Angle: engineering, design, data, and business strategy
@@ -171,9 +171,9 @@
       Strong consulting credibility signal — shows methodology,
       not just outcomes.
 
-- [ ] **"The Mobile Dashboard Is the Wrong Tool"**
+- [x] **"The Mobile Dashboard Is the Wrong Tool"** — PUBLISHED ✓
       File: `content/writing/the-mobile-dashboard-is-the-wrong-tool.mdx`
-      Status: idea (not started)
+      Status: published
       Subtitle: "Why responsive charts don't shorten the distance
       to action — and what does"
       Category: Data & AI
@@ -505,9 +505,10 @@
       (horizontal/vertical toggle on desktop, compact mobile layout).
       Future upgrade could include:
       - Streamgraph in Experience section (still deferred — see VISUALISATIONS)
-      - Additional images in "Beyond the Brief"
-        (real photos needed: professional-01.jpg,
-        personal-01.jpg, personal-02.jpg)
+      - Additional images in "Beyond the Brief" ✅ done
+        (kjerag.webp, keyboard.webp, muay-thai.webp — added from
+        /images/content/, replacing the professional-01/personal-01/
+        personal-02 placeholders)
       - B&W → colour reveal on portrait
         (prompt written, not yet implemented)
 
@@ -539,9 +540,9 @@
 
 - [ ] **Real images**
       Placeholder paths still in use:
-      `/images/about/professional-01.jpg`
-      `/images/about/personal-01.jpg`
-      `/images/about/personal-02.jpg`
+      `/images/about/professional-01.jpg` ✅ done (replaced by kjerag.webp)
+      `/images/about/personal-01.jpg` ✅ done (replaced by keyboard.webp)
+      `/images/about/personal-02.jpg` ✅ done (replaced by muay-thai.webp)
       `/images/work/maritime-intelligence.jpg`
       `/images/work/data-governance.jpg`
       `/images/work/maritime-dashboard.webp`

@@ -836,6 +836,55 @@ MAP (Industries section — about page)
   Caption:      "8 countries across 4 continents"
                 Manrope 400, 12px, #737371, italic
 
+IMAGE GRID (Beyond the Brief section — about page)
+  Location:     app/components/about/ImageGrid.tsx
+  Reusable:     Takes intro/intro2 (strings) and images — { large, small1,
+                small2 }, each an ImageGridImage ({ src, alt, caption })
+                exported from the component and re-exported via the
+                components/about barrel. Caller (app/routes/about.tsx)
+                owns all the copy and image data (IMG_INTRO, IMG_INTRO2,
+                IMG_KJERAG / IMG_KEYBOARD / IMG_MUAYTHAI consts) and
+                passes it in — component itself has no content baked in.
+  Intro copy:   Two paragraphs above the grid — strength training/Muay
+                Thai/hiking Norwegian fjords/single father of three,
+                then mechanical keyboards & custom PCs as a lens on how
+                one part changes a system — framed as the same lens
+                applied to AI: productivity accelerator (inward) vs.
+                design material built into a product/service (outward)
+  Desktop grid: gridTemplateColumns 59% / 39%, 2 rows, 16px gap,
+                height 640px (fixed, not minHeight — a fixed height is
+                required so object-fit: cover on the large image resolves
+                against a definite size instead of the image's own
+                intrinsic aspect ratio; matches 2×312px small images + gap)
+                — large image spans both rows (left), two small images
+                stacked (right)
+                Small containers: max-h-78 (312px)
+  Mobile:       Single column flex stack, each image h-[56vw]
+                Small containers: also capped max-h-78 (312px)
+  Not in sidenav: "Beyond the Brief" section has no entry in the
+                about page's SECTIONS nav array (sidebar + mobile pills)
+                — section exists in the DOM (id="images") and still
+                animates in on scroll, it's just not a nav destination.
+  Images (current callsite in about.tsx):
+    Large  — kjerag.webp (Kjeragbolten hike, Norway)
+             Full colour — no duotone/grain/fade treatment (large image
+             uses the same plain bg-surface container as the small ones,
+             just without the max-h-78 cap since it spans both rows)
+             Explicit w-full h-full object-cover, objectPosition: center 38%
+             (estimated crop point to keep the person/rock-arch subject
+             centred once cover-cropping applies — recheck visually if the
+             source photo changes)
+             Caption: "REF_002 // KJERAG"
+    Small 1 — keyboard.webp (custom mechanical keyboard build)
+             Full colour — plain bg-surface container, object-cover
+             Caption: "REF_003 // BUILD"
+    Small 2 — muay-thai.webp (Muay Thai training gear)
+             Full colour — plain bg-surface container, object-cover
+             Caption: "REF_004 // MUAY THAI"
+  Caption style: Manrope 500, 14px (text-sm), uppercase, ls 0.15em,
+                text-text-primary at 50% opacity, absolute bottom-right
+  All images served from /images/content/
+
 WRITING LIST
   Ghost number: Space Grotesk 700, opacity 8%, #FFB77D
                 Always 3 digits — padStart(3, "0") (001, 002, ... 010, ...)
