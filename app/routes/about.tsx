@@ -20,6 +20,7 @@ import {
   Skills,
   LanguageList,
   ImageGrid,
+  type ImageGridImage,
 } from "~/components/about";
 import {
   CareerIntensityChart,
@@ -97,7 +98,6 @@ const SECTIONS = [
   { id: "industries", label: "INDUSTRIES" },
   { id: "skills", label: "SKILLS" },
   { id: "languages", label: "LANGUAGES" },
-  { id: "images", label: "IMAGES" },
 ] as const;
 
 type SectionId = (typeof SECTIONS)[number]["id"];
@@ -140,9 +140,29 @@ const LANG_LABEL = "LANGUAGES";
 const LANG_TITLE = "How I Communicate";
 const IMG_LABEL = "BEYOND THE BRIEF";
 const IMG_TITLE = "The Full Picture";
+const IMG_INTRO =
+  "Strength training, Muay Thai, hiking Norwegian fjords. Single father of three. The discipline outside work is the same discipline inside it.";
+const IMG_INTRO2 =
+  "Building keyboards and custom PCs is one way I explore how one part changes the system around it — how it feels to use, what it does to a person's experience. I treat AI the same way — never just a tool to bolt on. It has to earn its place one of two ways: a productivity accelerator or as a design material built into the product or service. Either way, the question is the same: is there value in adding it as a part of a system?";
 
 const PORTRAIT_SRC = "/images/portrait/stephen-chiang-color.webp";
 const PORTRAIT_ALT = SITE_OWNER;
+
+const IMG_KJERAG: ImageGridImage = {
+  src: "/images/content/kjerag.webp",
+  alt: `${OWNER_NAME} at Kjeragbolten, Norway`,
+  caption: "REF_002 // KJERAG",
+};
+const IMG_KEYBOARD: ImageGridImage = {
+  src: "/images/content/keyboard.webp",
+  alt: "Custom mechanical keyboard build",
+  caption: "REF_003 // BUILD",
+};
+const IMG_MUAYTHAI: ImageGridImage = {
+  src: "/images/content/muay-thai.webp",
+  alt: "Muay Thai training gear",
+  caption: "REF_004 // MUAY THAI",
+};
 
 // ── Module-level style objects ────────────────────────────────────
 
@@ -952,7 +972,13 @@ export default function About() {
                 {IMG_TITLE}
               </h2>
               <div data-anim="section-content">
-                <ImageGrid />
+                <ImageGrid
+                  intro={IMG_INTRO}
+                  intro2={IMG_INTRO2}
+                  large={IMG_KJERAG}
+                  small1={IMG_KEYBOARD}
+                  small2={IMG_MUAYTHAI}
+                />
               </div>
             </section>
           </div>
