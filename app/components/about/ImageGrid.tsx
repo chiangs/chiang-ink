@@ -1,21 +1,18 @@
 // ImageGrid — Images section for About page
 
-import { SITE_OWNER } from "~/lib/constants";
+export type ImageGridImage = {
+  src: string;
+  alt: string;
+  caption: string;
+};
 
-const IMG_INTRO =
-  "Strength training, Muay Thai, hiking Norwegian fjords. Single father of three. The discipline outside work is the same discipline inside it.";
-const IMG_INTRO2 =
-  "I build mechanical keyboards and custom PCs — because the best way to understand how humans interact with machines is to build them yourself. That obsession with how things feel to use shapes how I think about HMI design and how software & AI should show up in the hands of real people.";
-
-const IMG_PRO_SRC = "/images/about/professional-01.jpg";
-const IMG_PRO_ALT = SITE_OWNER;
-const IMG_PRO_CAPTION = "REF_002 // FIELD";
-const IMG_P1_SRC = "/images/about/personal-01.jpg";
-const IMG_P1_ALT = SITE_OWNER;
-const IMG_P1_CAPTION = "REF_003 // PERSONAL";
-const IMG_P2_SRC = "/images/about/personal-02.jpg";
-const IMG_P2_ALT = SITE_OWNER;
-const IMG_P2_CAPTION = "REF_004 // PERSONAL";
+type ImageGridProps = {
+  intro: string;
+  intro2: string;
+  large: ImageGridImage;
+  small1: ImageGridImage;
+  small2: ImageGridImage;
+};
 
 const imgCaptionStyle: React.CSSProperties = {
   position: "absolute",
@@ -30,14 +27,28 @@ const imgCaptionStyle: React.CSSProperties = {
   pointerEvents: "none",
 };
 
-export function ImageGrid() {
+const largeImgObjectPositionStyle: React.CSSProperties = {
+  objectPosition: "center 38%",
+};
+
+const smallImgClass = "w-full h-full object-cover block";
+const smallContainerClass = "relative overflow-hidden bg-surface max-h-78";
+const largeContainerClass = "relative overflow-hidden bg-surface";
+
+export function ImageGrid({
+  intro,
+  intro2,
+  large,
+  small1,
+  small2,
+}: ImageGridProps) {
   return (
     <>
       <p className="font-body text-base text-text-muted leading-[1.7] mb-2.5 max-w-120">
-        {IMG_INTRO}
+        {intro}
       </p>
       <p className="font-body text-base text-text-muted mb-10 leading-[1.7] max-w-120">
-        {IMG_INTRO2}
+        {intro2}
       </p>
 
       {/* Desktop grid: large left spanning 2 rows, two small right */}
@@ -47,75 +58,60 @@ export function ImageGrid() {
           gridTemplateColumns: "59% 39%",
           gridTemplateRows: "1fr 1fr",
           gap: "16px",
-          minHeight: "640px",
+          height: "640px",
         }}
       >
-        {/* Large — professional, duotone treatment */}
-        <div className="portrait relative" style={{ gridRow: "1 / 3" }}>
+        {/* Large */}
+        <div className={largeContainerClass} style={{ gridRow: "1 / 3" }}>
           <img
-            src={IMG_PRO_SRC}
-            alt={IMG_PRO_ALT}
-            style={{ objectPosition: "center 20%" }}
+            src={large.src}
+            alt={large.alt}
+            className="w-full h-full object-cover block"
+            style={largeImgObjectPositionStyle}
           />
-          <div className="portrait-fade" />
           <p className="text-sm text-text-primary" style={imgCaptionStyle}>
-            {IMG_PRO_CAPTION}
+            {large.caption}
           </p>
         </div>
         {/* Small 1 */}
-        <div className="relative overflow-hidden bg-surface">
-          <img
-            src={IMG_P1_SRC}
-            alt={IMG_P1_ALT}
-            className="w-full h-full object-cover block"
-          />
+        <div className={smallContainerClass}>
+          <img src={small1.src} alt={small1.alt} className={smallImgClass} />
           <p className="text-sm text-text-primary" style={imgCaptionStyle}>
-            {IMG_P1_CAPTION}
+            {small1.caption}
           </p>
         </div>
         {/* Small 2 */}
-        <div className="relative overflow-hidden bg-surface">
-          <img
-            src={IMG_P2_SRC}
-            alt={IMG_P2_ALT}
-            className="w-full h-full object-cover block"
-          />
+        <div className={smallContainerClass}>
+          <img src={small2.src} alt={small2.alt} className={smallImgClass} />
           <p className="text-sm text-text-primary" style={imgCaptionStyle}>
-            {IMG_P2_CAPTION}
+            {small2.caption}
           </p>
         </div>
       </div>
 
       {/* Mobile: single column stack */}
       <div className="flex flex-col gap-4 md:hidden">
-        <div className="portrait relative h-[56vw]">
+        <div className={`${largeContainerClass} h-[56vw]`}>
           <img
-            src={IMG_PRO_SRC}
-            alt={IMG_PRO_ALT}
-            style={{ objectPosition: "center 20%" }}
+            src={large.src}
+            alt={large.alt}
+            className="w-full h-full object-cover block"
+            style={largeImgObjectPositionStyle}
           />
           <p className="text-sm text-text-primary" style={imgCaptionStyle}>
-            {IMG_PRO_CAPTION}
+            {large.caption}
           </p>
         </div>
-        <div className="relative overflow-hidden bg-surface h-[56vw]">
-          <img
-            src={IMG_P1_SRC}
-            alt={IMG_P1_ALT}
-            className="w-full h-full object-cover block"
-          />
+        <div className={`${smallContainerClass} h-[56vw]`}>
+          <img src={small1.src} alt={small1.alt} className={smallImgClass} />
           <p className="text-sm text-text-primary" style={imgCaptionStyle}>
-            {IMG_P1_CAPTION}
+            {small1.caption}
           </p>
         </div>
-        <div className="relative overflow-hidden bg-surface h-[56vw]">
-          <img
-            src={IMG_P2_SRC}
-            alt={IMG_P2_ALT}
-            className="w-full h-full object-cover block"
-          />
+        <div className={`${smallContainerClass} h-[56vw]`}>
+          <img src={small2.src} alt={small2.alt} className={smallImgClass} />
           <p className="text-sm text-text-primary" style={imgCaptionStyle}>
-            {IMG_P2_CAPTION}
+            {small2.caption}
           </p>
         </div>
       </div>
