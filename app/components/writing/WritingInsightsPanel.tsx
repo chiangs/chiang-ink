@@ -102,21 +102,29 @@ type StreamDatum = {
 
 // ─── Data computation ─────────────────────────────────────────────────────────
 
-function computeInsights(articles: ArticleFrontmatter[]): WritingInsightData {
+function rankTags(articles: ArticleFrontmatter[]): [string, number][] {
   const tagMap: Record<string, number> = {};
-  const readTimes: number[] = [];
 
   for (const a of articles) {
     a.tags?.forEach((tag) => {
       tagMap[tag] = (tagMap[tag] ?? 0) + 1;
     });
+  }
+
+  return Object.entries(tagMap).sort((a, b) => b[1] - a[1]);
+}
+
+function computeInsights(articles: ArticleFrontmatter[]): WritingInsightData {
+  const readTimes: number[] = [];
+
+  for (const a of articles) {
     if (a.readTime) {
       const mins = parseInt(a.readTime, 10);
       if (!isNaN(mins)) readTimes.push(mins);
     }
   }
 
-  const tagFrequency = Object.entries(tagMap).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const tagFrequency = rankTags(articles).slice(0, 5);
   const avgReadTime =
     readTimes.length > 0
       ? Math.round(readTimes.reduce((s, n) => s + n, 0) / readTimes.length)
@@ -165,15 +173,10 @@ function buildStreamData(articles: ArticleFrontmatter[]): {
     (a, b) => quarterSortKey(a) - quarterSortKey(b),
   );
 
-  const categoryTotals: Record<string, number> = {};
-  for (const q of quarters) {
-    for (const [cat, cnt] of Object.entries(qcMap[q])) {
-      categoryTotals[cat] = (categoryTotals[cat] ?? 0) + cnt;
-    }
-  }
-  const categories = Object.entries(categoryTotals)
-    .sort((a, b) => b[1] - a[1])
-    .map(([cat]) => cat);
+  // Same ranking as the Top 5 Topics panel — guarantees the streamgraph's
+  // top categories always match, ties included. "Untagged" won't appear here
+  // since it's synthesized per-quarter above, not from article.tags.
+  const categories = rankTags(articles).map(([tag]) => tag);
 
   const data: StreamDatum[] = quarters.map((q) => {
     const row: StreamDatum = { quarter: q };
