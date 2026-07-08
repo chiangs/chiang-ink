@@ -143,7 +143,7 @@ const IMG_TITLE = "The Full Picture";
 const IMG_INTRO =
   "Strength training, Muay Thai, hiking Norwegian fjords. Single father of three. The discipline outside work is the same discipline inside it.";
 const IMG_INTRO2 =
-  "Building keyboards and custom PCs is one way I explore how one part changes the system around it — how it feels to use, what it does to a person's experience. I treat AI the same way — never just a tool to bolt on. It has to earn its place one of two ways: a productivity accelerator or as a design material built into the product or service. Either way, the question is the same: is there value in adding it as a part of a system?";
+  "I build mechanical keyboards and custom PCs — I love exploring how things feel to use shapes how I think about HMI design and how software & AI should show up in the hands of real people.";
 
 const PORTRAIT_SRC = "/images/portrait/stephen-chiang-color.webp";
 const PORTRAIT_ALT = SITE_OWNER;
