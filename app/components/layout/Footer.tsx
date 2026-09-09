@@ -11,12 +11,22 @@ import {
   LINKEDIN_URL,
   GITHUB_URL,
 } from "~/lib/constants";
+import { buildPetriUrl } from "~/lib/petri";
 import { Link } from "react-router";
 
 const EASTER_EGG_TEXT = "This site has secrets. Explore to find them.";
 const LABEL_STYLE_GUIDE = "Style Guide ↗";
 const LABEL_GITHUB = "GitHub";
 const LABEL_LINKEDIN = "LinkedIn";
+const LABEL_PETRI = "Petri";
+
+// Navigate the current tab into Petri, appending a ?return= param built from the
+// live location at click time — Footer persists across client nav, so a
+// mount-time value would go stale.
+function goToPetri() {
+  const { pathname, search, hash } = window.location;
+  window.location.href = buildPetriUrl(pathname + search + hash);
+}
 
 interface FooterProps {
   onOpenStyleGuide?: () => void;
@@ -82,6 +92,12 @@ export function Footer({ onOpenStyleGuide }: FooterProps) {
         >
           Privacy
         </Link>
+        <button
+          onClick={goToPetri}
+          className="bg-transparent border-0 p-0 font-body text-sm font-medium uppercase tracking-[0.15em] text-text-muted cursor-pointer transition-colors duration-200 hover:text-accent"
+        >
+          {LABEL_PETRI}
+        </button>
         <FooterLink href={GITHUB_URL} label={LABEL_GITHUB} />
         <FooterLink href={LINKEDIN_URL} label={LABEL_LINKEDIN} />
       </div>

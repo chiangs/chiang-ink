@@ -955,15 +955,21 @@ CONTACT FORM (contact page)
 FOOTER
   Content:      "STEPHEN CHIANG [year]" left
                 Easter egg hint center
-                "GITHUB · LINKEDIN" right
-                "LINKEDIN" right (LinkedIn only — no X)
-                (+ "Style Guide ↗" in #FFB77D after unlocked)
-  Style:        Manrope 500, 11px, uppercase, ls 0.15em, #737371
+                "PRIVACY · PETRI · GITHUB · LINKEDIN" right
+                (LinkedIn only — no X)
+                (+ "Style Guide ↗" in #FFB77D after unlocked, desktop only)
+  Style:        Manrope 500, text-sm (14px), uppercase, ls 0.15em, #737371
+                Hover → #FFB77D
+  Petri link:   <button> styled as link (same as other footer links).
+                Same-tab nav to https://experiments.chiang.ink/ with a
+                ?return=<encoded root-relative path> param built from
+                window.location at click time via buildPetriUrl()
+                (~/lib/petri.ts). Petri's "Back to chiang.ink" link reads it.
   Border:       1px solid #222220 top
   Easter hint:  "This site has secrets. Explore to find them."
-                Manrope 400, 10px, #2a2a2a
-                Reveals to #737371 on hover — cursor: default
-  Mobile:       Stack vertically: name → hint → LinkedIn
+                Manrope 400, text-sm, #2a2a2a
+                Reveals to #5a5a58 on hover — cursor: default
+  Mobile:       Stack vertically: name → hint → links row
                 padding: 24px
                 text-align: left throughout
 
@@ -1719,3 +1725,8 @@ COPY — LOCKED AND FINAL
     and technology — let's talk."
   Contact CTAs:     "Contact form →" + "LinkedIn →"
   Email:            NOT displayed publicly anywhere on site
+
+  Footer links:     "Privacy" (→ /privacy) · "Petri"
+                    (→ https://experiments.chiang.ink/ + ?return= param,
+                    same tab) · "GitHub" · "LinkedIn"
+  Footer hint:      "This site has secrets. Explore to find them."
