@@ -94,7 +94,7 @@ export function Footer({ onOpenStyleGuide }: FooterProps) {
         </Link>
         <button
           onClick={goToPetri}
-          className="bg-transparent border-0 p-0 font-body text-sm font-medium uppercase tracking-[0.15em] text-text-muted cursor-pointer transition-colors duration-200 hover:text-accent"
+          className="hidden md:inline-block bg-transparent border-0 p-0 font-body text-sm font-medium uppercase tracking-[0.15em] text-text-muted cursor-pointer transition-colors duration-200 hover:text-accent"
         >
           {LABEL_PETRI}
         </button>

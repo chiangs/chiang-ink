@@ -960,9 +960,9 @@ FOOTER
                 (+ "Style Guide ↗" in #FFB77D after unlocked, desktop only)
   Style:        Manrope 500, text-sm (14px), uppercase, ls 0.15em, #737371
                 Hover → #FFB77D
-  Petri link:   <button> styled as link (same as other footer links).
-                Same-tab nav to https://experiments.chiang.ink/ with a
-                ?return=<encoded root-relative path> param built from
+  Petri link:   Desktop only (hidden md:inline-block). <button> styled as a
+                footer link. Same-tab nav to https://experiments.chiang.ink/
+                with a ?return=<encoded root-relative path> param built from
                 window.location at click time via buildPetriUrl()
                 (~/lib/petri.ts). Petri's "Back to chiang.ink" link reads it.
   Border:       1px solid #222220 top
@@ -970,6 +970,7 @@ FOOTER
                 Manrope 400, text-sm, #2a2a2a
                 Reveals to #5a5a58 on hover — cursor: default
   Mobile:       Stack vertically: name → hint → links row
+                (Privacy · GitHub · LinkedIn — no Petri)
                 padding: 24px
                 text-align: left throughout
 
@@ -1726,7 +1727,7 @@ COPY — LOCKED AND FINAL
   Contact CTAs:     "Contact form →" + "LinkedIn →"
   Email:            NOT displayed publicly anywhere on site
 
-  Footer links:     "Privacy" (→ /privacy) · "Petri"
-                    (→ https://experiments.chiang.ink/ + ?return= param,
-                    same tab) · "GitHub" · "LinkedIn"
+  Footer links:     "Privacy" (→ /privacy) · "Petri" (→ experiments.chiang.ink
+                    + ?return= param, same tab, desktop only) · "GitHub" ·
+                    "LinkedIn"
   Footer hint:      "This site has secrets. Explore to find them."
