@@ -8,7 +8,7 @@
 
 ## PAGES — Not yet built
 
-- [ ] Work project page template (`work/$slug.tsx`)
+- [x] Work project page template (`work/$slug.tsx`) — DONE
       Full project case study layout — hero, challenge,
       process, outcome, metrics strip, pull quotes,
       challenge callouts, related projects

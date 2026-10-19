@@ -445,7 +445,7 @@ ABOUT · WORK · WRITING · CONTACT
 2. ✓ Project page template (`work/$slug.tsx`) — DONE
 3. ✓ Writing index — DONE
 4. ✓ Article page template (`writing/$slug.tsx`) — DONE
-5. Contact page (`contact.tsx`)
+5. ✓ Contact page (`contact.tsx`) — DONE
 6. Motion layer — GSAP scroll triggers across all pages
 7. PWA service worker
 8. Deploy
