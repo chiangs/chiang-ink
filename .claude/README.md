@@ -11,29 +11,14 @@ Tailwind CSS v4, GSAP, MDX, and Workbox (via vite-plugin-pwa).
 ## Quick Start
 
 ```bash
-npx create-react-router@latest stephen-chiang-site
-cd stephen-chiang-site
+git clone git@github.com:chiangs/chiang-ink.git
+cd chiang-ink
 npm install
-npm run dev
+npm run dev       # http://localhost:5173
 ```
 
-## Install dependencies
-
-```bash
-# Animation
-npm install gsap
-
-# MDX support
-npm install @mdx-js/rollup @mdx-js/react
-npm install remark-frontmatter remark-mdx-frontmatter
-npm install gray-matter
-
-# Types
-npm install -D @types/mdx
-
-# PWA / Service Worker
-npm install -D vite-plugin-pwa
-```
+All dependencies (GSAP, MDX, gray-matter, vite-plugin-pwa,
+@vercel/react-router) are already in `package.json`.
 
 ## PWA Setup
 
@@ -66,31 +51,16 @@ Add to root.tsx links:
 
 No local font files needed — both fonts load from Google Fonts CDN.
 
-## Environment Variables
+## Site URL
 
-```bash
-# .env
-VITE_SITE_URL=https://chiang.ink
-```
+The canonical domain is `https://www.chiang.ink`.
+It is set as `SITE_URL` in `app/lib/constants.ts` —
+no environment variable is needed.
 
 ## Deploy to Vercel
 
-```bash
-npm install -D @vercel/react-router
-```
-
-Update react-router.config.ts:
-```ts
-import { vercelPreset } from "@vercel/react-router/vite";
-import type { Config } from "@react-router/dev/config";
-
-export default {
-  ssr: true,
-  presets: [vercelPreset()],
-} satisfies Config;
-```
-
-Then push to GitHub and connect to Vercel.
+`react-router.config.ts` already uses the Vercel preset
+(`vercelPreset()` from `@vercel/react-router/vite`, SSR on).
 Auto-deploys on every push to main.
 
 ---
@@ -103,14 +73,14 @@ No CMS. No login. Just write and commit.
 New article:    /content/writing/your-slug.mdx
 New project:    /content/work/your-slug.mdx
 
-See /content/writing/_template.mdx and
-/content/work/_template.mdx for frontmatter spec.
+Frontmatter fields are defined by `ArticleFrontmatter`
+and `ProjectFrontmatter` in `app/types/content.ts`.
 
 ---
 
 ## Design Reference
 
-See DESIGN.md for the full design system:
+See `.claude/DESIGN.md` for the full design system:
 colors, typography, spacing, motion, components.
 Feed DESIGN.md into every Claude conversation
 when building new sections or components.

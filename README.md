@@ -1,4 +1,4 @@
-# chiangs.ink
+# chiang.ink
 
 Personal portfolio site for Stephen Chiang — Design Technologist and Product & Technology Leader based in Stavanger, Norway.
 
